@@ -1,0 +1,50 @@
+\section{Limitations and Future Work}
+\label{sec.limitation}
+
+We discuss the limitations of Lind in this section. 
+First, our metric relies on identifying lines of
+code in the kernel that are executed when running applications in secure
+systems. In our future work we will explore if the bug metric works well for
+operating system virtual machines with a hypervisor.  It is not clear if
+existing hypervisors are small and compact enough that effectively all paths
+are common paths or whether there is still substantial benefit from our metric.
+
+A second limitation is that our criteria for determining if a kernel trace is
+safe or risky was to  check it against a list of historical kernel bugs.
+However, not all bugs can be accurately checked in this manner. For
+example, bugs that are caused by a race condition cannot be identified by
+directly checking if certain lines of code are executed. For complicated
+bugs that involve defects in the internal kernel data structures, or
+require complex triggering conditions across multiple kernel paths, our
+metric will not be able to accurately determine whether or not those bugs
+have been triggered. In such cases, more complex metrics might be needed
+for detection.  
+
+%While Lind executes programs like Apache and Tor, it does not
+%support every system call or every possible set of arguments. For example,
+%symbolic links are not supported.  While the SafePOSIX implementation could
+%be extended to do so, we leave this for future work. Also, as mentioned in
+%the previous section, 
+Lind has not been optimized for performance, so the
+results we present here should be taken as a baseline. 
+%of what is possible. 
+We would like to explore what existing OSVM optimizations can be safely
+applied and what their impact is.
+
+%There were also some avenues we intentionally excluded in this initial
+%study that could form the basis for interesting research projects in the
+%future. First, we chose not to explore bugs within the applications
+%themselves. 
+%\cappos{move to motivation / threat model.}
+
+We would also like to test our metric in other
+popular operating systems, such as Windows and Mac OS. Our experiments were
+limited to Linux kernel 3.14.1 and some of the typical virtualization
+systems that existed in Linux. It would be interesting 
+%and beneficial to the advance of secure systems 
+if similar tests could be
+run in other widely-used operating systems.  In particular, it would
+be interesting to see if having the host and guest VM utilize different
+operating systems provides better protection.
+
+

@@ -1,0 +1,94 @@
+\section{Motivation and Background}
+\label{sec.motivation-and-background}
+
+This section presents background information 
+relevant to the development of our design metric and the Lind prototype and threat assumptions. The problem of kernel exploitation and the limitations of previous protection strategies also have been briefly discussed. 
+%caused by an inability to identify which portions of the kernel are risky. 
+
+\subsection{Kernel and Vulnerabilities}
+
+Running user applications relies on the operating system kernel 
+accessing critical resources, such as memory, I/O, or CPU. 
+The kernel provides interfaces to serve these requests 
+and provides essential functionality for all applications running in the
+system. 
+Thus all code, whether sandboxed or untrusted, will make calls 
+that are eventually processed by the kernel. 
+
+Unfortunately, the OS kernels are not safe and secure against adversarial attacks that is worsening over time. Over the past few years, exploitation of the OS kernels has been wide
+spread, despite substantial efforts by researchers and practitioners. 
+In 2014, 215 vulnerabilities in all types of kernels were reported~\cite{NVD}, 
+and 125 of those vulnerabilities were related to the Linux kernel. 
+The kernel's
+attack surface keeps increasing due to the constant addition of new
+features~\cite{Metrics-13}. For example, the Linux kernel grew from 6.6 MLOC in v2.6.11 (March 2005) to 16.9 MLOC in v3.10 (June 2013)~\cite{Linux-13}. 
+
+\cappos{Likely cut this.  I think it is excessive.}
+
+Such a huge kernel codebase has lead to excessive exploitation, where it has been plagued by a number of common
+software flaws. 
+These flaws have raised serious security concerns and caused severe damage
+to systems. 
+
+The common vulnerability and exposure (CVE) database reports indicate stack and heap buffer overflow vulnerabilities have been used to launch denial of service attacks through crashing the systems (CVE-2013-2892).
+%~\cite{CVE-2013-2892}, 
+Other vulnerabilities such as the execution of arbitrary code (CVE-2009-3234) 
+%~\cite{CVE-2009-3234}, 
+or to allow local users to gain privileges via a crafted 
+application (CVE-2013-1828) are also among the reports.
+%~\cite{CVE-2013-1828}. 
+Memory disclosure vulnerabilities (CVE-2009-3002) have been also exploited to allow local users
+to read 
+the contents of some kernel memory locations
+%~\cite{CVE-2009-3002}
+, or to obtain potentially sensitive information from kernel stack memory (CVE-2010-4073).
+%~\cite{CVE-2010-4073}. 
+Attackers have also used use-after-free vulnerability to gain kernel
+privileges, i.e. CVE-2013-4343.
+%~\cite{CVE-2013-4343}.
+
+%The number of kernel vulnerabilities and their potential for exploitation, 
+%plus the fact that user applications rely on the kernel to execute
+%programs, 
+%present a compelling motive for designing securer systems that can run
+%applications with a better degree of safety. \yanyan{this paragraph does 
+%not say anything new.}
+
+\subsection{Threat Assumptions}
+
+The primary goal of a secure system is to restrict a program to some subset
+of privileges, 
+usually by exposing a set of functions that mediate access to the
+underlying operating system privileges. 
+Threats occur when applications obtain access to privileges that were not
+intentionally granted by the system, 
+thus losing the intended protection~\cite{Repy-10}. To apply the proposed security metric to a developing system, we make the following assumptions:
+
+\begin{enumerate}
+\item The OS kernel contains at least one bug that is known to an adversarial attacker.
+
+\item The attacker has the ability to execute code inside
+of a virtualized system, such as an operating system VM or library OS.
+The attacker may either have that access by writing a malicious application
+that the user executes or by exploiting a flaw that exists in a user's
+application.
+
+\item Unintentional bugs will exist in any complex code. This
+includes any security systems placed between the kernel and the user
+applications.
+
+\item Feasibility to provide some form of computational 
+containment. This means that an isolated program cannot simply
+make arbitrary system calls and access the kernel directly. This could
+be provided through software-fault isolation~\cite{SFI:93}, programming 
+language techniques\cappos{cites}, or by running isolated code in a
+distinct region of virtual memory\cappos{cites}.
+
+\item Possibility to build functionality that possesses few
+vulnerabilities as long as it keeps the code-base to a minimum.
+
+\cappos{How do I explain
+the sandbox TCB???  How is this different from a hypervisor?}
+
+\end{enumerate}
+

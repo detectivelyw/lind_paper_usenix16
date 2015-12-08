@@ -1,0 +1,41 @@
+\subsection*{Abstract}
+Building secure systems that allow untrusted programs to run without
+triggering vulnerabilities %in the underlying privileged code of an
+%operating system (OS) kernel or hypervisor 
+is very challenging. Despite
+substantial effort by security researchers and system developers to
+eliminate these flaws, it still has a long way to go to make existing OS 
+kernels secure. 
+%\gholami{maybe rephrase to: ... these flaws, still it is long away to make existing OS kernels secure.}
+Techniques to protect against intentional or unintentional triggering of
+these vulnerabilities, such as system call filtering, operating system
+virtualization, and library OSes have had limited success.  The problems
+of these techniques are two-fold.  First, these systems add trusted code that often has new
+exploitable vulnerabilities. Second, the portions of the underlying kernel
+that these systems use may enable the attacker to exploit vulnerabilities.
+As a result, developers can not fully prevent buggy programs from triggering
+flaws, or attackers from leveraging these bugs. 
+%for their own purposes.
+
+%\cappos{Rework...}
+In this paper, we introduce a novel security design that leverages
+controlled kernel access to protect privileged code from exploitation by
+untrusted programs. 
+%\gholami {Maybe to say it's called Lind instead of mentioning it at the end of this paragraph} 
+%We start by analyzing the effectiveness of existing
+%solutions and explore the reasons why existing techniques are not
+%effective. \gholami {I think this sentence is good inside the paper than abstract?} 
+We first propose a new metric to determine where kernel flaws are
+likely to be located, based on a hypothesis that commonly-used kernel
+paths, executed by applications on a daily basis, contain fewer
+vulnerabilities than less-used paths. Next, we use this insight to devise a
+novel design that implements essential OS functionality inside a
+sandbox that only accesses commonly used kernel paths. 
+% \gholami {is this rephrase of the first sentence?}
+We use this design to prototype a secure system called Lind. Our 
+experiment results show that Lind confines adversarial attacks through 
+executing malicious code with less than 
+%an attacker executing code inside Lind can trigger less than 
+3\% of zero-day kernel attacks. This result is about an order of
+magnitude less than existing systems like VirtualBox (40\%), 
+VMWare Workstation (31\%), Docker (23\%), and Graphene (23\%).
