@@ -17,6 +17,10 @@ and trigger sensitive portions of the kernel.
 \centering
 \includegraphics[width=1.0\columnwidth]{diagram/fig3.png}
 \caption{``Safe-Reimplementation'' design to ensure predictable execution of untrusted user codes despite existing potential bugs within the OS kernel.} 
+\cappos{This figure
+needs to be edited I think.  The computation part doesn't fit...   Also,
+perhaps there need to be ``bugs'' in the kernel, with most near the
+outside parts.}
 \label{fig:design}
 \end{figure}
 

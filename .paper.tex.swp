@@ -1,0 +1,152 @@
+% TEMPLATE for Usenix papers, specifically to meet requirements of
+%  USENIX '05
+% originally a template for producing IEEE-format articles using LaTeX.
+%   written by Matthew Ward, CS Department, Worcester Polytechnic Institute.
+% adapted by David Beazley for his excellent SWIG paper in Proceedings,
+%   Tcl 96
+% turned into a smartass generic template by De Clarke, with thanks to
+%   both the above pioneers
+% use at your own risk.  Complaints to /dev/null.
+% make it two column with no page numbering, default is 10 point
+
+% Munged by Fred Douglis <douglis@research.att.com> 10/97 to separate
+% the .sty file from the LaTeX source template, so that people can
+% more easily include the .sty file into an existing document.  Also
+% changed to more closely follow the style guidelines as represented
+% by the Word sample file. 
+
+% Note that since 2010, USENIX does not require endnotes. If you want
+% foot of page notes, don't include the endnotes package in the 
+% usepackage command, below.
+
+% This version uses the latex2e styles, not the very ancient 2.09 stuff.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix,epsfig,endnotes}
+\usepackage{url}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{color}
+\usepackage[normalem]{ulem} 
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{pifont}
+\usepackage{graphicx}
+\usepackage{makecell}
+
+
+
+\newcommand{\urlwofont}[1]{\underline{\urlstyle{same}\url{#1}}}
+\newif\ifrev
+%  COMMENT OUT NEXT LINE TO HIDE TODOs AND COMMENTS
+\revtrue
+
+\ifrev
+  \newcommand{\gholami}[1]{{\color{purple} [Ali: #1]}}
+  \newcommand{\yanyan}[1]{{\color{blue} [Yanyan: #1]}}
+  \newcommand{\cappos}[1]{{\color{red} [Justin: #1]}}
+  \newcommand{\lois}[1]{{\color{magenta} [Lois: #1]}}
+  \newcommand{\yiwen}[1]{{\color{OliveGreen} [Yiwen: #1]}}
+  \newcommand{\todo}[1]{{\color{Orange} [TODO: #1]}}
+\else
+  \newcommand{\gholami}[1]{}
+  \newcommand{\yanyan}[1]{}
+  \newcommand{\cappos}[1]{}
+  \newcommand{\lois}[1]{}
+  \newcommand{\yiwen}[1]{}
+  \newcommand{\todo}[1]{}
+\fi
+
+
+
+\begin{document}
+
+
+%don't want date printed
+%\date{}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Title and Authors
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%make title bold and 14 pt font (Latex default is non-bold, 16 pt)
+\title{\Large \bf{Lind: Shielding Privileged Code From Untrusted Programs 
+Through Controlled Kernel Access}}
+
+
+%for single author (just remove % characters)
+\author{
+{\rm Yiwen Lie}\\
+New York University \\
+liyiwen@nyu.edu
+\and
+{\rm Ali Gholami}\\
+KTH Royal Institute of Technology\\
+gholami@kth.se
+\and
+{\rm Yanyan Zhuang}\\
+New York University and UBC \\
+yyzh@nyu.edu
+\and
+{\rm Chris Matthews}\\
+Apple Inc. \\
+chris.matthews@apple.com
+\and
+{\rm Justin Cappos}\\
+New York University \\
+jcappos@nyu.edu
+} % end author
+
+
+\maketitle
+
+
+% Use the following at camera-ready time to suppress page numbers.
+% Comment it out when you first submit the paper for review.
+\thispagestyle{empty}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Sections
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\input{abstract}
+\input{introduction}
+\input{motivation-and-background}
+\input{metric}
+\input{design}
+\input{implementation}
+\input{evaluation}
+\input{limitation}
+\input{related_work}
+\input{conclusion}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  Bibliography
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+{
+\footnotesize 
+\bibliographystyle{acm}
+\bibliography{paper}
+}
+
+
+%\theendnotes
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  The End
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{document}
+
+
