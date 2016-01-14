@@ -2,7 +2,8 @@
 \label{sec.motivation-and-background}
 
 This section presents background information 
-relevant to the development of our design metric and the Lind prototype and threat assumptions. The problem of kernel exploitation and the limitations of previous protection strategies also have been briefly discussed. 
+relevant to the development of our design metric and the Lind prototype and threat assumptions. 
+The problem of kernel exploitation and the limitations of previous protection strategies also have been briefly discussed. 
 %caused by an inability to identify which portions of the kernel are risky. 
 
 \subsection{Kernel and Vulnerabilities}
@@ -10,27 +11,26 @@ relevant to the development of our design metric and the Lind prototype and thre
 Running user applications relies on the operating system kernel 
 accessing critical resources, such as memory, I/O, or CPU. 
 The kernel provides interfaces to serve these requests 
-and provides essential functionality for all applications running in the
-system. 
+and provides essential functionality for all applications running in the system. 
 Thus all code, whether sandboxed or untrusted, will make calls 
 that are eventually processed by the kernel. 
 
-Unfortunately, the OS kernels are not safe and secure against adversarial attacks that is worsening over time. Over the past few years, exploitation of the OS kernels has been wide
+Unfortunately, the OS kernels are not safe and secure against adversarial attacks that is worsening over time. 
+Over the past few years, exploitation of the OS kernels has been wide
 spread, despite substantial efforts by researchers and practitioners. 
 In 2014, 215 vulnerabilities in all types of kernels were reported~\cite{NVD}, 
 and 125 of those vulnerabilities were related to the Linux kernel. 
-The kernel's
-attack surface keeps increasing due to the constant addition of new
+The kernel's attack surface keeps increasing due to the constant addition of new
 features~\cite{Metrics-13}. For example, the Linux kernel grew from 6.6 MLOC in v2.6.11 (March 2005) to 16.9 MLOC in v3.10 (June 2013)~\cite{Linux-13}. 
 
 \cappos{Likely cut this.  I think it is excessive.}
 
 Such a huge kernel codebase has lead to excessive exploitation, where it has been plagued by a number of common
 software flaws. 
-These flaws have raised serious security concerns and caused severe damage
-to systems. 
+These flaws have raised serious security concerns and caused severe damage to systems. 
 
-The common vulnerability and exposure (CVE) database reports indicate stack and heap buffer overflow vulnerabilities have been used to launch denial of service attacks through crashing the systems (CVE-2013-2892).
+The common vulnerability and exposure (CVE) database reports indicate stack and heap buffer overflow vulnerabilities 
+have been used to launch denial of service attacks through crashing the systems (CVE-2013-2892).
 %~\cite{CVE-2013-2892}, 
 Other vulnerabilities such as the execution of arbitrary code (CVE-2009-3234) 
 %~\cite{CVE-2009-3234}, 
@@ -91,4 +91,3 @@ vulnerabilities as long as it keeps the code-base to a minimum.
 the sandbox TCB???  How is this different from a hypervisor?}
 
 \end{enumerate}
-
