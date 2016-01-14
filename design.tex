@@ -1,22 +1,22 @@
-\section{A New Design for Building Secure Systems}
+\section{A New Design for Building Secure Virtualization Systems}
 \label{sec.design}
 
 This section discusses how to use the observation
  that ``commonly used kernel paths'' contain fewer bugs 
-(\S{\ref{sec.metric}}) to build better security systems.
+(\S{\ref{sec.metric}}) to build securer virtualization systems.
 The key idea of our design is that all code \emph{including the complex part
-of the operating system API} must have a very small TCB that accesses only 
+of the operating system API} should have a very small TCB that accesses only 
 commonly used kernel paths. 
 Any complex or possibly risky system functions 
 are reimplemented by our own code within a sandbox. This makes any bugs or failures within the implementation of those complex system functions 
 to be contained by the sandbox. As result untrusted code will not have the possibility to reach 
-and trigger sensitive portions of the kernel. 
+and trigger sensitive and risky portions of the kernel. 
 
 
 \begin{figure}%[h]
 \centering
-\includegraphics[width=1.0\columnwidth]{diagram/fig3.png}
-\caption{``Safe-Reimplementation'' design to ensure predictable execution of untrusted user codes despite existing potential bugs within the OS kernel.} 
+\includegraphics[width=1.0\columnwidth]{diagram/lind_secure_design_new.png}
+\caption{``Safe-Reimplementation'' design to ensure predictable execution of untrusted user codes despite existing potential zero-day bugs within the OS kernel.} 
 \label{fig:design}
 \end{figure}
 
@@ -33,7 +33,7 @@ the OS kernel, as it avoids the risk of threat escalation. If modified modules
 are inside the OS kernel, they have kernel privileges that could allow attacks on the underlying OS, 
 as well as applications run on top of it. 
 
-There are two main components in our design of a secure sandbox system, as shown in Figure \ref{fig:design}. 
+There are two main components in our design of a secure virtualization system, as shown in Figure \ref{fig:design}. 
 The first is a computation module, which performs functions like type checking, object creation, 
 and garbage collection. The second is a system API that serves requests to access the OS kernel. 
 Those two components should work together to complete the requirements of running user code. 
@@ -89,11 +89,9 @@ With this design, even if there are bugs in the function reimplementation,
 they cannot escape from the sandbox and will not reach the underlying OS kernel. 
 
 Here is an example of how this reimplementation would work with the symbolic link function. 
-\cappos{You likely need to talk about how you build this without the FS 
-anyways.}  \cappos{Does a diagram showing the different design philosophies and
-where they put functionality make sense?}
 If there is a bug in this function, our safe reimplementation will not rely on the kernel code paths for symbolic links. 
-Instead, our sandbox system will implement the incorrect behavior, so the program will not be forced to quit, but will do so in the sandox. \yanyan{why implement the buggy behavior?}  
+Instead, our sandbox system will implement the incorrect behavior, so the program will not be forced to quit, but will do so in the sandbox. 
+\yanyan{why implement the buggy behavior?}  
 Since the reimplementation code does not have privileged access to the system as the OS kernel does, 
 this will not result in a security issue. The usual outcome of a bug in this case is simply that the application will fail.
 
@@ -104,3 +102,20 @@ it is possible to choose from several different techniques that fit well with th
 
 This general system design was implemented as a prototype called Lind. 
 In the next section, we provide a detailed description of Lind.
+
+\subsection{Discussion: Our Design Choice}
+
+In reviewing our design, some fundamental questions could be raised about the dual sandbox design. 
+Why is one not enough? And, if two is good, why not use three or more? 
+The answer to the first question is that the kernel interface is extremely rich and hard to protect. 
+In order to have minimal impact on the kernel, as well as provide sufficient API for legacy applications, 
+we need to have one sandbox focuses on protecting the kernel and providing POSIX API, 
+while a second sandbox focuses on efficiently executing applications. 
+So our approach includes two sandboxes, one as the computation module, 
+and the other one as system API module. As to the second question, 
+which could be rephrased as ``why not sandbox Repy TCB and get more security?,'' 
+the lowest level sandbox eventually must have some fundamental, 
+even if  limited access to system resources, such as memory, and storage, threads. 
+So even if we were to sandbox Repy TCB and have additional sandboxes, 
+the one at the bottom level will still access the OS kernel in a similar way. 
+Thus, having multiple sandboxes does not provide any extra security benefits. 
