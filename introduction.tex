@@ -4,19 +4,27 @@
 To run multiple applications on a computer, it is critical to securely
 manage access to the underlying hardware. In modern computer systems,
 either a hypervisor - a virtual machine monitor (VMM), or an 
-operating system (OS) kernel performs this important function. Unfortunately, code within an OS kernel may contain flaws and vulnerabilities. If the OS kernel is attacked by a malicious adversary, potential vulnerabilities can enable the attacker to have unrestricted access to the system.
+operating system (OS) kernel performs this important function. Unfortunately, code within an OS kernel may contain flaws 
+and vulnerabilities. If the OS kernel is attacked by a malicious adversary, 
+potential vulnerabilities can enable the attacker to have unrestricted access to the system.
 
-
-%One critical flaw, discovered in the Linux kernel in the \texttt{futex} subsystem call can allow an attacker to gain ring 0 control via the \texttt{futex} syscall, and potentially execute arbitrary code with kernel mode privileges~\cite{CVE-2014-3153}. \cappos{Possibly omit this sentence.}
-
+%One critical flaw, discovered in the Linux kernel in the \texttt{futex} subsystem call can allow an attacker to 
+%gain ring 0 control via the \texttt{futex} syscall, and potentially execute arbitrary code 
+%with kernel mode privileges~\cite{CVE-2014-3153}. \cappos{Possibly omit this sentence.}
 
 There is a diverse set of defensive technologies to protect kernels from 
-attacks, including OS virtualization (e.g., Xen, KVM, VirtualBox), system call filtering \cite{Janus:99},\cite{SCI-04}, and library OSes \cite{Bascule},\cite{Drawbridge-11}. Common security wisdom is that by running software in a virtual machine, one can prevent the attacker from exploiting flaws in the underlying kernel. However, the security of virtualization itself is a  challenging issue \cite{Tal}. As we will demonstrate in this paper, despite employing virtualization techniques, still one third of vulnerabilities on the Linux kernel are not prevented from being exploited. This rate highlights substantial risk to run applications in virtualized envinronments.
+attacks, including OS virtualization (e.g., Xen, KVM, VirtualBox), system call filtering \cite{Janus:99},\cite{SCI-04}, 
+and library OSes \cite{Bascule},\cite{Drawbridge-11}. Common security wisdom is that by running software in a virtual machine, 
+one can prevent the attacker from exploiting flaws in the underlying kernel. However, the security of virtualization itself is 
+a  challenging issue \cite{Tal}. As we will demonstrate in this paper, despite employing virtualization techniques, 
+still one third of vulnerabilities on the Linux kernel are not prevented from being exploited. 
+This rate highlights substantial risk to run applications in virtualized envinronments.
 
 In this paper, we develop a metric that helps to identify where
 within the kernel vulnerabilities are likely to be located. For this purpose, we
 examined 40 kernel patches that fix severe Linux kernel security bugs
-and analyzed the lines of the kernel where those bugs occurred. The results of this analysis shows that kernel paths used by popular applications contain fewer
+and analyzed the lines of the kernel where those bugs occurred. The results of this analysis shows that kernel paths 
+used by popular applications contain fewer
 security bugs, and therefore, can be exposed with less risk. 
 
 While limiting access to kernel code is important, it is
@@ -30,10 +38,11 @@ risk as a flaw in the kernel.  %However, this privileged code needs to be
 % must exist somewhere or else applications will not run. 
 For example, CVE-2008-2100, a vulnerability in VMWare's codebase that was caused by buffer overflows 
 %~\cite{CVE-2008-2100} 
-in the VIX API and it could allow local users to bypass the guest VM and gain privilege escalation to execute arbitrary code in the host
-OS, even shellcode to access the kernel of the host OS. CVE-2011-1751 was another bug due to missing check in KVM's QEMU emulation of PCI-ISA bridge. This enables an attacker to utilize other techniques \cite{Virtunoid} for root exploit in the host OS being triggered from a guest.  
+in the VIX API and it could allow local users to bypass the guest VM and gain privilege escalation to execute arbitrary code 
+in the host OS, even shellcode to access the kernel of the host OS. CVE-2011-1751 was another bug due to 
+missing check in KVM's QEMU emulation of PCI-ISA bridge. This enables an attacker to utilize other techniques \cite{Virtunoid} 
+for root exploit in the host OS being triggered from a guest.  
 %\cappos{Revise this paragraph further}
-
 
 
 %To address this issue, 
@@ -42,22 +51,23 @@ systems called ``safely-reimplement'' that restricts access to only the
 kernel paths that are mostly used by common applications.  To restrict the privileged
 code, we first build a minimal, sandboxed environment that also only uses 
 common kernel paths.
-We then implement a POSIX interface inside of this safe sandbox. For complex and dangerous system functions, which may access the risky portion of the kernel, 
-input to POSIX is reimplemented by our own code within a sandbox. Any bugs or failures within the implementation of those complex system functions 
+We then implement a POSIX interface inside of this safe sandbox. For complex and dangerous system functions, 
+which may access the risky portion of the kernel, 
+input to POSIX is reimplemented by our own code within a sandbox. Any bugs or failures within the implementation of 
+those complex system functions 
 will be contained by the sandbox, and will not have the chance to reach 
-and trigger risky portions of the kernel. Because of this added security, we dub this as a "safe-reimplementation" design. \yanyan{the sandbox only has
-safe code. how can unsafe code to be trapped "within" the sandbox?} Therefore, even if the code
+and trigger risky portions of the kernel. Because of this added security, we dub this as a "safe-reimplementation" design. 
+Therefore, even if the code
 is vulnerable to an attack, it is unable to trigger
 kernel paths that are less commonly used or tested.
 
-This implementation helped us to understand which kernel paths are hardest to
+This new design helped us to understand which kernel paths are hardest to
 safely-reimplement and provided key insights about what kernel paths system
-designers should give the highest degree of scrutiny. In turn, we then use this design paradigm to develop a virtualization system called
+designers should give the highest degree of scrutiny. In turn, we then use this design paradigm to develop 
+a virtualization system called
 Lind.  Lind uses Google Native client for software fault isolation (memory
 safety of the application) and the Repy sandbox~\cite{Repy-10} to contain the POSIX
-implementation and to provide access to the kernel.   \yanyan{shouldn't it
-be the other way round? first fully understand which paths are hard, and
-then use this insight to design Lind.}
+implementation and to provide access to the kernel.
 
 To evaluate the effectiveness of Lind, we first captured the 
 kernel traces from user programs run in Lind and four other virtualization
@@ -89,7 +99,8 @@ sandbox that only uses safe kernel paths.
 \item With this new design, we implemented a sandbox security system, Lind, that
 provides a secure environment for applications and strong protection for
 the kernel.
-\item Results show \gholami{I think this is not a contribution rather it is more results of evaulations} that the implementation of Lind only triggers one (2.9\%) of
+\item Results show \gholami{I think this is not a contribution rather it is more results of evaulations} 
+that the implementation of Lind only triggers one (2.9\%) of
 the kernel vulnerabilities we examined, while systems built without using
 our metric trigger about an order of magnitude more vulnerabilities. This
 suggests that our metric can help design and build virtualization systems
@@ -99,6 +110,10 @@ with greater security.
 
 
 The remainder of this paper is organized as follows. 
-Section \ref{sec.motivation-and-background} describes the motivation and background material. Section \ref{sec.metric}, introduces the proposed coverage safety metric. Using this metric, the 
-``safely-reimplement'' design pattern has been discussed in Section \ref{sec.design}. Section \ref{sec.implementation}, explains Lind: the sandbox security system. Section \ref{sec.evaluation} applies the quantitative  measures for comparing the security and efficiency of Lind with other virtualization systems. \ref{sec.limitation} outlines the limitations and future work. Section \ref{sec.related_work} reviews the related work on security through several isolation mechanisms. Finally in Section \ref{sec.conclusion}, we present our concluding remarks.
-
+Section \ref{sec.motivation-and-background} describes the motivation and background material. 
+Section \ref{sec.metric}, introduces the proposed coverage safety metric. Using this metric, the 
+``safely-reimplement'' design pattern has been discussed in Section \ref{sec.design}. Section \ref{sec.implementation}, 
+explains Lind: the sandbox security system. Section \ref{sec.evaluation} applies the quantitative measures for comparing 
+the security and efficiency of Lind with other virtualization systems. Section \ref{sec.limitation} outlines the limitations and future work. 
+Section \ref{sec.related_work} reviews the related work on security through several isolation mechanisms. 
+Finally in Section \ref{sec.conclusion}, we present our concluding remarks.
