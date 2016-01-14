@@ -4,12 +4,13 @@ Kernel Security}
  
 This section describes the aforementioned metric in detail to 
 quantitatively evaluate kernel security. It first outlines the issues with
-commonly used metrics for code complexity. Then it presents our proposed metric that
+commonly used metrics for code complexity. Then it discusses our proposed metric that
 focuses on using kernel code paths used by %common 
 widely used applications. Finally, we
-show how our metric is able to provide a fair comparison of 
-different security systems, and their impact on the kernel, 
-and to reveal which portions contained fewer bugs.
+%show how our
+apply the metric %can be used to provide a fair 
+for comparing different security systems including the kernel and areas where fewer bugs reside.
+% and their impact on the kernel, and to reveal which portions contained fewer bugs.
 
 \subsection{Previous Risk Metrics for Software}
 
@@ -23,8 +24,10 @@ to remove this sentence regardless...}
 
 %Structurally, 
 As shown in Figure \ref{diagram/fig3.png}, the Linux kernel is divided into several main sub-systems such as %sub-directories:
-\texttt{kernel} (main kernel), \texttt{ipc} (inter-process communication), 
-\texttt{net} (networking), \texttt{fs} (file system), and \texttt{device drivers} (device drivers). Chou %showed in~
+%\texttt{kernel} (main kernel), \texttt{ipc} (inter-process communication), 
+%\texttt{net} (networking), \texttt{fs} (file system), and \texttt{device drivers} (device drivers). 
+process management, file system, networking, memory management and device drivers.
+Chou %showed in~
 \cite{PittSFIeld} demonstrated that function's directory, e.g., 
 \texttt{device drivers}, results in certain parts of the Linux kernel having error rates much 
 higher than the rest of the kernel; kernel source code size and age also affects
@@ -33,8 +36,9 @@ how frequently errors occur in the kernel.
 %several orders of magnitude higher than the smallest/oldest quartile. 
 Years later, Palix found that \texttt{drivers} still contains the most faults in 
 the Linux kernel, in addition to HAL and \texttt{fs}~\cite{palix2011faults}. 
-On the other hand, Engler analyzed system code by inferring programmer 
-beliefs~\cite{engler2001bugs}. This is achieved by static analysis
+%On the other hand, 
+In ~\cite{engler2001bugs} Engler analyzed system code by inferring programmer 
+beliefs. This is achieved by static analysis
 of source code that looks for contradictions, such as acquired locks are 
 not released. There has also been work that generates vulnerability 
 signatures~\cite{brumley2006towards}, which match all exploits
@@ -43,12 +47,12 @@ dynamic analysis, constraint solving and symbolic execution~\cite{chou2003static
 However, most of these findings have not yet been used to design 
 secure systems. 
 
-Researchers in software engineering have also studied and explored 
-different metrics to identify and predict bugs in software systems. 
+Researchers in software engineering have also %studied and 
+explored different metrics to identify and predict bugs in software systems. 
 The number of lines of code has been used as one 
 predictor~\cite{Bug-Location}, as has a file's revision status and 
 whether or not the file previously contained bugs~\cite{Bug-Location, 
-lewis2013does}. Studies have also been done based on 
+lewis2013does}. Studies have also been conducted based on 
 the number of functions and/or the number of executable lines of code in
 the function~\cite{Mining-Metrics}. Coverage-based fault localization, 
 on the other hand, assumes that execution events that occur mostly in failing
@@ -97,17 +101,15 @@ and design an interface that is exposed to the user space in a secure way.
 Ideally, 
 this would mean only exposing the safe portions of the kernel to the user
 space. 
-However, in some cases, risky portions must be exposed to the kernel as
+In some scenarios, risky portions must be exposed to the kernel as
 well. 
-The kernel coverage safety metric, however, can provide us a guidance 
+The kernel coverage safety metric %, however,
+ can provide us a guidance 
 about the potential dangers and 
 can help us safely-reimplement those risky kernel interface (or system
 calls) to avoid the potential damage.
 %\yanyan{I don't think the new metric alerts us tho. maybe say it provides 
 %as a guidance which parts are risky?}
-
-
-
 
 \cappos{end of text}
 
@@ -115,34 +117,31 @@ calls) to avoid the potential damage.
 \subsection{Key Hypothesis}
 
 Our hypothesis is that kernel paths executed by popular applications, 
-such as Web browsers, or file editors, are likely to contain fewer
+such as Web browsers or text editors, are likely to contain fewer
 exploitable bugs 
-than uncommonly used paths. Our reasoning is that, because they are
-frequently used, 
-bugs and vulnerabilities in these common kernel paths
+than uncommonly used paths. %Our reasoning is that, 
+Because they are frequently used, bugs and vulnerabilities in these common kernel paths
 would have most likely been caught by developers. 
-Note that this does more than indicate which system calls should be used. 
-A metric that looks at commonly used kernel paths also excludes odd
-execution paths 
+
+Note that this does more than indicate which system calls should be used. \gholami{I dont understand this sentence}
+A metric that looks at commonly used kernel paths also excludes odd execution paths 
 through popular system calls. 
 This means that the chances to harbor kernel bugs in those commonly used
-kernel paths are slim. 
+kernel paths are slim.
 
 The procedure for testing the hypothesis is described, and the results
 discussed, in the following sections. 
 
-\subsection{Foundation for the Metric: Capturing and Evaluating Kernel
-Traces}
+\subsection{Foundation for the Metric: Capturing and Evaluating Kernel Traces}
 
 The first step in proving our hypothesis was to capture the lines of kernel
 code executed 
 when running applications. The OS kernel code is organized under different
 kernel directories. 
 Whenever an application tries to access system resources, such as file
-system I/O and memory, 
-the kernel code under the corresponding paths is executed. Therefore, 
+system, I/O and memory, the kernel code under the corresponding paths is executed. Therefore, 
 its code execution reflects the basic behavior of the kernel, in response
-to user application requests. 
+to user application requests.
 Our metric first identified and captured which lines of code in the kernel
 were executed 
 when running an user program. We named the resulting captured lines of
@@ -156,8 +155,7 @@ tool that is a standard utility with the GNU compiler collection
 suite.
 
 
-The second step was to evaluate security aspects of the kernel traces that
-we captured. 
+The second step was to evaluate security aspects of the captured kernel traces.% thatwe captured. 
 Using the historical kernel vulnerability reports, we collected a list of
 severe kernel bugs from 
 the National Vulnerability Database, the U.S. government repository of
@@ -174,34 +172,30 @@ A user program that executes the lines of code changed by a patch to fix a
 kernel bug is considered to have the \textit{potential to exploit that flaw}.
 
 We determined that the lines of code in the kernel would be risky 
-if they triggered one or more kernel vulnerability, and those lines of code 
-that did not are considered to be safe. Using the above kernel trace
-analysis, 
-we empirically labeled the lines of code in the kernel that contain no
-bug as safe lines.
-The safe lines of code would then compose the safe portion of the kernel, 
-which can be trusted to build a secure trusted computing base for secure
-systems.
+if they triggered one or more kernel vulnerability. Other lines of code 
+that did not trigger a vulnerability are considered to be safe. We empirically labeled the lines of code in the kernel that contain no bug as safe lines using the above kernel trace analysis.
+The safe lines of code would then compose the safe portion of the kernel, which can be trusted to build a secure trusted computing base for secure systems.
 
 \subsection{Verification of Hypothesis}
 \label{Verification-of-Hypothesis}
 
 To verify our hypothesis that commonly used kernel paths contain fewer bugs, 
-we identified these paths as a subset of the total reachable kernel paths as follows:
+we identified these paths as a subset of the total reachable kernel paths as follows.
 
 %\begin{enumerate}
-First, common paths were captured by running popular user applications or open-source libraries, as shown in Figure \ref{diagram/data_collection.png}. Most notably, these experiments were conducted for the data collection phase including running several applications such as two large-scale browsers (Mozilla Firefox and Google Chrome) over \texttt{gcov}. The  performed experiments also included running 50 packages among the top 200 popular Debian packages \cite{Top-Packages} in a Linux kernel version 3.14.1.
+First, common paths were captured by running moat widely used applications or open-source libraries, as shown in Figure \ref{diagram/data_collection.png}. Most notably, these experiments were conducted for the data collection phase including running several applications such as two large-scale browsers (Mozilla Firefox and Google Chrome) over \texttt{gcov}. The  performed experiments also included running 50 packages among the top 200 popular Debian packages \cite{Top-Packages} in a Linux kernel version 3.14.1.
 
-During this step, we conducted several other operations needed to access common paths, including intensive file management tasks to create/read/update or delete files and directories from the underlying filesystem. These tests were completed during a discrete period of 20 hours over 5 days.
+%During this step, we conducted 
+Several other operations needed to access common paths were conducted including intensive file management tasks to create/read/update or delete files and directories from the underlying filesystem. These tests were completed during a discrete period of 20 hours over 5 days.
 
 Next, the total reachable paths were required to be captured by comprehensive system call fuzzing and running the Linux kernel test suite. These experiments helped to capture the total reachable paths in the kernel as thoroughly as possible. 
 
 Two approaches were used to capture this trace.
 
 \begin{itemize}
-\item The system call fuzzing experiments were designed to utilize the Trinity system call fuzz tester \cite{Trinity}. This included sequential execution of more than 300 system calls with 1 million iterations for executing each system call by 16 child processes as Trinity workers.
+\item The system call fuzzing experiments that were designed to utilize the Trinity system call fuzz tester \cite{Trinity}. This included sequential execution of more than 300 system calls with 1 million iterations for executing each system call by 16 child processes as Trinity workers. The obtained kernel trace comprehensively reflected various aspects of the kernel functionalities.
 
-These included file management and network system calls, \yanyan{what is file management?} which gave us a thorough kernel trace. 
+%File management and network system calls, \yanyan{what is file management?} which gave us a thorough kernel trace. 
 
 \item Linux Test Project (LTP) \cite{LTP} was another tool that was used to capture the total reachable kernel trace.
 Linux Test Project is a mature and well maintained tool to test the Linux
@@ -227,14 +221,15 @@ Figure \ref{fig:datacollection} shows different platforms and tools that were us
 
 
 
-We were able to 
-%access
-assess our total reachable kernel paths through combining the kernel traces generated by Trinity and LTP. The results show that 38.5\% of the total reachable
+We were able to assess
+%access our
+the total reachable kernel paths through combining the kernel traces generated by Trinity and LTP. The results show that 38.5\% of the total reachable
 kernel paths are commonly used. 
 More importantly, only 2.5\% of the bugs examined were found in the common
 paths, 
 while 50\% of the bugs were found in the total reachable kernel paths. 
-Our results strongly suggest that common paths contain fewer bugs than uncommon
+%Our 
+The results strongly suggest that common paths contain fewer bugs than uncommon
 paths. \yanyan{I feel this is a bit early to make this conclusion.} 
 \lois{does the slight wording change answer your concern, Yanyan?}
 
@@ -263,6 +258,15 @@ the fact that there are some limitations on the iteration number of issuing
 the fuzzing calls. In addition, some kernel paths can only be reached by 
 certain combinations of different function calls with specific arguments. 
 
+
+\begin{figure}%[h]
+\centering
+\includegraphics[width=1.0\columnwidth]{diagram/kernelcoverage.png}
+\caption{Percentage of different kernel areas that were reached during running our experiments.} 
+\label{fig:coverage}
+\end{figure}
+
+
 %Although the total reachable paths coverage is not 100\% of the entire
 %kernel code base, 
 %it is still very large and contains many bugs. 
@@ -271,21 +275,21 @@ certain combinations of different function calls with specific arguments.
 %the total reachable path coverage, this is a positive indication that these
 %relatively small areas can be considered safe.
 
-\begin{table}
-\centering
-\scriptsize
-\caption {Kernel Coverage}
-\begin{tabular}{|l|c|}
-  \hline
-  \textbf{Kernel Paths} & \textbf{Kernel Coverage (percentage)} \\
-  \hline \hline
-  Common Paths & 12.4\% \\
-  \hline
-  Total Reachable Paths & 32.2\% \\
-  \hline
-\end{tabular}
-\label{table:kernel_coverage}
-\end{table}
+%\begin{table}
+%\centering
+%\scriptsize
+%\caption {Kernel Coverage}
+%\begin{tabular}{|l|c|}
+%  \hline
+%  \textbf{Kernel Paths} & \textbf{Kernel Coverage (percentage)} \\
+%  \hline \hline
+%  Common Paths & 12.4\% \\
+%  \hline
+%  Total Reachable Paths & 32.2\% \\
+%  \hline
+%\end{tabular}
+%\label{table:kernel_coverage}
+%\end{table}
 
 The results from Figure \ref{fig:subset} and Figure
 \ref{fig:key_paths_trace} 
