@@ -104,12 +104,11 @@ the code does not have privileged access to the system as the OS kernel does,
 This will not result in a security issue, but instead, the application will just fail.
 
 With the computation module and the library OS module, unmodified user code is able to run on top of our designed system.
-It is important to note that our design does not rely on any specific technique or tool.
-To implement the computation module and the library OS module in our design,
-it is possible to choose from several different techniques that fit well with the users' specific needs or requirements.
+It is important to note that our design does not rely on any specific technique or tool, and it is possible
+to choose from several different techniques that fit well with the users' specific needs or requirements.
 
-This general system design was implemented as a prototype called Lind.
-In the next section, we provide a detailed description of Lind.
+Based on this general system, we implemented a prototype security system based on a controlled kernel access that we called Lind.
+Below we offer a short explanation of one design feature: the use of dual sandboxes. The following section offers a more detailed descripion of Lind's design and implementation.
 
 \subsection{Discussion: Our Design Choice}
 
