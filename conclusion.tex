@@ -1,30 +1,28 @@
 \section{Conclusion}
 \label{sec.conclusion}
 
-Though the idea of isolating untrusted user applications from the underlying privileged code 
-to avoid its exploitation by bugs has been acknowledged through many different implementations, 
-there is no standard method for creating this isolation. 
-And, isolation by itself does not guarantee the security of the system.
+The idea of isolating untrusted user applications from the underlying privileged code
+to avoid its exploitation by bugs has been realized in different implementations,
+but there is no standard method for creating this isolation.
+In addition, experience suggests that isolation by itself does not guarantee the security of a system.
 %
-In this paper, we proposed a new metric that quantitatively measures and 
-evaluates execution of the kernel code when running user applications. 
-We stated and tested our hypothesis that commonly used kernel paths contain fewer bugs. 
-Using our metric, we generated findings that suggest the hypothesis is reasonable and solid.
-
-Based on the findings from our metric, a new design for building secure systems was created. 
-We implemented a sandbox system called Lind, which securely reconstructs complex, 
-yet essential OS functionality inside a sandbox. The sandbox itself is designed to 
-have a minimized trusted computing base (TCB) and only interact with the kernel in a minimal and safe way. 
+In this paper, we proposed a new metric based on quantitative measures derived from
+the execution of kernel code when running user applications.
+We tested the hypothesis that commonly used kernel paths contain fewer bugs.
+Using our metric, we generated findings that suggest the hypothesis is reasonable,
+ and it become the key principle behind a new design for building secure systems,
+which was used to implement a new virtualized security system called Lind. Designed with a minimized
+"trusted computing base" (TCB) and interacting only with the kernel in a minimal and safe
+way, Lind addresses the need to support riskier system calls by securely
+reconstructing complex, yet essential OS functionality inside a sandbox.
 %
-Evaluation results have shown that Lind is the least likely to trigger historically-reported kernel bugs, 
-when compared to other virtualization systems, such as VirtualBox, VMWare Workstation, Docker, and Graphene. 
+Evaluation results have shown that Lind is the least likely to trigger historically-reported kernel bugs,
+when compared to other virtualization systems, such as VirtualBox, VMWare Workstation, Docker, and Graphene.
 This suggests that systems using our design
 are likely to be more secure.
 
-We make all of the data and source code for this paper available to other 
-researchers.  Lind is open source and available at: XXX.  The kernel 
-trace data is freely available on the Lind website.  For access
-to the the kernel exploit code created in this study, please contact the 
+All of the data and source code for this paper is available to other
+researchers.  Lind is open source and available at: XXX.  The kernel
+trace data can be accessed on the Lind website.  For access
+to the kernel exploit code created in this study, please contact the
 authors.
-
-
