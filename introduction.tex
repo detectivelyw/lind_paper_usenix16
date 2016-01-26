@@ -21,10 +21,12 @@ virtual machinecan prevent an attacker from exploiting flaws in the underlying
 kernel.
 However, exactly how secure is virtualization? \cite{Tal}. As we will
 demonstrate in this paper, even with virtualization techniques employed, one
-third of the vulnerabilities in the Linux kernel are still vulnerable to exploitation./lois{Can this paragraph be somewhat shortened, or maybe combined or eliminated?. Is the fact that Lind is a "virtualized" system important
+third of the vulnerabilities in the Linux kernel are still vulnerable to exploitation.
+/lois{Can this paragraph be somewhat shortened, or maybe combined or eliminated?. Is the fact that Lind is a "virtualized" system important
 enough to give it a full paragraph?}
 
-\lois{transition is needed here. There is no connection made between virtualization techniques and where kernel vulnerabilities exist} In this paper, we develop a
+\lois{transition is needed here. There is no connection made between virtualization techniques and where kernel vulnerabilities exist} 
+In this paper, we develop a
 metric that helps to identify likely locations within the kernel
 where vulnerabilities may lie.
 For this purpose, we examined 40 kernel patches designed to fix severe Linux
@@ -119,7 +121,8 @@ Section \ref{sec.motivation-and-background} describes the motivation that drove 
 Section \ref{sec.metric}, introduces the proposed kernel security metric. The
 ``safely-reimplement'' design pattern derived from this metric is then discussed in Section \ref{sec.design}. Section \ref{sec.implementation},
 explains the significant features of Lind, the kernel security system developed
-from the design pattern explained in the previous section. In Section \ref{sec.evaluation} the security and efficiency of Lind is tested against other virtualization systems. Section \ref{sec.limitation} outlines the current
+from the design pattern explained in the previous section. In Section \ref{sec.evaluation} the security and efficiency of Lind is tested against other virtualization systems. 
+Section \ref{sec.limitation} outlines the current
 limitations of the Lind prototype and possible future initiatives.
 Finally, Section \ref{sec.related_work} reviews existing tools and techniques that share
 Lind's security techniques and goals, and we conclude our remarks in
