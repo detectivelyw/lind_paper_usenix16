@@ -2,14 +2,15 @@
 Building secure systems that allow untrusted programs to run without
 triggering inherent vulnerabilities %in the underlying privileged code of an
 %operating system (OS) kernel or hypervisor
-is very challenging. Despite
-substantial effort by security researchers and system developers to
+is very challenging. 
+Despite substantial effort by security researchers and system developers to
 eliminate these flaws, through techniques such as system call filtering,
 operating system virtualization, and library OSes, much still needs to be done
 to make existing OS kernels secure against intentional or unintentional
 triggering of these vulnerabilities.
 %\gholami{maybe rephrase to: ... these flaws, still it is long away to make
-existing OS kernels secure.} The limitations of these techniques are two-fold.
+%existing OS kernels secure.} 
+The limitations of these techniques are two-fold.
 First, these systems add trusted code that often has new
 exploitable vulnerabilities. Second, the portions of the underlying kernel
 that these systems use open these vulnerabilities to exploitation.
@@ -27,15 +28,14 @@ untrusted programs.
 %effective. \gholami {I think this sentence is good inside the paper than abstract?}
 We first propose a new metric to determine where kernel flaws are
 likely to be located, based on a hypothesis that commonly-used kernel
-paths, executed by applications on a daily basis, contain fewer
+paths, executed by popular applications on a daily basis, contain fewer
 vulnerabilities than less-used paths. With this insight, we devise a
 novel design that implements essential OS functionality inside a
 secure sandbox, minimizing contact between the kernel and riskier system calls.
 % \gholami {is this rephrase of the first sentence?}
 Finally, we use this design to prototype and test a secure system called Lind.
 The results show that executing malicious code in Lind can reduce the threat of
-attacks on the OS kernel to less than 3%.
-%an attacker executing code inside Lind can trigger less than
-3%. This result is about an order of
-magnitude less than existing systems like VirtualBox (40\%),
+attacks on the OS kernel to less than 3\%.
+%an attacker executing code inside Lind can trigger less than 3\%. 
+This result is about an order of magnitude less than existing systems like VirtualBox (40\%),
 VMWare Workstation (31\%), Docker (23\%), and Graphene (23\%).
