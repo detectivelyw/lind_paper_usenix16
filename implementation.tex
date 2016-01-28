@@ -197,6 +197,30 @@ virtualnamespace.evaluate, getresources, and getlasterror.}  \\ \hline
 %\label{table:RepyKernel}
 %\end{table}
 
+A natural concern with any sandbox design is that bugs are simply pushed into
+another part of the trusted code base.  As it is the only piece of code added
+to the system call paths of the TCB, the Repy sandbox kernel's security is of
+paramount concern.
+
+The sandbox kernel consists of only XXXX lines of code \cappos{continue...}.
+The code is written to provide straightforward access to the minimal set
+of the system call API needed to build general computational functionality.
+The code is written using style guidelines designed to ease security auditing
+ of the code~\cite{style}.
+
+The sandbox kernel code has been
+audited by a professional penetration tester.  Since 2010, there has also been
+a bug bounty program for security flaws in the sandbox.
+The code is deployed in daily use across thousands of devices,
+including on the Seattle testbed \cite{seattle}, and has been examined by
+hundreds of parties.  Developers have reported
+XXX issues for problems in other parts of the systems. However, to date
+no security flaws have been found in the sandbox kernel.
+This does not provide any strong guarantees that bugs could not exist, and if
+they do, the security of the system could be compromised.
+However, having a small, easily auditable piece of code helps to reduce the
+risk of this occurrence.
+
 \subsubsection{The SafePOSIX Reimplementation}
 
 The key responsibility of our system API module is to serve system call requests from user code.
