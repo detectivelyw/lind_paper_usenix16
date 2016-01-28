@@ -1,30 +1,35 @@
 \section{Evaluation}
 \label{sec.evaluation}
 
-In order to evaluate Lind's effectiveness in providing kernel protection, we
-conducted a series of experiments designed to answer four fundamental questions:
+%In order to evaluate Lind's effectiveness in providing kernel protection, we
+%conducted a series of experiments designed to answer four fundamental questions:
+
+In order to evaluate Lind's effectiveness in containing the buggy code and protecting 
+the OS kernel, we conducted a series of experiments designed to answer four fundamental 
+questions: 
 
 \begin{itemize}
-\item How does the security of Lind compare to other virtualized environments?
+\item How does the security of Lind compare to other virtualization systems, 
+in the face of historical Linux kernel bugs?
 (\S{\ref{Linux-Kernel-Bug-Test-and-Evaluation}})
 
 \item How much of the underlying kernel is reachable in different
 virtualization systems?
 (\S{\ref{Reachable-Kernel-Trace-Analysis-for-Different-Virtualization-Systems}})
+\yiwen{This question may need to be refined. Why is the question important to the readers? 
+What is the take-away?}
 
-\item If the SafePOSIX implementation has bugs, how much more of the kernel would be
-reachable?
+\item If Lind's Repy sandbox kernel has bugs, how much of a threat does this pose?
 (\S{\ref{Reachable-Kernel-Trace-Analysis-for-Repy-Sandbox}})
 
-\item If the Repy sandbox kernel has bugs, how much of a threat does this pose?
-(\S{\ref{Sandbox-Kernel-Bugs}})
-
-\item If implemented, what is the expected overhead for Lind?
+\item In our implemented prototype Lind, what is the expected overhead?
 (\S{\ref{Performance-Evaluation}})
 \end{itemize}
 
 This section describes both the set-up of our experiment, and argues
 how the results support the merits of our secure design and its Lind prototype.
+\yiwen{If we claim the above sentence, then we need to say more about our secure design, 
+which can be hard. Possibly remove ``our secure design'' and just keep ``Lind prototype''.}
 
 \subsection{Evaluation Methodology}
 
@@ -92,8 +97,10 @@ overhead of Lind.
 
 We attempted to trigger 35 identified Linux kernel bugs by running programs in
 Native Linux, VirtualBox, VMWare Workstation, Docker, Graphene,
-and Lind, to evaluate if any of them can be triggered.\lois{Any particular
-reason for choosing these bugs programs?} The kernel bugs
+and Lind, to evaluate if any of them can be triggered.
+\lois{Any particular reason for choosing these bugs programs?} 
+\yiwen{I think we explained this in the experimental setup}
+The kernel bugs
 examined are capable of causing serious security problems. For example,
 the CVE-2014-8989 bug allows local users to bypass intended file
 permissions by leveraging a POSIX ACL.\lois{consequences of this?}
@@ -212,19 +219,68 @@ VirtualBox,
 11/35 (31.4\%)  in VMWare Workstation, 8/35 (22.9\%)  in Docker, and 8/35
 (22.9\%) bugs in Graphene.
 In comparison, only 1 out of 35 bugs  (2.9\%) was triggered in Lind.
-\lois{The following sentence seems obvious, so I would recommend cutting it} Comparing
- these results, Lind worked significantly better than the other
-systems in limiting the triggering of kernel bugs.
 
 To better understand these performance results, and particularly why Lind's
 performance was so strong, we take a closer look at four
 vulnerabilities from Table \ref{table:trigger_vulnerabilities}. These short case
 studies show how different system design philosophies can have
  different security impacts.
-\lois{The order of these case studies does not seem logical. I would suggest
- "all systems vulnerable" first; Only native Lind second; mixed cases third,
- and only Lind safe last}
+
 \begin{itemize}
+
+\item \emph{All systems vulnerable.}  Representative bug: CVE-2014-4171.
+This is the only vulnerability in our test that was triggered in every
+system, including Lind. It resides inside the \texttt{mm/shmem.c} kernel path. This bug can
+be triggered by using \texttt{mmap()} system call to access a hole in the memory.
+The \texttt{mmap()} call then invokes \texttt{shmem\_fault()}, which will cause contention
+on \texttt{i\_mmap\_mutex}, and lead to a serious starvation of memory resource. 
+The reason that Lind also triggered this bug is because \texttt{mmap()} cannot easily
+be safely reimplemented inside our POSIX reimplementation because it sets up a
+memory region where the OS will later
+intervene and automatically convert all accesses into accesses to the
+underlying file.  The code does not explicitly make system calls, and as
+a result, with Lind's design we cannot intercept those accesses and call through
+the Repy sandbox kernel. As a result,
+Lind allows \texttt{mmap()} calls to directly access the kernel, which
+opens the chance to trigger this vulnerability. Similarly, in other
+virtualization systems we tested, \texttt{mmap()} is handled by the underlying
+host OS kernel.  \cappos{is this really true?  What about in VirtualBox?
+How does this happen when the underlying file isn't a unique file underneath?}
+Therefore, this vulnerability was
+triggered in every system.
+
+\item \emph{Only Native Linux vulnerable.}  Representative bug: CVE-2014-5045.
+This vulnerability was only triggered inside Native Linux. It resides in the
+\texttt{fs/namei.c} kernel path and was triggered because
+the \texttt{mountpoint\_last()}
+%\texttt{mountpoint\_last(struct nameidata *nd, struct path *path)}
+function does not properly
+maintain a reference count during attempts to use the \texttt{umount()} system call,
+in conjunction with a symbolic link. Unmount \lois{Is it Unmount or umount. You have
+it both ways} on a symbolic link could block another unmount operation,
+and allow attackers to cause a denial of service or deploy use-after-free exploitation.
+Lind does not implement symbolic link, but similar functionality is implemented entirely
+within SafePOSIX.  Thus a bug would (at most) enable an attacker to execute
+code within the Repy sandbox and the bug will be contained.
+Other virtualization systems have their own metadata to maintain their file directories and symbolic links. \cappos{Why did the flag in the first example
+work then?  Also, why doesn't this exist in Docker / LXC?}
+Furthermore, symbolic links in those systems will be contained within the virtualization system's image,
+and will not be able to reach the underlying OS. In this case, those virtualization systems provide enough
+isolation to prevent this bug from happening.
+
+\item \emph{Some safe, some vulnerable.}  Representative bug: CVE-2014-8086.
+This vulnerability was not triggered inside Graphene and Lind, but was triggered inside
+VirtualBox, VMWare workstation, Docker, and Native Linux. It resides in the \texttt{fs/ext4/file.c} kernel path.
+This bug can be triggered by a file system write function call, made together with \texttt{fcntl} function call
+with argument \texttt{F\_SETFL}, and \texttt{O\_DIRECT} flag. If triggered, it could allow attackers to cause
+a denial of service (file unavailability). Lind implements \texttt{fcntl}
+in SafePOSIX, so the underlying kernel is not called.
+Graphene checks and blocks certain system calls, including
+a \texttt{fcntl} system call with the \texttt{O\_DIRECT} flag.
+Thus they both prevented this bug. Other systems like VirtualBox, VMWare Workstation, Docker, and Native Linux,
+all suffer from this vulnerability because they call into the host OS
+kernel which handles the call.
+
 \item \emph{Only Lind safe.}  Representative bug: CVE-2015-5706. As
 shown in our results, this vulnerability was triggered in every
 virtualization system we tested, and Native Linux, but not in Lind. This vulnerability
@@ -248,60 +304,6 @@ In this case, the \texttt{O\_TMPFILE} file flag was
 allowed in Native Linux, VirtualBox, VMWare Workstation, Docker, and Graphene.
 Therefore,those systems suffer from the risk of this vulnerability.\lois{I
 don't think this last sentence is needed}
-
-\item \emph{All systems vulnerable.}  Representative bug: CVE-2014-4171.
-This is the only vulnerability in our test that was triggered in every
-system, including Lind. It resides inside the \texttt{mm/shmem.c} kernel path. This bug can
-be triggered by using \texttt{mmap()} system call to access a hole in the memory.
-The \texttt{mmap()} call then invokes \texttt{shmem\_fault()}, which will cause contention
-on \texttt{i\_mmap\_mutex}, and lead to a serious starvation.\lois{Starvation of what?
-the app? the system}
-The reason that Lind also triggered this bug is because \texttt{mmap()} cannot easily
-be safely reimplemented inside our POSIX reimplementation because it sets up a
-memory region where the OS will later
-intervene and automatically convert all accesses into accesses to the
-underlying file.  The code does not explicitly make system calls, and as
-a result, with Lind's design we cannot intercept those accesses and call through
-the Repy sandbox kernel. As a result,
-Lind allows \texttt{mmap()} calls to directly access the kernel, which
-opens the chance to trigger this vulnerability. Similarly, in other
-virtualization systems we tested, \texttt{mmap()} is handled by the underlying
-host OS kernel.  \cappos{is this really true?  What about in VirtualBox?
-How does this happen when the underlying file isn't a unique file underneath?}
-Therefore, this vulnerability was
-triggered in every system.
-
-\item \emph{Only Native Linux vulnerable.}  Representative bug: CVE-2014-5045.
-This vulnerability was only triggered inside Native Linux. It resides in the
-\texttt{fs/namei.c} kernel path and was triggered because
-the \texttt{mountpoint\_last()}
-%\texttt{mountpoint\_last(struct nameidata *nd, struct path *path)}
-function does not properly
-maintain a reference count during attempts to use the \texttt{umount} system call,
-in conjunction with a symbolic link. Unmount \lois{Is it Unmount or umount. You have
-it both ways} on a symbolic link could block another unmount operation,
-and allow attackers to cause a denial of service or deploy use-after-free exploitation.
-Lind's \yanyan{Lind's what?} does not implement, but similar functionality is implemented entirely
-within SafePOSIX.  Thus a bug would (at most) enable an attacker to execute
-code within the Repy sandbox.\lois{And what happens then?}
-Other virtualization systems have their own metadata to maintain their file directories and symbolic links. \cappos{Why did the flag in the first example
-work then?  Also, why doesn't this exist in Docker / LXC?}
-Furthermore, symbolic links in those systems will be contained within the virtualization system's image,
-and will not be able to reach the underlying OS. In this case, those virtualization systems provide enough
-isolation to prevent this bug from happening.
-
-\item \emph{Some safe, some vulnerable.}  Representative bug: CVE-2014-8086.
-This vulnerability was not triggered inside Graphene and Lind, but was triggered inside
-VirtualBox, VMWare workstation, Docker, and Native Linux. It resides in the \texttt{sf/ext4/file.c} kernel path. \yanyan{\texttt{fs/ext4/file.c}?}
-This bug can be triggered by a file system write function call, made together with \texttt{fcntl} function call
-with argument \texttt{F\_SETFL}, and \texttt{O\_DIRECT} flag. If triggered, it could allow attackers to cause
-a denial of service (file unavailability). Lind implements \texttt{fcntl}
-in SafePOSIX, so the underlying kernel is not called.
-Graphene checks and blocks certain system calls, including
-a \texttt{fcntl} system call with the \texttt{O\_DIRECT} flag.
-Thus they both prevented this bug. Other systems like VirtualBox, VMWare Workstation, Docker, and Native Linux,
-all suffer from this vulnerability because they call into the host OS
-kernel which handles the call.
 
 \end{itemize}
 
@@ -465,34 +467,6 @@ it shows that Lind can provide strong security to run user applications.
 \label{table:trace-Repy}
 \end{table}
 
-
-\subsubsection{Repy Sandbox Kernel}
-\label{Sandbox-Kernel-Bugs}
-\cappos{Possibly move this to the implementation...}
-\lois{Agree--probably should be in section 5}
-A natural concern with any sandbox design is that bugs are simply pushed into
-another part of the trusted code base.  As it is the only piece of code added
-to the system call paths of the TCB, the Repy sandbox kernel's security is of
-paramount concern.
-
-The sandbox kernel consists of only XXXX lines of code \cappos{continue...}.
-The code is written to provide straightforward access to the minimal set
-of the system call API needed to build general computational functionality.
-The code is written using style guidelines designed to ease security auditing
- of the code~\cite{style}.
-
-The sandbox kernel code has been
-audited by a professional penetration tester.  Since 2010, there has also been
-a bug bounty program for security flaws in the sandbox.
-The code is deployed in daily use across thousands of devices,
-including on the Seattle testbed \cite{seattle}, and has been examined by
-hundreds of parties.  Developers have reported
-XXX issues for problems in other parts of the systems. However, to date
-no security flaws have been found in the sandbox kernel.
-This does not provide any strong guarantees that bugs could not exist, and if
-they do, the security of the system could be compromised.
-However, having a small, easily auditable piece of code helps to reduce the
-risk of this occurrence.
 
 \subsubsection{Performance Evaluation}
 \label{Performance-Evaluation}
