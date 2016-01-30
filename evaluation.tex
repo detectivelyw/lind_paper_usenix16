@@ -11,20 +11,20 @@ questions:
 \begin{itemize}
 \item How does the security of Lind compare to other virtualization systems, 
 in the face of historical Linux kernel bugs?
-(\S{\ref{Linux-Kernel-Bug-Test-and-Evaluation}})
+(Section \ref{Linux-Kernel-Bug-Test-and-Evaluation})
 
 \item How much of the underlying kernel is reachable in different
 virtualization systems?
-(\S{\ref{Reachable-Kernel-Trace-Analysis-for-Different-Virtualization-Systems}})
+(Section \ref{Reachable-Kernel-Trace-Analysis-for-Different-Virtualization-Systems})
 \yiwen{This question may need to be refined. Why is the question important to the readers? 
 What is the take-away? The reachable kernel paths reflect an important security property 
 of the system design. We want to express this point.}
 
 \item If Lind's Repy sandbox kernel has bugs, how much of a threat does this pose?
-(\S{\ref{Reachable-Kernel-Trace-Analysis-for-Repy-Sandbox}})
+(Section \ref{Reachable-Kernel-Trace-Analysis-for-Repy-Sandbox})
 
 \item In our implemented prototype Lind, what is the expected overhead?
-(\S{\ref{Performance-Evaluation}})
+(Section \ref{Performance-Evaluation})
 \end{itemize}
 
 This section describes both the set-up of our experiment, and argues
@@ -85,13 +85,13 @@ kernel trace.
 
 Guided by the study questions listed above, our tests were conducted and results
 primarily goal from a security perspective.
-(\S{\ref{Linux-Kernel-Bug-Test-and-Evaluation}} --
+(Section {\ref{Linux-Kernel-Bug-Test-and-Evaluation} --
 %\S{\ref{Reachable-Kernel-Trace-Analysis-for-Different-Virtualization-Systems}},
-\S{\ref{Reachable-Kernel-Trace-Analysis-for-Repy-Sandbox}}).
+Section {\ref{Reachable-Kernel-Trace-Analysis-for-Repy-Sandbox}).
 However, to get some idea of its potential efficacy
 in real-world settings, we also measured and evaluated the performance
 overhead of Lind.
-(\S{\ref{Performance-Evaluation}})
+Section {\ref{Performance-Evaluation})
 
 \subsubsection{Linux Kernel Bug Test and Evaluation}
 \label{Linux-Kernel-Bug-Test-and-Evaluation}
