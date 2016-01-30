@@ -1,56 +1,43 @@
-\section{Developing and Assessing a Quantitative Evaluation Metric for
+	\section{Developing and Assessing a Quantitative Evaluation Metric for
 Kernel Security}
 \label{sec.metric}
 
 \lois{I just noticed Justin made some extensive in this section. I will make some
 suggestions, but we might want to touch base to see if these comments address
-his concerns} The first step to addressing the threat articulated above is to establish
-a metric by which kernel security can be
-quantitatively evaluated. In this section we document the development of such
-a metric. First, we look at current commonly used metrics for code complexity and why
-they may be less than effective.
-The next section discusses our proposed metric, which focuses on
-using the kernel code paths accessed by %common
-widely used applications. Finally, we
-%show how our
-use the metric to  %can be used to provide a fair
-verify our central hypothesis, by testing for the presence of 40 severe Linux
- Kernel bugs.\lois{This intro section needs work. I'm not happy with what is
- here, though I think it is somewhat clearer than what was there before.}
+his concerns} 
 
+%The first step to addressing the threat articulated above is to establisha metric by which kernel security can be quantitatively evaluated. In this section we document the development of such a metric. First, we look at current commonly used metrics for code complexity and why they may be less than effective.The next section discusses our proposed metric, which focuses on using the kernel code paths accessed by widely used applications. Finally, we use the metric to verify our central hypothesis, by testing for the presence of 40 severe Linux  Kernel bugs.
 
-% and their impact on the kernel, and to reveal which portions contained fewer bugs.
+%\lois{This intro section needs work. I'm not happy with what is  here, though I think it is somewhat clearer than what was there before.}
+
+This section outlines the development of our proposed metric including various steps such as gap analysis for quantative evaluation of kernel bugs, measuring the reachable areas of kernel by large-scale applications, and validation of our hypothesis by examining 40 critical Linux Kernel bugs.
+
 
 \subsection{Previous Risk Metrics for Software}
 
-A contributing factor to the kernel security problem is that system
-designers
-still lack a standard method for quantifying the safety (or risk) of
-privileged code.   \cappos{Is this really true?  No one has ever proposed
-a metric?  We do need to do a more detailed analysis of this.  I would vote
-to remove this sentence regardless...} \lois{ I would agree its probably best just
-to get rid of the sentence. But I believe the goal here was to say that there is
-no widely accepted and used standard method.}
+A contributing factor to the kernel security problem is that system there is
+no widely accepted and used standard method for quantifying the safety (or risk) of
+privileged code.  
+
+% \cappos{Is this really true?  No one has ever proposed a metric?  We do need to do a more detailed analysis of this.  I would vote to remove this sentence regardless...} \lois{ I would agree its probably best just to get rid of the sentence. But I believe the goal here was to say that there is no widely accepted and used standard method.}
 
 
 %Structurally,
 %As shown in Figure \ref{diagram/fig3.png},
-The Linux kernel is divided into several main sub-systems such as %sub-directories:
-%\texttt{kernel} (main kernel), \texttt{ipc} (inter-process communication),
-%\texttt{net} (networking), \texttt{fs} (file system), and \texttt{device drivers} (device drivers).
-process management, file system, networking, memory management and device drivers.
+The Linux kernel is divided into several main sub-directories:
+\texttt{kernel} (main kernel), \texttt{ipc} (inter-process communication),
+\texttt{net} (networking), \texttt{fs} (file system), and \texttt{drivers} (device drivers).
 Chou %showed in~
-\cite{PittSFIeld} demonstrated that certain functions' directories, e.g.,
-\texttt{device drivers}, result in some parts of the Linux kernel having
-error rates much higher than others. Kernel source code size
-and age also affect how frequently errors occur in the kernel.
-%largest/newest quartile of functions in kernel have error rates
-%several orders of magnitude higher than the smallest/oldest quartile.
+\cite{PittSFIeld} demonstrated that certain functions' directories, i.e.,
+\texttt{drivers}, result in some parts of the Linux kernel having
+error rates much higher than others. The size of kernel source code and maturity of a release also affect how frequently errors occur in the kernel.
+
 Years later, Palix found that \texttt{drivers} still contains the most faults in
 the Linux kernel, in addition to HAL and \texttt{fs}~\cite{palix2011faults}.
-%On the other hand,
+
+
 In ~\cite{engler2001bugs} Engler analyzed system code by inferring programmer
-beliefs. \lois{what does the previous sentence mean}This is achieved by static analysis
+beliefs. \lois{what does the previous sentence mean} This is achieved by static analysis
 of source code that looks for contradictions, such as acquired locks are
 not released. There has also been work that generates vulnerability
 signatures~\cite{brumley2006towards}, which match all exploits
@@ -59,29 +46,27 @@ dynamic analysis, constraint solving and symbolic execution~\cite{chou2003static
 However, most of these findings have not yet been used to design
 secure systems.
 
-Researchers in software engineering have also %studied and
-explored different metrics to identify and predict bugs in the systems they design.
-The number of lines of code has been used as one
-predictor~\cite{Bug-Location}, as has a file's revision status and
-whether or not the file previously contained bugs~\cite{Bug-Location,
-lewis2013does}. Studies have also been conducted based on
-the number of functions and/or the number of executable lines of code in
-the function~\cite{Mining-Metrics}.\lois[Isn' this a bit repetitious]
-Coverage-based fault localization,
-on the other hand, assumes that execution events that occur mostly in failing
+Researchers in software engineering have also explored different metrics to identify and predict bugs in the systems they design. The number of lines of code has been used as one predictor~\cite{Bug-Location}, as has a file's revision status and
+whether or not the file previously contained bugs~\cite{Bug-Location, lewis2013does}. 
+
+%Studies have also been conducted based on the number of functions and/or the number of executable lines of code in the function~\cite{Mining-Metrics}.\lois[Isn' this a bit repetitious]
+
+Coverage-based fault localization assumes that execution events that occur mostly in failing
 test cases, but rarely in passing test cases, are more \textit{suspect}
 of being the fault~\cite{jones2002visualization}. Follow-up work used
 the set difference of the statements covered by passing and failing test
 cases with run-time events~\cite{agrawal1995fault, jones2005empirical},
-and used statistical likelihood that a predicate that evaluates to True is
-correlated with failure~\cite{liblit2005scalable}.
+and used statistical likelihood that a predicate that evaluates to True is correlated with failure~\cite{liblit2005scalable}.
 
-While these metrics can be useful in building models to provide a general
-idea about
-where bugs may be located in software systems, they have limitations.
-Firstly, the metrics mentioned above are not specifically designed for
-studying bugs in OS kernels.
+%While these metrics can give insight on the possible places where bugs have been located in software systems, they have limitations. Firstly, the metrics mentioned above are not specifically designed for studying bugs in OS kernels.
+%\cappos{Why does this matter?}
+
+%Therefore, they do not take into account the way system calls are invoked by user applications.Moreover, these metrics can not provide information about the accurate location of the bugs within the kernel, which is important to our study. \cappos{Are you going to show that this is true?  Can you explain more about why these do not work?} \cappos{Do existing metrics work on a LOC level?  }
+
+While these metrics can give insight on the possible places where bugs have been located in software systems, they have limitations. Firstly, the metrics mentioned above are not specifically designed for studying bugs in OS kernels.
+
 \cappos{Why does this matter?}
+
 Therefore, they do not take into account the way system calls are invoked
 by user applications.
 Moreover, these metrics can not provide information about the accurate
@@ -90,6 +75,7 @@ which is important to our study.
 \cappos{Are you going to show that this is true?  Can you explain more
 about why these do not work?}
 \cappos{Do existing metrics work on a LOC level?  }
+
 
 Without any guidance as to what parts of the kernel are safe, past
 initiatives to protect the system through isolation,
@@ -217,24 +203,15 @@ Two approaches were used to capture this trace.
 
 \begin{itemize}
 \item System call fuzzing experiments were designed to utilize the Trinity
- system call fuzz tester \cite{Trinity}. These included sequential execution of more than 300 system calls with 1 million iterations for executing each system call by 16 child processes as Trinity workers. The obtained kernel trace comprehensively reflected various aspects of the kernel functionalities.
+ system call fuzz tester \cite{Trinity}. These included sequential execution of more than 300 system calls with 1 million iterations for executing each system call by 16 child processes (Trinity workers). The obtained kernel trace comprehensively reflected various aspects of the kernel functionalities.
 
-%File management and network system calls, \yanyan{what is file management?} which gave us a thorough kernel trace.
+\item Linux Test Project (LTP) \cite{LTP} is another tool that is used in our experiments to generate the kernel traces for running all the available system call in different scenarios. By using LTP we could validate the kernel traces that were generated by Trinity or catch the possible traces that were missing.
 
-\item Linux Test Project (LTP) \cite{LTP} was used to capture the total reachable kernel trace.
-Linux Test Project is a mature and well maintained tool to test the Linux
-kernel.
-We ran all the available system call test cases with this tool to capture
-the kernel trace.
+The results of these comprehensive experiments shows that LTP captured approximaltely 20\% of kernel traces that were missed by Trinity, while Trinity provided about 15\% of kernel trace that were not included by LTP.
 
-We used LTP in addition to Trinity in order to validate the kernel trace generated
-by Trinity, as well as to catch the traces it might miss.
-In our experiments, the LTP was able to capture about 20\% of kernel trace
-that were missed by Trinity, while Trinity provided us about 15\% of kernel trace
-that were not included by LTP.
 \end{itemize}
 
-Figure \ref{fig:datacollection} shows different platforms and tools that were used
+Figure \ref{fig:datacollection} shows different tools and platforms that were used
  for the analysis. The kernel traces are generated by running several legacy
   applications, system fuzzers and LTP within different platforms such as
   Lind (Nacl/Repy), virtualized platforms and a normal native Linux. Then a Python
@@ -247,39 +224,29 @@ Figure \ref{fig:datacollection} shows different platforms and tools that were us
 \includegraphics[width=1.0\columnwidth]{diagram/data_collection.png}
 \caption{Various activities that were performed to capture and analyze the kernel
  traces generated by legacy applications, system fuzzers, LTP, and CVE bug
- reports. The traces are collected using \texttt{gcov} and a Python-based
- program that will be transformed lois{transformed to what? And, how?}
- for final data analysis.}
+ reports. The traces are collected using \texttt{gcov} and a Python-based program that will transform the gcov data to macrodata-level information of each travsersed path for final data analysis.}
+ 
+ %\lois{transformed to what? And, how?
+
 \label{fig:datacollection}
 \end{figure}
 
-
-
-We were able to assess
-%access our
-the total reachable kernel paths through combining the kernel traces generated by Trinity and LTP. The results show that 38.5\% of the total reachable
-kernel paths are commonly used.
-More importantly, only 2.5\% of the bugs examined were found in the common
-paths,
-while 50\% of the bugs were found in the total reachable kernel paths.
-%Our
-The results strongly suggest that common paths may contain fewer bugs than uncommon
-paths. \yanyan{I feel this is a bit early to make this conclusion.}
-\lois{does the slight wording change answer your concern, Yanyan?}
+We were able to assess the total reachable kernel paths through combining the kernel traces generated by Trinity and LTP. The results show that 38.5\% of the total reachable
+kernel paths are commonly used. More importantly, only 2.5\% of the total studied bugs had traces in the common paths, while 50\% of the bugs were resided in the total reachable kernel paths which is an indication of residing less bugs in common paths compared to uncommon paths.
+ 
+%\yanyan{I feel this is a bit early to make this conclusion.}
+%\lois{does the slight wording change answer your concern, Yanyan?}
 
 \subsubsection{Coverage Analysis of Common Paths}
 
 The kernel trace coverage of the common paths and the total reachable paths
-are shown in Table \ref{table:kernel_coverage}.|lois{Isn't this FIGURE 2, not
-Table 2}
+are shown in Figure \ref{fig:coverage}. %|lois{Isn't this FIGURE 2, not Table 2}
 The results show that the size of commonly-used kernel paths is small,
-merely 12.4\% of the entire kernel code base.
-The common paths coverage is also significantly smaller than the total
-reachable paths coverage
+merely 12.4\% of the entire kernel code base. The common paths coverage is also significantly smaller than the totalreachable paths coverage
 (about 1/3 of the entire kernel).
 
 It may appear surprising that the total reachable paths coverage is low,
-and accounts for only about one-third of the entire kernel.  However,
+and accounts for only about one-third of the entire kernel. However,
 this is consistent with kernel code coverage analysis
 measurements conducted by other researchers \cite{LTP-Coverage}.
 One reason that this occurs is that many paths
@@ -298,7 +265,7 @@ certain combinations of different function calls with specific arguments.
 \centering
 \includegraphics[width=1.0\columnwidth]{diagram/kernelcoverage.png}
 \caption{Percentage of different kernel areas that were reached during
- LTP and Trinity experiments.}
+ LTP and Trinity system call fuzzing experiments.}
 \label{fig:coverage}
 \end{figure}
 
@@ -327,8 +294,7 @@ certain combinations of different function calls with specific arguments.
 %\label{table:kernel_coverage}
 %\end{table}
 
-The results from Figure \ref{fig:subset} and Figure
-\ref{fig:key_paths_trace}
+The results from Figure \ref{fig:subset} and Figure \ref{fig:key_paths_trace}
 show that the common paths are a subset of the
 total reachable paths.
 In Figure \ref{fig:subset} and Figure \ref{fig:key_paths_trace},
@@ -390,7 +356,7 @@ Risky Portions}
 
 To verify our hypothesis, we next checked which portions of
 the kernel contained kernel bugs. We examined 40 severe Linux kernel
-bugs that had been discovered by the research community in the last five
+sbugs that had been discovered by the research community in the last five
 years (the first two columns in Table
 \ref{table:vulnerabilities_commonly_used_kernel_paths}).
 Those 40 bugs were chosen from the NVD bug database, according to
@@ -400,8 +366,8 @@ We used these kernel bugs to check if vulnerabilities existed in certain
 kernel traces. This is done by comparing the kernel traces with the lines
 of code we labeled for each bug, based on change of lines in the
 kernel patch.
-The results of our experiment are shown the last two columns in Table
-\ref{table:vulnerabilities_commonly_used_kernel_paths}.
+
+The results of our experiment are shown the last two columns in Table \ref{table:vulnerabilities_commonly_used_kernel_paths}.
 
 \begin{table*}[!ht]
 \scriptsize
@@ -485,23 +451,9 @@ $2.5\%$} \\ \hline
 \label{table:vulnerabilities_commonly_used_kernel_paths}
 \end{table*}
 
-The results of this analysis suggest that commonly used kernel paths contain only
-2.5\% of the bugs we had targeted.
-Since the total reachable kernel paths contain 50\% of the bugs that were
-examined in this paper,
-it can be inferred that commonly used kernel paths clearly contain fewer bugs
-than other portions of the kernel.
+The results of this analysis suggest that commonly used kernel paths contain only 2.5\% of all the bugs that we studied. Since the total reachable kernel paths contain 50\% of the bugs that were examined in this paper, we can conclude that commonly used kernel paths clearly contain fewer bugs than other portions of the kernel.
 
-We chose our bugs from the large-scale NVD database, which includes representative
-bugs for all categories. In choosing the bugs, we
-started with ones assigned the highest vulnerability severity scores.
-Therefore, we believe that our sample was not biased, and should be representative
-to reflect the general distribution of bugs in the Linux kernel. \lois{Why does this
-method, which seems less than random, prove it is not biased?}
+%We studied bugs from the large-scale NVD database which includes representative bugs for all categories, and conducted experiments with ones with the highest vulnerability severity scores. This makes it a fair collection of available bugs sample to ensure the sample was not biased and it would be a normal distribution of bugs in the Linux kernel. \lois{Why does thismethod, which seems less than random, prove it is not biased?}
 
-Our hypothesis and findings provide insights and guidelines for new designs
-of secure systems,
-which will be discussed in the next section.
-\cappos{Is this statistically significant?}
-\yiwen{I added something to explain our bug sample dataset.
-More knowledge of statistics may be required. I will think about it more.}
+
+%Our hypothesis and findings provide insights and guidelines for new designs of secure systems, which will be discussed in the next section. \cappos{Is this statistically significant?} \yiwen{I added something to explain our bug sample dataset. More knowledge of statistics may be required. I will think about it more.}

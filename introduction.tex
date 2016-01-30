@@ -32,7 +32,7 @@ Limiting access to kernel code by itself is insufficent to build a secure virtua
 
 %For this purpose, we examined 40 kernel patches designed to fix severe Linux kernel security bugs and analyzed the lines where those bugs occurred. The results show that kernel paths used by popular applications contain fewer security bugs, and therefore, can be exposed with less risk. % \gholami {I think this is excessive info in the introduction}
 
-This paper presents Lind a new approach for shielding privileged code from untrusted programs through controlled kernel access. For this purpose, a metric was developed that helps to identify likely locations within the kernel where vulnerabilities may exist by examining 40 kernel bug fixing patches. We examined the proposed metric and built a new design %for virtualizationsystems 
+This paper presents Lind a new approach for shielding privileged code from untrusted programs through controlled kernel access. For this purpose, a metric was developed that helps to identify likely locations within the kernel where vulnerabilities may exist by examining 40 kernel bug fixing patches. We validated the proposed metric and built a new design %for virtualizationsystems 
 called ``safely-reimplement'' that restricts access to only the
 kernel paths that are mostly used by common applications. 
 %\lois{for all vrtualization systems?} 
