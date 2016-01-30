@@ -1,5 +1,4 @@
-	\section{Developing and Assessing a Quantitative Evaluation Metric for
-Kernel Security}
+\section{Developing and Assessing a Quantitative Evaluation Metric for Kernel Security}
 \label{sec.metric}
 
 \lois{I just noticed Justin made some extensive in this section. I will make some
@@ -13,26 +12,17 @@ his concerns}
 This section outlines the development of our proposed metric including various steps such as gap analysis for quantative evaluation of kernel bugs, measuring the reachable areas of kernel by large-scale applications, and validation of our hypothesis by examining 40 critical Linux Kernel bugs.
 
 
-\subsection{Previous Risk Metrics for Software}
+\subsection{Risk Metrics for Software Systems}
 
-A contributing factor to the kernel security problem is that system there is
-no widely accepted and used standard method for quantifying the safety (or risk) of
-privileged code.  
+A contributing factor to the kernel security problem is that system there is no widely accepted and used standard method for quantifying the safety (or risk) of privileged code.  
 
 % \cappos{Is this really true?  No one has ever proposed a metric?  We do need to do a more detailed analysis of this.  I would vote to remove this sentence regardless...} \lois{ I would agree its probably best just to get rid of the sentence. But I believe the goal here was to say that there is no widely accepted and used standard method.}
 
-
-%Structurally,
-%As shown in Figure \ref{diagram/fig3.png},
 The Linux kernel is divided into several main sub-directories:
 \texttt{kernel} (main kernel), \texttt{ipc} (inter-process communication),
 \texttt{net} (networking), \texttt{fs} (file system), and \texttt{drivers} (device drivers).
-Chou %showed in~
-\cite{PittSFIeld} demonstrated that certain functions' directories, i.e.,
-\texttt{drivers}, result in some parts of the Linux kernel having
-error rates much higher than others. The size of kernel source code and maturity of a release also affect how frequently errors occur in the kernel.
 
-Years later, Palix found that \texttt{drivers} still contains the most faults in
+Chou \cite{PittSFIeld} demonstrated that certain functions' directories, i.e., \texttt{drivers}, result in some parts of the Linux kernel having error rates much higher than others. The size of kernel source code and maturity of a release also affect how frequently errors occur in the kernel. Later in another effort, Palix found that \texttt{drivers} still contains the most faults in
 the Linux kernel, in addition to HAL and \texttt{fs}~\cite{palix2011faults}.
 
 
@@ -53,80 +43,39 @@ whether or not the file previously contained bugs~\cite{Bug-Location, lewis2013d
 
 Coverage-based fault localization assumes that execution events that occur mostly in failing
 test cases, but rarely in passing test cases, are more \textit{suspect}
-of being the fault~\cite{jones2002visualization}. Follow-up work used
-the set difference of the statements covered by passing and failing test
-cases with run-time events~\cite{agrawal1995fault, jones2005empirical},
-and used statistical likelihood that a predicate that evaluates to True is correlated with failure~\cite{liblit2005scalable}.
+of being the fault~\cite{jones2002visualization}. Further research in the field lead to measuring the the set difference of the statements covered by passing and failing test scenarios with run-time events~\cite{agrawal1995fault, jones2005empirical}. Additionally, statistical likelihood testcase with a predicate that evaluates to True is correlated with failure ~\cite{liblit2005scalable}.
 
 %While these metrics can give insight on the possible places where bugs have been located in software systems, they have limitations. Firstly, the metrics mentioned above are not specifically designed for studying bugs in OS kernels.
 %\cappos{Why does this matter?}
 
 %Therefore, they do not take into account the way system calls are invoked by user applications.Moreover, these metrics can not provide information about the accurate location of the bugs within the kernel, which is important to our study. \cappos{Are you going to show that this is true?  Can you explain more about why these do not work?} \cappos{Do existing metrics work on a LOC level?  }
 
-While these metrics can give insight on the possible places where bugs have been located in software systems, they have limitations. Firstly, the metrics mentioned above are not specifically designed for studying bugs in OS kernels.
+While these metrics can give insight on the possible places through statistical methhods on where bugs have been approximately resided in software systems but OS kernel bug discovery is not emphesised on them. Besides no single metric could fit all possilbe bug discoveries within different environments. Unsimilarly, our metric enbles us to precisely specify the risky portions of the OS kernel through emprical study of most criticla bugs instead of relying on statstical methods such as negative binomial regression model~\cite{Bug-Location}.  
 
-\cappos{Why does this matter?}
+%, they have limitations. Firstly, the metrics mentioned above are not specifically designed for studying bugs in OS kernels \cappos{Why does this matter?}
 
-Therefore, they do not take into account the way system calls are invoked
-by user applications.
-Moreover, these metrics can not provide information about the accurate
-location of the bugs within the kernel,
-which is important to our study.
-\cappos{Are you going to show that this is true?  Can you explain more
-about why these do not work?}
-\cappos{Do existing metrics work on a LOC level?  }
+%Therefore, they do not take into account the way system calls are invoked by user applications. Moreover, these metrics can not provide information about the accurate location of the bugs within the kernel, which is important to our study.\cappos{Are you going to show that this is true?  Can you explain more about why these do not work?} \cappos{Do existing metrics work on a LOC level?  }
 
+%Without any guidance as to what parts of the kernel are safe, past initiatives to protect the system through isolation, such as by building a sandbox or using library OSes, because they could not isolate user programs effectively.  \cappos{What are you saying?} These methods can mitigate the problem, but any such system will still allow access to the kernel the same way as before. They simply move the attack surface from between the user space and the kernel, \yanyan{what's the purpose/consequence of this move? why is this move good or bad?} to between these new systems and the kernel, but the surface is not necessarily reduced. As a result, the proposed solutions do not make the systems more secure.
 
-Without any guidance as to what parts of the kernel are safe, past
-initiatives to protect the system through isolation,
-such as by building a sandbox or using library OSes, because they could not
-isolate user programs effectively.  \cappos{What are you saying?}
-These methods can mitigate the problem, but any such system will still
-allow access to the kernel the same way as before.
-They simply move the attack surface from between the user space and the
-kernel, \yanyan{what's the purpose/consequence of this move? why is this
-move good or bad?}
-to between these new systems and the kernel, but the surface is not
-necessarily reduced.
-As a result, the proposed solutions do not make the systems more secure.
+%Recognizing this limitation, we propose a novel security metric to
+Our ad-hoc security metric can be used for quantitative measuring and evaluating the kernel bugs, in addition to other vulnerabilities by checking at the level of lines of code against known kernel bugs. We believe this metric will prvide better understanding of the kernel security. As result, a secure interface with isolation mindset can be designed to be exposed to the userspace. Ideally, this would mean only exposing the safe portions of the kernel to the userspace. 
 
-Recognizing this limitation, we propose a novel security metric to
-quantitatively measure and evaluate the kernel for bugs and other
-vulnerabilities by checking at the level of lines of code against
-known kernel bugs.
-With this metric, we would be better able to understand security features
-of the kernel, and design an interface that is exposed to the user space
-in a secure way.
-Ideally,this would mean only exposing the safe portions of the kernel to
-the user space.
-However, in some scenarios, risky portions must be exposed to the kernel as
-well.
-The kernel coverage safety metric %, however,
- can provide us guidance about the potential dangers and
-can help us safely-reimplement those risky kernel interface (or system
-calls) to avoid the potential damage.\lois{does the metric itself tell us HOW
-to safely-reimplment? Or just tell us whether it needs this reimplementation?}
+There are scenarios where risky portions must be exposed to the kernel as well \gholami {for example?}. This kernel coverage safety metric can provide insight on potential attacks and consequnelty helping us to safely reimplement those risky kernel interface or system calls. 
+%\lois{does the metric itself tell us HOW to safely-reimplment? Or just tell us whether it needs this reimplementation?}
+
 %\yanyan{I don't think the new metric alerts us tho. maybe say it provides
-%as a guidance which parts are risky?}
-
-\cappos{end of text}
+%as a guidance which parts are risky?} \cappos{end of text}
 
 
 \subsection{Key Hypothesis}
 
-Our hypothesis is that kernel paths executed by popular applications,
-such as Web browsers or text editors, are likely to contain fewer
-exploitable bugs
-than uncommonly used paths. %Our reasoning is that,
-Because they are frequently used, bugs and vulnerabilities in these common kernel paths
-would have most likely been caught by developers.
+Our hypothesis is that kernel paths executed by popular applications, such as Web browsers or text editors, are likely to contain fewer exploitable bugs than uncommonly used paths. Because they are frequently used, bugs and vulnerabilities in these common kernel paths would have most likely been caught by developers.
 
-Note that this does more than indicate which system calls are "safe."
+Note that this does more than indicate which system calls are ``safe''.
  \gholami{I dont understand this sentence}
-The proposed metric also excludes odd execution paths
-through popular system calls.
-This means that the chances to harbor kernel bugs in those commonly used
-kernel paths are slim indeed.\lois{did proposed edit make this clearer? }
+The proposed metric also excludes odd execution paths through popular system calls. That is the chance to harbor kernel bugs in those commonly used kernel paths is slim indeed.\lois{did proposed edit make this clearer?}
+
 
 \subsection{Foundation for the Metric: Capturing and Evaluating Kernel Traces}
 
@@ -225,7 +174,6 @@ Figure \ref{fig:datacollection} shows different tools and platforms that were us
 \caption{Various activities that were performed to capture and analyze the kernel
  traces generated by legacy applications, system fuzzers, LTP, and CVE bug
  reports. The traces are collected using \texttt{gcov} and a Python-based program that will transform the gcov data to macrodata-level information of each travsersed path for final data analysis.}
- 
  %\lois{transformed to what? And, how?
 
 \label{fig:datacollection}
@@ -240,10 +188,8 @@ kernel paths are commonly used. More importantly, only 2.5\% of the total studie
 \subsubsection{Coverage Analysis of Common Paths}
 
 The kernel trace coverage of the common paths and the total reachable paths
-are shown in Figure \ref{fig:coverage}. %|lois{Isn't this FIGURE 2, not Table 2}
-The results show that the size of commonly-used kernel paths is small,
-merely 12.4\% of the entire kernel code base. The common paths coverage is also significantly smaller than the totalreachable paths coverage
-(about 1/3 of the entire kernel).
+are shown in Figure \ref{fig:coverage}. The results show that the size of commonly-used kernel paths is small,
+merely 12.4\% of the entire kernel code base. The common paths coverage is also significantly smaller than the totalreachable paths coverage (about 1/3 of the entire kernel).
 
 It may appear surprising that the total reachable paths coverage is low,
 and accounts for only about one-third of the entire kernel. However,
@@ -337,18 +283,17 @@ This suggests that a large portion (61.5\%) of the kernel is not frequently
 used by popular applications on a daily basis.
 
 \begin{figure}
-\centering
-\includegraphics[width=1.0\columnwidth]{diagram/lind_oakland16_diagram_01.pdf}
-\caption{Kernel Trace Comparison: Common paths as a subset of reachable
-paths}
-\label{fig:subset}
-\end{figure}
+	\centering
+	\includegraphics[width=1.0\columnwidth]{diagram/lind_oakland16_diagram_01.pdf}
+	\caption{Kernel Trace Comparison: Common paths as a subset of reachable paths}
+	\label{fig:subset}
+	\end{figure}
 
-\begin{figure}
-\centering
-\includegraphics[width=1.0\columnwidth]{diagram/lind_oakland16_diagram_02.pdf}
-\caption{Kernel Trace in Key Paths}
-\label{fig:key_paths_trace}
+	\begin{figure}
+	\centering
+	\includegraphics[width=1.0\columnwidth]{diagram/lind_oakland16_diagram_02.pdf}
+	\caption{Kernel Trace in Key Paths}
+	\label{fig:key_paths_trace}
 \end{figure}
 
 \subsubsection{Security Analysis of Kernel Paths\textendash Locating the
