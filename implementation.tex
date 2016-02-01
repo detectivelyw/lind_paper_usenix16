@@ -1,13 +1,13 @@
 \section{Implementation of the Lind Prototype}
 \label{sec.implementation}
 
-Based on the design introduced in Section \S{\ref{sec.design}},
+Based on the design introduced in Section \ref{sec.design},
 we implemented a secure sandbox system, Lind,
 for running untrusted user programs on vulnerable OS kernels.
 Lind adapts two basic technologies as its building blocks\textendash
 Google's Native Client (NaCl), and Seattle's Repy.
 
-As described in \S{\ref{sec.design}} (Figure \ref{fig:design}), our design has
+As described in Figure \ref{fig:design}, our design has
 two main components\textendash a computation module that isolates the
 application and a library OS module that isolates the complex
 portions of POSIX.\lois{I don't believe POSIX has been introduced yet. Tell
@@ -19,9 +19,9 @@ one in the past}
 
 \begin{figure}%[h]
 \centering
-\includegraphics[width=1.0\columnwidth]{diagram/lind_architecture_new.png}
-\caption{Architecture of Lind including various components such as NaCl, NaCl glibc, and Repy Sandbox.
-User level application issues system calls that are dispatched through the Repy OS connector that bridges the Lind system to the OS Kernel.}
+	\includegraphics[width=1.0\columnwidth]{diagram/lind_architecture_new.png}
+	\caption{Architecture of Lind including various components such as NaCl, NaCl glibc, and Repy Sandbox.
+	User level application issues system calls that are dispatched through the Repy OS connector that bridges the Lind system to the OS Kernel.}
 
 \label{fig:architecture}
 \end{figure}
@@ -76,7 +76,7 @@ Second, we need to build a POSIX implementation to run within that sandbox.
 
 \subsubsection{The Repy Sandbox Kernel}
 
-As discussed earlier in \S{\ref{sec.design}}, the sandbox kernel needs to be secure and bug-free.
+As discussed earlier in Section \ref{sec.design}, the sandbox kernel needs to be secure and bug-free.
 Because it is the TCB of the system, any bugs within it could cause fatal problems,
 and allow attackers to access the OS kernel and gain kernel privilege.
 We used Seattle's Repy system API module due to its tiny sandbox kernel
@@ -283,5 +283,5 @@ allowing CPU-and-memory-intensive applications to run at speeds that are equival
  to NaCl and near native speed.
 
 
-In \S{\ref{sec.evaluation}}, we report how the dual sandboxes and other elements
+In Sectioin \ref{sec.evaluation}}, we report how the dual sandboxes and other elements
 of Lind performed in head-to-head evaluation against other virtualization systems.

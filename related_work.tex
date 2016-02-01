@@ -1,17 +1,14 @@
 \section{Related Work}
 \label{sec.related_work}
+This section summerizes several approaches similar to Lind such as virtualization or other isolation mechanisms that aim to ensure saftey of previliged code in userspace and kernelspace.
 
-This section discusses tools and techniques that share Lind's goals
-to realize privileged code protection by enforcing strong
-isolation between userspace and kernelspace.\lois{Do all of your subtopics
-fall into this one category? If not, this introductory sentence should be
-modified}
+%\lois{Do all of your subtopics fall into this one category? If not, this introductory sentence should be modified}
 
 \subsection{Virtualization}
 |lois{A general comment that really holds for the whole paper. If this draft is
  emphasizing Lind as a new type of virtual machine, then I think that should be
- be more clearly delineated throughout the paper. I also think you have to
-delineate how Lind differs from hypervisors}
+ be more clearly delineated throughout the paper. I also think you have to delineate how Lind differs from hypervisors}
+ 
 \textbf{Language-based virtualization.}
 Programming languages that provide safety through virtualization such
 as Java, JavaScript, Lua~\cite{Lua}, and
@@ -45,8 +42,10 @@ in the standard libraries \cite{JavaBugs, Java-Lessons}.
 %discovered many severe bugs in Java \cite{Java-Lessons}.
 Any bug or failure in a programming language virtual
 machine is usually fatal. In contrast, Lind with a very small TCB (approximately
-8,000 LOC) enhances security compared to the above virtual machines. \lois{OK, what
-does the TCB have to do with these languages?}
+8,000 LOC) enhances security of previliged code compared to the above virtual machines. 
+
+%\lois{OK, what does the TCB have to do with these languages?}
+
 %because of the POSIX implementation with Repy to build the sandbox.
 
 \textbf{OS virtualization.}
@@ -81,14 +80,9 @@ obtain the benefits of virtual machines,
 including security isolation, host platform compatibility, and
 migration. Libra \cite {Libra} is an example of a library OS that provides applications the possibility to customize their OSs within VMs. This solution is similar to the exokernel approach where a small trusted kernel (exokernel) is separated from the untrusted libraries that function as an abstraction layer between the applications and the underlying hardware. Libra utilizes a hyperviosr instead of the exokernel to deliver efficient portability and performance.
 
-Drawbridge \cite{Drawbridge-11}
-%is a new program that
-is another approach that uses lightweight processes and a library OS to present a Windows
-persona to a wide variety of Windows applications.
-This is accomplished by moving a large portion of the OS into the
-process, and presenting a simplified system
-virtual machine-like interface to each process. \lois{How does this fit with
-Lind?}
+Drawbridge \cite{Drawbridge-11} is another approach that uses picoprocesses (lightweight containers) securtiy monitor (to enforce rules) and a library OS to present a Windows persona for a wide variety of Windows applications.Similar to Lind, it restrics access from usermode to host OS through a number of operations that pass through the security monitor. 
+%\lois{How does this fit with Lind?}
+
 %This approach brings many of the benefits of VM based temporal,
 %spatial and fault isolation properties to a per-process level.
 
@@ -127,18 +121,8 @@ interacts with the system call execution engine.
 %Approaches for delegation and filtering have been extensively studied. For example,
 %along with their respective tradeoffs between security and
 %performance.
-Janus (J2) \cite{Janus0:96, Janus:99} is an SCI solution for confining untrusted
-applications that includes system call filtering and sandboxing mechanisms.
-Garfinkel et al. in another effort, introduces Ostia \cite{SCI-04}, where system calls are delegated to
-agents that enforce the policies. Ostia resolves the tight dependencies with the
-underlying OS through process emulation and the agents model at the userspace.
-Other issues in utilizing SCI solutions include the difficulty of appropriately
-replicating OS semantics, multi-threaded applications that cause race conditions, or
-indirect paths to resources that are often overlooked. \lois{This sentence is somewhat
-incomplete and I do not know which Garfinkel paper it references. I think all the SCI comments
-could be condensed into one sentence. Without knowing what is being referenced I am not
- sure whether I have properly cut things} In addition, system calls that are
-denied can cause inconsistencies that are discussed in \cite{Problems-SCI}.
+Janus (J2) \cite{Janus0:96, Janus:99} is an SCI solution for confining untrusted applications that includes system call filtering and sandboxing mechanisms.Garfinkel et al. in another effort, introduces Ostia \cite{SCI-04}, where system calls are delegated to agents that enforce the policies. Ostia resolves the tight dependencies with the underlying OS through process emulation and the agents model at the userspace. Other issues in utilizing SCI solutions include the difficulty of appropriately replicating OS semantics, multi-threaded applications that cause race conditions, or indirect paths to resources that are often overlooked. \lois{This sentence is somewhat incomplete and I do not know which Garfinkel paper it references. I think all the SCI comments could be condensed into one sentence. Without knowing what is being referenced I am not  sure whether I have properly cut things}
+In addition, system calls that are denied can cause inconsistencies that are discussed in \cite{Problems-SCI}.
 
 Recently, Wang et al. \cite{Jitk} discuss the issues of traditional SCI systems
 in the context of in-kernel interpreters such as Seccomp, which is used by several

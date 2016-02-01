@@ -27,7 +27,7 @@ To execute untrusted applications in a manner that will not trigger bugs
 in the underlying OS kernel, %and cause damage to other parts of the system,
 we must build a virtualization system that can provide isolation and
 containment for any improper operations.
-One approach to building such a system is to place it entirely in the user space,
+One approach to building such a system is to place it entirely in the userspace,
 and to restrict both the size of the sandbox kernel and its access to the
 OS kernel (Figure \ref{fig:design}).
 This approach has advantages over others that require modifications to
