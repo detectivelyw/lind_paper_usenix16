@@ -10,43 +10,38 @@ Google's Native Client (NaCl), and Seattle's Repy.
 As described in Figure \ref{fig:design}, our design has
 two main components\textendash a computation module that isolates the
 application and a library OS module that isolates the complex
-portions of POSIX.\lois{I don't believe POSIX has been introduced yet. Tell
-the reader what it is.}
-The Google's Native Client (NaCl) ~\cite{NaCl-09} served as the computation
-module and Seattle's Repy as the library OS module (Figure \ref{fig:architecture}).\lois{Should
-be a brief explanation of why you chose these particular components. There used to be
-one in the past}
+portions of POSIX, a standard OS interface Lind provides
+We choose Google's Native Client (NaCl) ~\cite{NaCl-09} as the computation
+module because NaCl is a widely used environment for efficient execution of legacy code in the
+form of x86 and ARM binaries. 
+Seattle's Repy is used as our library OS module (Figure \ref{fig:architecture}), since it is a restricted subset of Python, 
+that works as a sandbox to provide a safer environment to run untrusted code.
 
 \begin{figure}%[h]
 \centering
 	\includegraphics[width=1.0\columnwidth]{diagram/lind_architecture_new.png}
 	\caption{Architecture of Lind including various components such as NaCl, NaCl glibc, and Repy Sandbox.
 	User level application issues system calls that are dispatched through the Repy OS connector that bridges the Lind system to the OS Kernel.}
-
 \label{fig:architecture}
 \end{figure}
 
 \subsection{The Computation Module of Lind: Google's Native Client}
 
-We utilize NaCl in our design to isolate the computation of the user application
- from the kernel.
-NaCl is a widely used environment for efficient execution of legacy code in the
-form of x86 and ARM binaries, which allow Lind to work on most types of legacy code.
-NaCl compiles the programs to produce a binary with software fault isolation.
+We utilize NaCl in our design to isolate the computation of the user application 
+from the kernel.
+NaCl allows Lind to work on most types of legacy code.
+It compiles the programs to produce a binary with software fault isolation.
 This prevents the majority of the application from performing system calls
 or executing arbitrary instructions.
 
 To perform a system call, the application will call into a small privileged
 part of the NaCl TCB that forwards system calls, usually to the OS or to Chrome for
-processing \cappos{Check}.  To build Lind, we changed the NaCl TCP to
-instead forward these calls to the SafePOSIX implementation
-for processing. \lois{again, I don't think this terms was introduced} The NaCl
+processing. To build Lind, we changed the NaCl TCP to
+instead forward these calls to our library OS module that we call SafePOSIX implementation
+for processing. The NaCl
 glibc module contains stubs that reject operations
 that Chrome would not handle.  We added functionality to NaCl's glibc so that
 those calls could be forwarded into SafePOSIX for processing.
-\cappos{Need to compare NaCl execution w/ Chrome possibly
-with fuzzing to others in the eval}
-
 
 %NaCl can perform the functions required by the computation module well, and it is easy to
 %connect with our system API module because NaCl uses glibc to perform system calls.
@@ -261,7 +256,7 @@ fix it, but it still does not make sense. I would delete it.}
 The only complex part of Lind is the library OS, which runs in Repy.
 However, because Python is a very powerful language that provides rich functions,
 it significantly simplified the construction of Lind. \lois{I'm still not sure
-how Python simplified contrusction}. Even though Python is considered ``slow'' by some,
+how Python simplified construction}. Even though Python is considered ``slow'' by some,
 the internals of an application in Lind are run in NaCl, a very high performance
 environment. \lois{sentence above must be deleted or rephrased unless we can produce
 evidence that Python is considered "slow."}
