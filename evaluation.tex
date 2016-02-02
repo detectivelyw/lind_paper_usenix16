@@ -16,11 +16,12 @@ in protecting against historical Linux kernel bugs?
 \item How much of the underlying kernel code is exposed and, therefore,
 vulnerable in different virtualization systems?
 (\S{\ref{Reachable-Kernel-Trace-Analysis-for-Different-Virtualization-Systems}})
-\yiwen{This question may need to be refined. Why is the question important to the readers?
-What is the take-away? The reachable kernel paths reflect an important security property
-of the system design. We want to express this point.} \lois{I made an attempt
-here at addressing your concerns. I agree its an important point to emphasize correctly.
-We might need to tweak it a bit more.}
+%\yiwen{This question may need to be refined. Why is the question important to the readers?
+%What is the take-away? The reachable kernel paths reflect an important security property
+%of the system design. We want to express this point.} 
+%\lois{I made an attempt
+%here at addressing your concerns. I agree its an important point to emphasize correctly.
+%We might need to tweak it a bit more.}
 
 \item If Lind's Repy sandbox kernel has bugs, how much of a threat does this pose?
 (\S{\ref{Reachable-Kernel-Trace-Analysis-for-Repy-Sandbox}})
@@ -32,18 +33,19 @@ real-world applications?
 
 This section describes both the set-up of our experiment, and argues
 how the results support the merits of our secure design and its Lind prototype.
-\yiwen{If we claim the above sentence, then we need to say more about our secure design,
-which can be hard. Possibly remove ``our secure design'' and just keep ``Lind
-prototype.''} \lois{There might be some value to keeping the phrase in, since we
-are emphasizing the design and not the product.}
+%\yiwen{If we claim the above sentence, then we need to say more about our secure design,
+%which can be hard. Possibly remove ``our secure design'' and just keep ``Lind
+%prototype.''} 
+%\lois{There might be some value to keeping the phrase in, since we
+%are emphasizing the design and not the product.}
 
 \subsection{Evaluation Methodology}
 
 Our evaluation strategy was to directly compare the performance of Lind
 against
-four other existing virtualization systems\textendash VirtualBox, VMWare
+seven other existing virtualization systems\textendash VirtualBox, VMWare
 Workstation,
-Docker, and Graphene. We also compared it against Native Linux and used
+Docker, LXC, QEMU, KVM and Graphene. We also compared it against Native Linux and used
 those results as a baseline for evaluation. Because Native Linux is the
 original OS,
 without virtualization and additional protection, this data helps to
@@ -99,115 +101,191 @@ overhead of Lind.
 \subsubsection{Linux Kernel Bug Test and Evaluation}
 \label{Linux-Kernel-Bug-Test-and-Evaluation}
 
-/lois{I think this whole first paragraph can come out. All this information has
- been stated already. This is an evaluation of the RESULTS} We attempted to
-trigger 35 identified Linux kernel bugs by running programs in
-Native Linux, VirtualBox, VMWare Workstation, Docker, Graphene,
-and Lind.
-The kernel bugs examined are capable of causing serious security problems.
-For example,the CVE-2014-8989 bug allows local users to bypass intended file
-permissions by leveraging a POSIX ACL.
-The potential risk of triggering these and other types of
-kernel bugs when running applications, is a problem that
-needs to be taken seriously.
-
+%\lois{I think this whole first paragraph can come out. All this information has 
+%been stated already. This is an evaluation of the RESULTS} 
+%We attempted to
+%trigger 35 identified Linux kernel bugs by running programs in
+%Native Linux, VirtualBox, VMWare Workstation, Docker, Graphene,
+%and Lind.
+%The kernel bugs examined are capable of causing serious security problems.
+%For example,the CVE-2014-8989 bug allows local users to bypass intended file
+%permissions by leveraging a POSIX ACL.
+%The potential risk of triggering these and other types of
+%kernel bugs when running applications, is a problem that
+%needs to be taken seriously.
 
 \begin{table*}%[!ht]
-\scriptsize
-\centering
-\caption {Linux Kernel Bugs, and Vulnerabilities in Different
-Virtualization Systems
-({\color{red}\ding{51}}: vulnerability triggered; \ding{55}: vulnerability
+%\scriptsize
+%\centering
+
+\caption {Linux Kernel Bugs, and Vulnerabilities in Different Virtualization Systems 
+({\color{red}\ding{51}}: vulnerability triggered; 
+{\color{blue}\ding{51}}: vulnerability triggered with Guest Additions; \ding{55}: vulnerability
 not triggered).}
-\begin{tabular}{|l|c|c|c|c|c|c|}\hline
+
+\resizebox{0.68\textwidth}{!}{\begin{minipage}{\textwidth}
+
+\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|}\hline
 \textbf{Vulnerability}    &  \textbf{Native Linux}  &  \textbf{VirtualBox}
 &  \textbf{VMWare Workstation}
- & \textbf{Docker} & \textbf{Graphene} & \textbf{Lind} \\
+ & \textbf{Docker} & \textbf{LXC} & 
+ \textbf{QEMU} & \textbf{KVM} &
+ \textbf{Graphene} & \textbf{Lind} \\
 \hline
- CVE-2015-5706 & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
-{\color{red}\ding{51}} & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
+ CVE-2015-5706 & {\color{red}\ding{51}} & {\color{blue}\ding{51}} &
+{\color{blue}\ding{51}} & {\color{red}\ding{51}} & {\color{red}\ding{51}} & 
+{\color{red}\ding{51}} & {\color{red}\ding{51}} & 
+{\color{red}\ding{51}} &
 \ding{55}  \\
  CVE-2015-0239 & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
-{\color{red}\ding{51}} & \ding{55} & \ding{55}  & \ding{55}  \\
- CVE-2014-9584 & {\color{red}\ding{51}} & \ding{55}  & \ding{55}  &
-\ding{55} & \ding{55}  & \ding{55}  \\
+{\color{red}\ding{51}} & \ding{55} & {\color{red}\ding{51}} & 
+{\color{red}\ding{51}} & {\color{red}\ding{51}} & 
+ \ding{55}  & \ding{55}  \\
+ CVE-2014-9584 & {\color{red}\ding{51}} & \ding{55}  & 
+ \ding{55}  & \ding{55} & \ding{55} & 
+ \ding{55}& \ding{55} & 
+ \ding{55}  & \ding{55}  \\
  CVE-2014-9529 & {\color{red}\ding{51}} & {\color{red}\ding{51}}  &
-\ding{55}  & \ding{55} & \ding{55}  & \ding{55}  \\
+\ding{55}  & \ding{55} & {\color{red}\ding{51}} & 
+\ding{55}& \ding{55} & 
+\ding{55}  & \ding{55}  \\
  CVE-2014-9322 & {\color{red}\ding{51}} & {\color{red}\ding{51}}  &
-\ding{55}  & {\color{red}\ding{51}} & {\color{red}\ding{51}}  & \ding{55}
+\ding{55}  & {\color{red}\ding{51}} & {\color{red}\ding{51}} & 
+{\color{red}\ding{51}}& {\color{red}\ding{51}} &  
+{\color{red}\ding{51}}  & \ding{55}
 \\
- CVE-2014-9090 & {\color{red}\ding{51}} & \ding{55}  & \ding{55}  &
-\ding{55} & \ding{55}  & \ding{55}  \\
+ CVE-2014-9090 & {\color{red}\ding{51}} & \ding{55}  & 
+ \ding{55}  & \ding{55} & \ding{55} & 
+ \ding{55} & \ding{55} &  
+ \ding{55}  & \ding{55}  \\
  CVE-2014-8989 & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
-{\color{red}\ding{51}} & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
+{\color{red}\ding{51}} & {\color{red}\ding{51}} & {\color{red}\ding{51}} & 
+{\color{red}\ding{51}} & {\color{red}\ding{51}} &  
+{\color{red}\ding{51}} &
 \ding{55}  \\
- CVE-2014-8559 & {\color{red}\ding{51}} & \ding{55}  & \ding{55}  &
-\ding{55} & \ding{55}  & \ding{55}  \\
- CVE-2014-8369 & {\color{red}\ding{51}} & \ding{55}  & \ding{55}  &
-\ding{55} & \ding{55}  & \ding{55}  \\
+ CVE-2014-8559 & {\color{red}\ding{51}} & \ding{55}  & 
+ \ding{55}  & \ding{55} & \ding{55} & 
+ \ding{55} & \ding{55} &  
+ \ding{55}  & \ding{55}  \\
+ CVE-2014-8369 & {\color{red}\ding{51}} & \ding{55}  & 
+ \ding{55}  & \ding{55} & \ding{55} & 
+ \ding{55} & \ding{55} &  
+ \ding{55}  & \ding{55}  \\
  CVE-2014-8160 & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
-{\color{red}\ding{51}} & \ding{55} & \ding{55}  & \ding{55}  \\
+{\color{red}\ding{51}} & \ding{55} & {\color{red}\ding{51}} & 
+\ding{55} & \ding{55} &  
+\ding{55}  & \ding{55}  \\
  CVE-2014-8134 & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
-{\color{red}\ding{51}} & \ding{55} & {\color{red}\ding{51}}  & \ding{55}
+{\color{red}\ding{51}} & \ding{55} & {\color{red}\ding{51}} & 
+\ding{55} & \ding{55} &  
+{\color{red}\ding{51}}  & \ding{55}
 \\
  CVE-2014-8133 & {\color{red}\ding{51}} & {\color{red}\ding{51}}  &
-\ding{55}  & \ding{55} & \ding{55}  & \ding{55}  \\
- CVE-2014-8086 & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
-{\color{red}\ding{51}} & {\color{red}\ding{51}} & \ding{55} & \ding{55}  \\
- CVE-2014-7975 & {\color{red}\ding{51}} & \ding{55}  & \ding{55}  &
-\ding{55} & \ding{55}  & \ding{55}  \\
- CVE-2014-7970 & {\color{red}\ding{51}} & \ding{55}  & \ding{55}  &
-\ding{55} & \ding{55}  & \ding{55}  \\
- CVE-2014-7842 & {\color{red}\ding{51}} & \ding{55}  & \ding{55}  &
-\ding{55} & \ding{55}  & \ding{55}  \\
+\ding{55}  & \ding{55} & \ding{55} & 
+\ding{55} & \ding{55} &  
+\ding{55}  & \ding{55}  \\
+ CVE-2014-8086 & {\color{red}\ding{51}} & {\color{blue}\ding{51}} &
+{\color{blue}\ding{51}} & {\color{red}\ding{51}} & {\color{red}\ding{51}} & 
+\ding{55} & \ding{55} &  
+\ding{55} & \ding{55}  \\
+ CVE-2014-7975 & {\color{red}\ding{51}} & \ding{55}  & 
+ \ding{55}  & \ding{55} & \ding{55} & 
+ \ding{55} & \ding{55} &  
+ \ding{55}  & \ding{55}  \\
+ CVE-2014-7970 & {\color{red}\ding{51}} & \ding{55}  & 
+ \ding{55}  & \ding{55} & \ding{55} & 
+ \ding{55} & \ding{55} &  
+ \ding{55}  & \ding{55}  \\
+ CVE-2014-7842 & {\color{red}\ding{51}} & \ding{55}  & 
+ \ding{55}  & \ding{55} & \ding{55} & 
+ \ding{55} & \ding{55} &  
+ \ding{55}  & \ding{55}  \\
  CVE-2014-7826 & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
-{\color{red}\ding{51}} & \ding{55} & {\color{red}\ding{51}}  & \ding{55}
+{\color{red}\ding{51}} & \ding{55} & \ding{55}  & 
+\ding{55} & \ding{55} &  
+{\color{red}\ding{51}}  & \ding{55}
 \\
  CVE-2014-7825 & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
-{\color{red}\ding{51}} & \ding{55} & {\color{red}\ding{51}}  & \ding{55}
+{\color{red}\ding{51}} & \ding{55} & \ding{55} & 
+\ding{55} & \ding{55} &  
+{\color{red}\ding{51}}  & \ding{55}
 \\
- CVE-2014-7283 & {\color{red}\ding{51}} & \ding{55}  & \ding{55}  &
-\ding{55} & \ding{55}  & \ding{55}  \\
- CVE-2014-5207 & {\color{red}\ding{51}} & \ding{55}  & \ding{55}  &
-\ding{55} & \ding{55}  & \ding{55}  \\
+ CVE-2014-7283 & {\color{red}\ding{51}} & \ding{55}  & 
+ \ding{55}  & \ding{55} & \ding{55} & 
+ \ding{55} & \ding{55} &  
+ \ding{55}  & \ding{55}  \\
+ CVE-2014-5207 & {\color{red}\ding{51}} & \ding{55}  & 
+ \ding{55}  & \ding{55} & \ding{55} & 
+ \ding{55} & \ding{55} &  
+ \ding{55}  & \ding{55}  \\
  CVE-2014-5206 & {\color{red}\ding{51}} & \ding{55}  &
-{\color{red}\ding{51}}  & {\color{red}\ding{51}}& \ding{55}  & \ding{55}
+{\color{red}\ding{51}}  & {\color{red}\ding{51}} & {\color{red}\ding{51}} & 
+\ding{55} & \ding{55} &  
+\ding{55}  & \ding{55}
 \\
- CVE-2014-5045 & {\color{red}\ding{51}} & \ding{55}  & \ding{55}  &
-\ding{55} & \ding{55}  & \ding{55}  \\
- CVE-2014-4943 & {\color{red}\ding{51}} & \ding{55}  & \ding{55}  &
-\ding{55} & \ding{55}  & \ding{55}  \\
- CVE-2014-4667 & {\color{red}\ding{51}} & \ding{55}  & \ding{55}  &
-\ding{55} & {\color{red}\ding{51}}  & \ding{55}  \\
- CVE-2014-4508 & {\color{red}\ding{51}} & \ding{55}  & \ding{55}  &
-\ding{55} & \ding{55}  & \ding{55}  \\
+ CVE-2014-5045 & {\color{red}\ding{51}} & \ding{55}  & 
+ \ding{55}  & \ding{55} & \ding{55} & 
+ \ding{55} & \ding{55} &  
+ \ding{55}  & \ding{55}  \\
+ CVE-2014-4943 & {\color{red}\ding{51}} & \ding{55}  & 
+ \ding{55}  & \ding{55} & \ding{55} & 
+ \ding{55} & \ding{55} &  
+ \ding{55}  & \ding{55}  \\
+ CVE-2014-4667 & {\color{red}\ding{51}} & \ding{55}  & 
+ \ding{55}  & \ding{55} & \ding{55} & 
+ \ding{55} & \ding{55} &  
+ {\color{red}\ding{51}}  & \ding{55}  \\
+ CVE-2014-4508 & {\color{red}\ding{51}} & \ding{55}  & 
+ \ding{55}  & \ding{55} & \ding{55} & 
+ \ding{55} & \ding{55} &  
+ \ding{55}  & \ding{55}  \\
  CVE-2014-4171 & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
-{\color{red}\ding{51}} & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
-{\color{red}\ding{51}}  \\
- CVE-2014-4157 & {\color{red}\ding{51}} & \ding{55}  & \ding{55}  &
-\ding{55} & \ding{55}  & \ding{55}  \\
+{\color{red}\ding{51}} & {\color{red}\ding{51}} & {\color{red}\ding{51}} & 
+{\color{red}\ding{51}} & {\color{red}\ding{51}} &  
+{\color{red}\ding{51}} & {\color{red}\ding{51}}  \\
+ CVE-2014-4157 & {\color{red}\ding{51}} & \ding{55}  & 
+ \ding{55}  & \ding{55} & \ding{55} & 
+ \ding{55} & \ding{55} &  
+ \ding{55}  & \ding{55}  \\
  CVE-2014-4014 & {\color{red}\ding{51}} & \ding{55}  &
-{\color{red}\ding{51}}  & {\color{red}\ding{51}} & \ding{55}  & \ding{55}
+{\color{red}\ding{51}}  & {\color{red}\ding{51}} & {\color{red}\ding{51}} & 
+\ding{55} & \ding{55} &  
+\ding{55}  & \ding{55}
 \\
- CVE-2014-3940 & {\color{red}\ding{51}} & {\color{red}\ding{51}}  &
-\ding{55}  & {\color{red}\ding{51}}& \ding{55}  & \ding{55}  \\
+ CVE-2014-3940 & {\color{red}\ding{51}} & {\color{blue}\ding{51}}  &
+\ding{55}  & {\color{red}\ding{51}} & {\color{red}\ding{51}} & 
+\ding{55} & \ding{55} &  
+\ding{55}  & \ding{55}  \\
  CVE-2014-3917 & {\color{red}\ding{51}} & {\color{red}\ding{51}}  &
-\ding{55}  & \ding{55} & \ding{55}  & \ding{55}  \\
- CVE-2014-3153 & {\color{red}\ding{51}} & \ding{55}  & \ding{55}  &
-\ding{55} & \ding{55}  & \ding{55}  \\
- CVE-2014-3144 & {\color{red}\ding{51}} & \ding{55}  & \ding{55}  &
-\ding{55} & \ding{55}  & \ding{55}  \\
- CVE-2014-3122 & {\color{red}\ding{51}} & \ding{55}  & \ding{55}  &
-\ding{55} & \ding{55}  & \ding{55}  \\
- CVE-2014-2851 & {\color{red}\ding{51}} & \ding{55}  & \ding{55}  &
-\ding{55} & \ding{55}  & \ding{55}  \\
- CVE-2014-0206 & {\color{red}\ding{51}} & \ding{55}  & \ding{55}  &
-\ding{55} & \ding{55}  & \ding{55}  \\
+\ding{55}  & \ding{55} & \ding{55} & 
+\ding{55} & \ding{55} &  
+\ding{55}  & \ding{55}  \\
+ CVE-2014-3153 & {\color{red}\ding{51}} & \ding{55}  &
+  \ding{55}  & \ding{55} & \ding{55} & 
+  \ding{55} & \ding{55} &  
+  \ding{55}  & \ding{55}  \\
+ CVE-2014-3144 & {\color{red}\ding{51}} & \ding{55}  & 
+ \ding{55}  & \ding{55} & \ding{55} & 
+ \ding{55} & \ding{55} &  
+ \ding{55}  & \ding{55}  \\
+ CVE-2014-3122 & {\color{red}\ding{51}} & \ding{55}  & 
+ \ding{55}  & \ding{55} & \ding{55} & 
+ \ding{55} & \ding{55} &  
+ \ding{55}  & \ding{55}  \\
+ CVE-2014-2851 & {\color{red}\ding{51}} & \ding{55}  & 
+ \ding{55}  & \ding{55} & \ding{55} & 
+ \ding{55} & \ding{55} &  
+ \ding{55}  & \ding{55}  \\
+ CVE-2014-0206 & {\color{red}\ding{51}} & \ding{55}  & 
+ \ding{55}  & \ding{55} & \ding{55} & 
+ \ding{55} & \ding{55} &  \ding{55}  & \ding{55}  \\
 \hline
- {\bf Vulnerabilities Triggered} & {\bf 35/35 (100\% )} & {\bf 14/35 (40\%)} &
- {\bf 11/35 (31.4\%)}  & {\bf 8/35 (22.9\%)} & {\bf 8/35 (22.9\%)}  & {\bf 1/35 (2.9\%)}  \\
+ {\bf Vulnerabilities Triggered} & {\bf 35/35 (100\% )} & {\bf 14/35 (40\%)} & 
+ {\bf 11/35 (31.4\%)}  & {\bf 8/35 (22.9\%)} & {\bf 12/35 (34.3\%)} & {\bf 5/35 (14.3\%)} & {\bf 5/35 (14.3\%)} &  
+ {\bf 8/35 (22.9\%)}  & {\bf 1/35 (2.9\%)}  \\
 \hline
 \end{tabular}
+\end{minipage}}
 \label{table:trigger_vulnerabilities}
 \end{table*}
 
@@ -217,8 +295,9 @@ virtualization systems {See Table \ref{table:trigger_vulnerabilities}.
 A full 35 out of 35 (100\%) bugs were triggered in Native Linux,
 while the other programs had somewhat lower rates: 14/35 (40\%) in
 VirtualBox,
-11/35 (31.4\%)  in VMWare Workstation, 8/35 (22.9\%)  in Docker, and 8/35
-(22.9\%) bugs in Graphene.
+11/35 (31.4\%)  in VMWare Workstation, 8/35 (22.9\%)  in Docker, 
+12/35 (34.3\%)  in LXC, 5/35 (14.3\%)  in QEMU, 5/35 (14.3\%)  in KVM,  
+and 8/35 (22.9\%) bugs in Graphene.
 In comparison, only 1 out of 35 bugs  (2.9\%) was triggered in Lind.
 
 To better understand these performance results, and particularly why Lind's
@@ -341,6 +420,12 @@ Systems}
   \multirow{2}{*}{50.2 \%} & \multirow{2}{*}{49.8 \%} \\
   & & & \\   \hline
   Docker & 61.3 \% & 58.4 \% & 41.6 \% \\
+  \hline
+  LXC &  65.6\% &  55.7\% &  44.3\% \\
+  \hline
+   QEMU &  70.1\% & 61.2 \% &  38.8\% \\
+  \hline
+   KVM &  75.4\% &  57.0\% &  43.0\% \\
   \hline
   Graphene & 49.2 \% & 65.1 \% & 34.9 \% \\
   \hline
