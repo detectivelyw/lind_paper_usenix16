@@ -4,33 +4,38 @@
 %In order to evaluate Lind's effectiveness in providing kernel protection, we
 %conducted a series of experiments designed to answer four fundamental questions:
 
-In order to evaluate Lind's effectiveness in containing the untrusted code and protecting 
-the OS kernel, we conducted a series of experiments designed to answer four fundamental 
-questions: 
+In order to evaluate Lind's effectiveness in containing untrusted code and
+protecting the OS kernel, we conducted a series of experiments designed to answer
+four fundamental questions:
 
 \begin{itemize}
-\item How does the security of Lind compare to other virtualization systems, 
-in the face of historical Linux kernel bugs?
-(Section \ref{Linux-Kernel-Bug-Test-and-Evaluation})
+\item How does Lind compare to other virtualization systems
+in protecting against historical Linux kernel bugs?
+(\S{\ref{Linux-Kernel-Bug-Test-and-Evaluation}})
 
-\item How much of the underlying kernel is reachable in different
-virtualization systems?
-(Section \ref{Reachable-Kernel-Trace-Analysis-for-Different-Virtualization-Systems})
-\yiwen{This question may need to be refined. Why is the question important to the readers? 
-What is the take-away? The reachable kernel paths reflect an important security property 
-of the system design. We want to express this point.}
+\item How much of the underlying kernel code is exposed and, therefore,
+vulnerable in different virtualization systems?
+(\S{\ref{Reachable-Kernel-Trace-Analysis-for-Different-Virtualization-Systems}})
+\yiwen{This question may need to be refined. Why is the question important to the readers?
+What is the take-away? The reachable kernel paths reflect an important security property
+of the system design. We want to express this point.} \lois{I made an attempt
+here at addressing your concerns. I agree its an important point to emphasize correctly.
+We might need to tweak it a bit more.}
 
 \item If Lind's Repy sandbox kernel has bugs, how much of a threat does this pose?
-(Section \ref{Reachable-Kernel-Trace-Analysis-for-Repy-Sandbox})
+(\S{\ref{Reachable-Kernel-Trace-Analysis-for-Repy-Sandbox}})
 
-\item In our implemented prototype Lind, what is the expected overhead?
-(Section \ref{Performance-Evaluation})
+\item In our implemented prototype Lind, what would be the expected overhead in
+real-world applications?
+(\S{\ref{Performance-Evaluation}})
 \end{itemize}
 
 This section describes both the set-up of our experiment, and argues
 how the results support the merits of our secure design and its Lind prototype.
-\yiwen{If we claim the above sentence, then we need to say more about our secure design, 
-which can be hard. Possibly remove ``our secure design'' and just keep ``Lind prototype''.}
+\yiwen{If we claim the above sentence, then we need to say more about our secure design,
+which can be hard. Possibly remove ``our secure design'' and just keep ``Lind
+prototype.''} \lois{There might be some value to keeping the phrase in, since we
+are emphasizing the design and not the product.}
 
 \subsection{Evaluation Methodology}
 
@@ -58,14 +63,12 @@ we identified the lines of code in the kernel that correspond to each
 one.
 
 \item In order to test if a bug can be triggered, we created or located C
-code that can exploit each of the kernel bugs \cite{Exploit-Database}.
-We were able to trigger and obtain results for
-35 out of the 69 bugs in our experiments. We decided to focus our study on these
-35 bugs and leave the other, more complex bugs, to future work and analysis
-because we were either unable to find code that would trigger them at the moment,
-or we could not clearly determine if triggering had occurred. \lois{I revised the
-the previous sentence because it read a bit awkward, but it is still somewhat
-clumsy. I'll try again in the next round of edits.}
+code capable of exploiting each of the kernel bugs \cite{Exploit-Database}.
+We were only able to trigger and obtain results for
+35 out of the 69 bugs in our experiments, either because of a difficulty in
+clearly determining if triggering had occurred, or an inability,
+at this time, to find code to trigger them. We decided to focus our study on
+only these bugs and leave the other, more complex ones, to future work and analysis.
 
 \item We compiled and ran the exploit C code under each virtualization
 system to
@@ -75,44 +78,39 @@ if a specific bug was triggered.
 
 \item Lastly, to analyze the reachable kernel paths for each of the
 virtualization systems,
-we conducted system call fuzzing (similar to our approach in Section\ref{sec.metric}) to obtain
+we conducted system call fuzzing (similar to what we did in \S{\ref{sec.metric}}) to obtain
 the kernel trace in each system.
-We repeated the system call fuzzing within Repy as well to obtain its
-kernel trace.
+We repeated the system call fuzzing within Repy to obtain its
+kernel trace as well.
 \end{itemize}
 
 \subsection{Analysis of Study Results}
 
-Guided by the study questions listed above, our tests were conducted and results
-primarily goal from a security perspective.
-(Section \ref{Linux-Kernel-Bug-Test-and-Evaluation} --
+As dictated by the study questions listed above, our tests were conducted
+and appraised primarily from a security perspective.
+(\S{\ref{Linux-Kernel-Bug-Test-and-Evaluation}} --
 %\S{\ref{Reachable-Kernel-Trace-Analysis-for-Different-Virtualization-Systems}},
-Section \ref{Reachable-Kernel-Trace-Analysis-for-Repy-Sandbox}).
+\S{\ref{Reachable-Kernel-Trace-Analysis-for-Repy-Sandbox}}).
 However, to get some idea of its potential efficacy
 in real-world settings, we also measured and evaluated the performance
 overhead of Lind.
-Section {\ref{Performance-Evaluation})
+(\S{\ref{Performance-Evaluation}})
 
 \subsubsection{Linux Kernel Bug Test and Evaluation}
 \label{Linux-Kernel-Bug-Test-and-Evaluation}
 
-We attempted to trigger 35 identified Linux kernel bugs by running programs in
+/lois{I think this whole first paragraph can come out. All this information has
+ been stated already. This is an evaluation of the RESULTS} We attempted to
+trigger 35 identified Linux kernel bugs by running programs in
 Native Linux, VirtualBox, VMWare Workstation, Docker, Graphene,
-and Lind, to evaluate if any of them can be triggered.
-\lois{Any particular reason for choosing these bugs programs?} 
-\yiwen{I think we explained this in the experimental setup}
-The kernel bugs
-examined are capable of causing serious security problems. For example,
-the CVE-2014-8989 bug allows local users to bypass intended file
+and Lind.
+The kernel bugs examined are capable of causing serious security problems.
+For example,the CVE-2014-8989 bug allows local users to bypass intended file
 permissions by leveraging a POSIX ACL.
-\lois{consequences of this?} 
-\yiwen{the consequence is bypassing the intended file permission, which is a serious problem.}
-When running applications, the potential risk of triggering some of these
-kernel bugs here,
-and possibly many more bugs outside our list, is a severe problem that
-users should be concerned about. 
-\lois{Is the previous sentence needed?} 
-\yiwen{possibly rewrite the sentence, but we want the readers to understand the importance of our study.}
+The potential risk of triggering these and other types of
+kernel bugs when running applications, is a problem that
+needs to be taken seriously.
+
 
 \begin{table*}%[!ht]
 \scriptsize
@@ -214,7 +212,7 @@ not triggered).}
 \end{table*}
 
 
-We found that a substantial number of bugs were triggered in existing
+We found that a substantial number of bugs could be triggered in existing
 virtualization systems {See Table \ref{table:trigger_vulnerabilities}.
 A full 35 out of 35 (100\%) bugs were triggered in Native Linux,
 while the other programs had somewhat lower rates: 14/35 (40\%) in
@@ -233,21 +231,21 @@ studies show how different system design philosophies can have
 
 \item \emph{All systems vulnerable.}  Representative bug: CVE-2014-4171.
 This is the only vulnerability in our test that was triggered in every
-system, including Lind. It resides inside the \texttt{mm/shmem.c} kernel path. This bug can
-be triggered by using \texttt{mmap()} system call to access a hole in the memory.
+system, including Lind. It resides inside the \texttt{mm/shmem.c} kernel path and
+can be triggered by using \texttt{mmap()} system call to access a hole in the memory.
 The \texttt{mmap()} call then invokes \texttt{shmem\_fault()}, which will cause contention
-on \texttt{i\_mmap\_mutex}, and lead to a serious starvation of memory resource. 
-The reason that Lind also triggered this bug is because \texttt{mmap()} cannot easily
-be safely reimplemented inside our POSIX reimplementation because it sets up a
+on \texttt{i\_mmap\_mutex}, and lead to a serious starvation of memory resource.
+Another reason that Lind triggered this bug is because \texttt{mmap()} cannot easily
+be safely reimplemented inside our POSIX API. The call sets up a
 memory region where the OS will later
-intervene and automatically convert all accesses into accesses to the
+intervene and automatically convert all accesses into ones that reach the
 underlying file.  The code does not explicitly make system calls, and as
 a result, with Lind's design we cannot intercept those accesses and call through
 the Repy sandbox kernel. As a result,
 Lind allows \texttt{mmap()} calls to directly access the kernel, which
 opens the chance to trigger this vulnerability. Similarly, in other
 virtualization systems we tested, \texttt{mmap()} is handled by the underlying
-host OS kernel.  
+host OS kernel.
 %\cappos{is this really true?  What about in VirtualBox?
 %How does this happen when the underlying file isn't a unique file underneath?}
 Therefore, this vulnerability was triggered in every system.
@@ -259,50 +257,51 @@ the \texttt{mountpoint\_last()}
 %\texttt{mountpoint\_last(struct nameidata *nd, struct path *path)}
 function does not properly
 maintain a reference count during attempts to use the \texttt{umount()} system call,
-in conjunction with a symbolic link. Unmount 
-\lois{Is it Unmount or umount. You have it both ways} 
-\yiwen{one is for the system call function name, the other is just an English word.}
-on a symbolic link could block another unmount operation,
-and allow attackers to cause a denial of service or deploy use-after-free exploitation.
-Lind does not implement symbolic link, but similar functionality is implemented entirely
-within SafePOSIX.  Thus a bug would (at most) enable an attacker to execute
-code within the Repy sandbox and the bug will be contained.
-Other virtualization systems have their own metadata to maintain their file directories and symbolic links. 
+in conjunction with a symbolic link. Unmounting from a symbolic link could block
+ another unmount operation, and allow attackers to cause a denial of service or
+ deploy use-after-free exploitation. Lind does not implement symbolic link, but
+ similar functionality is implemented entirely
+within SafePOSIX.  The bug would (at most) enable an attacker to execute
+code within the Repy sandbox and it would be contained.
+Other virtualization systems have their own metadata to maintain their file
+directories and symbolic links.
 %\cappos{Why did the flag in the first example
 %work then?  Also, why doesn't this exist in Docker / LXC?}
 Furthermore, symbolic links in those systems will be contained within the virtualization system's image,
 and will not be able to reach the underlying OS. In this case, those virtualization systems provide enough
 isolation to prevent this bug from happening.
 
-\item \emph{Some safe, some vulnerable.}  Representative bug: CVE-2014-8086.
+\item \emph{Some systems safe, some systems vulnerable.}  Representative bug: CVE-2014-8086.
 This vulnerability was not triggered inside Graphene and Lind, but was triggered inside
-VirtualBox, VMWare workstation, Docker, and Native Linux. It resides in the \texttt{fs/ext4/file.c} kernel path.
-This bug can be triggered by a file system write function call, made together with \texttt{fcntl} function call
-with argument \texttt{F\_SETFL}, and \texttt{O\_DIRECT} flag. If triggered, it could allow attackers to cause
-a denial of service (file unavailability). Lind implements \texttt{fcntl}
-in SafePOSIX, so the underlying kernel is not called.
+VirtualBox, VMWare workstation, Docker, and Native Linux. It resides in
+the \texttt{fs/ext4/file.c} kernel path, and can be triggered by a file system write
+function call, made together with \texttt{fcntl} function call
+with argument \texttt{F\_SETFL}, and \texttt{O\_DIRECT} flag. If triggered, it could
+allow attackers to cause a denial of service (file unavailability). Both Lind and
+Graphene prevented this bug, but for different reasons. Lind
+implements \texttt{fcntl} in SafePOSIX, so the underlying kernel is not called.
 Graphene checks and blocks certain system calls, including
 a \texttt{fcntl} system call with the \texttt{O\_DIRECT} flag.
-Thus they both prevented this bug. Other systems like VirtualBox, VMWare Workstation, Docker, and Native Linux,
-all suffer from this vulnerability because they call into the host OS
-kernel which handles the call.
+Other systems like VirtualBox, VMWare Workstation, Docker, and Native Linux,
+all suffer from this vulnerability because calls go directly into the host OS
+kernel.
 
 \item \emph{Only Lind safe.}  Representative bug: CVE-2015-5706. As
 shown in our results, this vulnerability was triggered in every
-virtualization system we tested, and Native Linux, but not in Lind. This vulnerability
-is closely related to file system calls and file flags. It resides in the \texttt{fs/namei.c}
-kernel path. This bug can be triggered by making a \texttt{path\_openat()} function
+virtualization system we tested, and in Native Linux, but not in Lind. This vulnerability
+is closely related to file system calls and file flags, resides in the \texttt{fs/namei.c}
+kernel path, and can be triggered by making a \texttt{path\_openat()} function
 call with file flag \texttt{O\_TMPFILE}. \texttt{path\_openat()} will jump to the wrong
 place after \texttt{do\_tmpfile()}, and do \texttt{path\_cleanup()} twice. This would
 allow local users to perform use-after-free exploitation to cause a denial of service.
-This bug was not triggered in Lind, because Lind does not support the use of
+This bug was not triggered in Lind, because it does not support the use of the
 \texttt{O\_TMPFILE} file flag. In fact, the only call in the Repy sandbox that
 opens a file does not take an argument for flags or other operations.  The
 only arguments it takes are a filename (that must consist of a small number
 of highly restricted characters) and a flag to indicate whether a file should
 be created if one does not exist.
 Other virtualization systems allow more complex configuration of flags to
-pass through to the underlying OS kernel. 
+pass through to the underlying OS kernel.
 %\cappos{Why does VirtualBox pass this
 %through?  My VirtualBox file system is a single VDI file.  How does this end
 %up calling into the host OS's kernel and why?}  \cappos{Does this vary
@@ -312,17 +311,17 @@ allowed in Native Linux, VirtualBox, VMWare Workstation, Docker, and Graphene.
 
 \end{itemize}
 
-As shown in the above four cases, a usual way to trigger a bug is to go through
+As shown in the above four cases, bugs are usually triggered by
 complex system calls,
-or basic system calls with complicated or rarely used flags. In Lind, our
-design philosophy is to reimplement complex system system call behavior
-using simple and regularly used system calls with common settings.
-The safely-reimplement design
-has the least risk of triggering bugs in the underlying OS kernel. Our next step
-is to figure out why the Lind design performs so effectively.
-%which is the main benefit of running applications in it.
+or basic system calls with complicated or rarely used flags.
+The safely-reimplement design behind Lind, which controls access to the kernel and
+minimizes exposure of vulnerable code, appears to pose
+the least risk of triggering bugs in the underlying OS kernel. To better understand
+the connection between kernel access and the triggering of vulnerable code, our
+next step is to look at the extent and type of exposure inherent in different
+virtual security systems.
 
-\subsubsection{Reachable Kernel Trace Analysis for Different Virtualization
+\subsubsection{Comparison of Kernel Code Exposure in Different Virtualization
 Systems}
 \label{Reachable-Kernel-Trace-Analysis-for-Different-Virtualization-Systems}
 
@@ -406,32 +405,27 @@ it has better control over the access to the OS kernel.
 Therefore, better results can be achieved with Lind, as a natural
 outcome of its design.
 
-\subsubsection{Reachable Kernel Trace Analysis for Repy Sandbox} 
+\subsubsection{Impact of Potential Vulnerabilities in the Repy Sandbox}
 \label{Reachable-Kernel-Trace-Analysis-for-Repy-Sandbox}
 
 An important question about Lind's security property is what would happen if
 there is a bug or a failure in Lind's TCB,
-the Repy sandbox kernel. Because the TCB has direct access to the OS
-kernel, if a bug occurs in the TCB,
-it can potentially access the privileged OS kernel and trigger kernel bugs.
-
-To determine if a flaw in the TCB could endanger the kernel,
+the Repy sandbox kernel. To determine if a flaw in the TCB could endanger the kernel,
 we obtained the total reachable kernel trace in Repy and analyzed its
 components.
 The results are shown in Table \ref{table:trace-Repy}. The trace of Repy is
 slightly larger (5.8\%) than that of Lind.
 Repy's design can not allow attackers or bugs to
 have more access to the risky paths in the OS kernel, and only a small amount (5.8\%) of
-additional common paths in the OS kernel might be open. 
+additional common paths in the OS kernel might be open.
 Those new kernel paths are added because some functions in Repy
 have more capabilities for message sending and network connecting than the system call interfaces
 provided by Lind. For example, in Repy,
 %\texttt{sendmessage(destip, destport, message, localip, localport)} and
 %\texttt{openconnection(destip, destport, localip, localport, timeout)}
 \texttt{sendmessage()} and \texttt{openconnection()}
-functions could reach out to more lines of code when fuzzed.
-
-However, the kernel trace of Repy still lies completely within the safe
+functions could reach out to more lines of code when fuzzed.However, the kernel
+ trace of Repy still lies completely within the safe
 portion of the OS kernel.
 Since the safe portion contains fewer kernel bugs, the Repy sandbox kernel
 will have a very slim chance to trigger OS kernel bugs.
@@ -454,7 +448,7 @@ it shows that Lind can provide strong security to run user applications.
   \hline
   \multirow{3}{.8cm}{\bf Sandbox} & \multicolumn{4}{c|}{\bf Kernel trace} \\ \cline{2-5}
   & \multirow{2}{1cm}{Compared to Lind} &
-  \multirow{2}{1.3cm}{Compared to native Linux} & \multirow{2}{1.5cm}{In common paths} & 
+  \multirow{2}{1.3cm}{Compared to native Linux} & \multirow{2}{1.5cm}{In common paths} &
   \multirow{2}{1.0cm}{In risky paths} \\
   & & & & \\  \hline
 
@@ -471,13 +465,14 @@ it shows that Lind can provide strong security to run user applications.
 \begin{figure}
 \centering
 \includegraphics[width=1.0\columnwidth]{diagram/lind_oakland16_performance.pdf}
-\caption{Application Runtime Performance: Native Linux vs. Lind}
+\caption{Overhead from Applications Run in Native Linux vs. Lind}
 \label{fig:performance_applications}
 \end{figure}
 
 While efficiency was not our main goal, we also evaluated Lind to see
 how its performance compared to other systems in a real-world application.
-Note that we did not optimize the performance of Lind in any way.
+Note that we did not optimize the performance of Lind in any way before running
+these tests
 
 We first compiled and ran three widely used applications:
 a primes calculator, GNU \texttt{grep}, and GNU \texttt{wget}. All ran unaltered and
@@ -499,7 +494,8 @@ We expect other CPU bound processes to behave similarly.
 slowdown was roughly 19x. Since they are both I/O heavy applications,
 each repeatedly calls into the SafePOSIX code which then reimplements
 the call.  The additional computation of SafePOSIX produced the additional
-overhead.
+overhead. \lois{Is this slowdown significant? Would a slowdown of this magnitude
+be acceptable in the real world?}
 
 Next, we ran the Tor router software version 0.2.3 in Lind. Tor simply
 needs to be recompiled to run in Lind.
@@ -518,14 +514,14 @@ slowdowns are due to the increased code size produced by NaCl,
 and the
 increased overhead from Lind's safe POSIX system call interface.
 
-As shown above,  Lind incurs some performance overhead in most cases.
-It should be noted that, we have not  yet attempted to optimize its performance.
-However, since an attack on the kernel has devastating
+As shown above, Lind generally incurs some performance overhead.
+It should be noted that, we have not yet attempted to optimize its performance.
+However, since an attack on the kernel can have devastating
 consequences, %at this initial stage,
-a tradeoff between security and performance is well justified.
-The fact that Lind is able to run many 
+a tradeoff between security and performance could be justified.
+The fact that Lind is able to run many
 \cappos{4 applications isn't many...
-Do we have Apache numbers or something else to quantify?} 
+Do we have Apache numbers or something else to quantify?}
 \yiwen{I am looking at more apps and libs that we can run and test in Lind.}
 legacy applications
 suggests that it
