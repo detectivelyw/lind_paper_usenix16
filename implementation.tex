@@ -75,8 +75,7 @@ As discussed earlier in Section \ref{sec.design}, the sandbox kernel needs to be
 Because it is the TCB of the system, any bugs within it could cause fatal problems,
 and allow attackers to access the OS kernel and gain kernel privilege.
 We used Seattle's Repy system API module due to its tiny sandbox kernel
-(comprised of only around 8,000 LOC)lois{is LOC always recognized ore should it be defined the
-first time it appears?}. Using Repy also fit our key design principle that
+(comprised of only around 8,000 LOC). Using Repy also fit our key design principle that
 our proposed system should only access the safe portions of the OS kernel.
 The Repy sandbox kernel, has 33 basic API functions, including 13 network functions,
 6 file functions, 6 threading functions,
@@ -197,7 +196,7 @@ another part of the trusted code base.  As it is the only piece of code added
 to the system call paths of the TCB, the Repy sandbox kernel's security is of
 paramount concern.
 
-The sandbox kernel consists of only XXXX lines of code \cappos{continue...}.
+The sandbox kernel consists of only 8K LOC.
 The code is written to provide straightforward access to the minimal set
 of the system call API needed to build general computational functionality.
 The code is written using style guidelines designed to ease security auditing
@@ -224,10 +223,8 @@ received by the computation module NaCl, and then redirected to our system API m
 The API module includes a POSIX API to serve those requests.
 
 A POSIX API is a set of standard operating system interfaces that provide operating system functions
-to the user code. However, the POSIX API is large and complex enough that its is
-very hard to ensure that its implementation is secure and bug-free.\lois{Make sure this sentence
-is correct. It was actually saying the opposite when I saw it yesterday. In discussion with
-Yiwen I added the negative. But doublecheck.}
+to the user code. However, the POSIX API is large and complex enough that it is
+very hard to ensure that its implementation is secure and bug-free.
 
 Our choice to use Repy helped us solve this architectural security problem.
 Since Repy is a programming language sandbox, it can provide the ideal isolation
@@ -248,27 +245,26 @@ and sends the call and the arguments to Repy sandbox.
 The library OS then executes the appropriate system call, marshals the result and
 returns it back to NaCl. The result is eventually returned as the appropriate native type to the calling program.
 
-Lind is designed to minimize the need to modify either sandbox. This is possible
-because the TCB of both were extremely small, and because the Lind code is run
-in both\lois{Another odd sentence Yiwen and I discussed. I thought I knew how to
-fix it, but it still does not make sense. I would delete it.}
+%Lind is designed to minimize the need to modify either sandbox. This is possible
+%because the TCB of both were extremely small, and because the Lind code is run
+%in both.
+%\lois{Another odd sentence Yiwen and I discussed. I thought I knew how to
+%fix it, but it still does not make sense. I would delete it.}
 
 The only complex part of Lind is the library OS, which runs in Repy.
 However, because Python is a very powerful language that provides rich functions,
-it significantly simplified the construction of Lind. \lois{I'm still not sure
-how Python simplified construction}. Even though Python is considered ``slow'' by some,
-the internals of an application in Lind are run in NaCl, a very high performance
-environment. \lois{sentence above must be deleted or rephrased unless we can produce
-evidence that Python is considered "slow."}
+it helps to make the construction of Lind easier. The downside of Python is that it is considered ``slow'', 
+because it is dynamically typed rather than statically typed, it is interpreted rather than compiled, 
+and Python's object model can lead to inefficient memory access. 
+Nevertheless, the internals of an application in Lind are run in NaCl, a very high performance
+environment. 
 This balances the performance of the system, with the ease of implementation and maintenance
 of the library OS component of Lind.
 
-The novel idea behind the architecture and design for sandboxing using Lind
-ensures the programs are portable.\lois{the "novel idea" is never spotlighted}
-Programs running inside Lind are written to work against \lois{I don't think "against"
-is the right word here} a standard POSIX glibc interface,
-and, since the Lind runtime is strictly user-level, it can work on many different platforms
-including Linux, Mac OS X and Windows.
+%Lind is portable.
+%Programs running inside Lind are using a standard POSIX glibc interface,
+%and, since the Lind runtime is strictly user-level, it can work on many different platforms
+%including Linux, Mac OS X and Windows.
 
 The lightweight and minimized overhead is another feature of Lind. Because the sandbox only
  incurs overhead when there is a system call, overall overhead for Lind is low.
@@ -276,7 +272,6 @@ The lightweight and minimized overhead is another feature of Lind. Because the s
 Lind uses a native interface for execution,
 allowing CPU-and-memory-intensive applications to run at speeds that are equivalent
  to NaCl and near native speed.
-
 
 In Sectioin \ref{sec.evaluation}}, we report how the dual sandboxes and other elements
 of Lind performed in head-to-head evaluation against other virtualization systems.
