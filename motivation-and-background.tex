@@ -29,11 +29,19 @@ in v2.6.11 (March 2005) to 16.9 MLOC in v3.10 (June 2013)~\cite{Linux-13}.
 
 %\cappos{Likely cut this.  I think it is excessive.}
 
-%Such a huge kernel codebase has lead to excessive exploitation, where it has been plagued by a number of common software flaws. These flaws have raised serious security concerns and caused severe damage to systems.\lois{Are these sentences needed? Is this what Justin thought was excessive? If so, I agree.} The common vulnerability and exposure (CVE) database reports indicate stack and heap buffer overflow vulnerabilities have been used to launch denial of service attacks through crashing the systems  (CVE-2013-2892).
-%~\cite{CVE-2013-2892}, Other vulnerabilities such as the execution of arbitrary code (CVE-2009-3234) %~\cite{CVE-2009-3234}, or to allow local users to gain privileges via a crafted application (CVE-2013-1828) are also among the reports.
-%~\cite{CVE-2013-1828}. Memory disclosure vulnerabilities (CVE-2009-3002) have been also exploited to allow local users to read the contents of some kernel memory locations
-%~\cite{CVE-2009-3002} , or to obtain potentially sensitive information from kernel stack memory (CVE-2010-4073). %~\cite{CVE-2010-4073}. Attackers have also used use-after-free vulnerability to gain kernel privileges, i.e. CVE-2013-4343.
-%~\cite{CVE-2013-4343}. \lois{If this is what Justin thought was excessive, I would still agree. It is too much of a "laundry list" of random examples, with no specifics.}
+%Such a huge kernel codebase has lead to excessive exploitation, where it has been plagued by a number of common software flaws. 
+%These flaws have raised serious security concerns and caused severe damage to systems.
+%\lois{Are these sentences needed? Is this what Justin thought was excessive? If so, I agree.} 
+%The common vulnerability and exposure (CVE) database reports indicate stack and heap buffer overflow vulnerabilities 
+%have been used to launch denial of service attacks through crashing the systems  (CVE-2013-2892).
+%~\cite{CVE-2013-2892}, Other vulnerabilities such as the execution of arbitrary code (CVE-2009-3234) %~\cite{CVE-2009-3234}, 
+%or to allow local users to gain privileges via a crafted application (CVE-2013-1828) are also among the reports.
+%~\cite{CVE-2013-1828}. Memory disclosure vulnerabilities (CVE-2009-3002) have been also exploited to 
+%allow local users to read the contents of some kernel memory locations
+%~\cite{CVE-2009-3002} , or to obtain potentially sensitive information from kernel stack memory (CVE-2010-4073). %~\cite{CVE-2010-4073}. 
+%Attackers have also used use-after-free vulnerability to gain kernel privileges, i.e. CVE-2013-4343.
+%~\cite{CVE-2013-4343}. \lois{If this is what Justin thought was excessive, I would still agree. 
+%It is too much of a "laundry list" of random examples, with no specifics.}
 
 %The number of kernel vulnerabilities and their potential for exploitation,
 %plus the fact that user applications rely on the kernel to execute
@@ -44,13 +52,16 @@ in v2.6.11 (March 2005) to 16.9 MLOC in v3.10 (June 2013)~\cite{Linux-13}.
 
 \subsection{Threat Assumptions}
 
+%The primary goal of a secure system is to restrict a program to a subset of privileges. Most systems mediate this access to 
+%the underlying operating system through a set of functions. Threats occur when applications obtain access to privileges 
+%that were not intentionally granted by the system, and thus the system loses the intended protection~\cite{Repy-10}.
 
-%The primary goal of a secure system is to restrict a program to a subset of privileges. Most systems mediate this access to the underlying operating system through a set of functions. Threats occur when applications obtain access to privileges that were not intentionally granted by the system, and thus the system loses the intended protection~\cite{Repy-10}.
+The primary goal of a secure sandbox system is to restrict a program to a subset of privileges 
+%\gholami{I doubt this is the goal of the system. I think system goals are CIA properties that can be assured through confienment for example?}. 
+Most systems mediate this access to the underlying OS through a set of functions. Possible threats leave  a system vulnerable for adverserial attakcs, i.e. 
+when an application obtains access to privileges that were not intentionally granted by the system ~\cite{Repy-10}.
 
-
-The primary goal of a secure system is to restrict a program to a subset of privileges \gholami{I doubt this is the goal of the system. I think system goals are CIA properties that can be assured through confienment for exampl?}. Most systems mediate this access to the underlying OS through a set of functions. Possible threats leave  a system vulnerable for adverserial attakcs, i.e. when an application obtains access to privileges that were not intentionally granted by the system ~\cite{Repy-10}.
-
-The following assumptions are made prior to apply the proposed security metric for building % \lois{developing?} 
+The following assumptions are made prior to apply the proposed security metric for building %\lois{developing?} 
 a secure system.
 
 \begin{enumerate}
@@ -66,14 +77,16 @@ application.
 includes any security systems placed between the kernel and the user
 applications.
 
-\item Some form of computational containment can feasibly be implemented, so thatn an isolated program cannot simply
+\item Some form of computational containment can feasibly be implemented, so that an isolated program cannot simply
 make arbitrary system calls and access the kernel directly. This containment could
 be provided through mechanisms such as software-fault isolation~\cite{SFI:93} or programming
 language techniques \cite{JS-Sandboxing1, JVM}. %\cappos{cites}
 % or by running isolated code in a distinct region of virtual memory 
 %\cappos{cites}.
 
-\item It is feasible to build a functionality that possesses few vulnerabilities as long as codebase is kept to a minimum. For example, a sandbox TCB that is built without any virtualization layers (compared to a hypervisor with, i.e, emulation) and it runs within the same environment of an OS.
+\item It is feasible to build a functionality that possesses few vulnerabilities as long as codebase is kept to a minimum. 
+For example, a sandbox TCB that is built without any virtualization layers (compared to a hypervisor with, i.e, emulation) 
+and it runs within the same environment of an OS.
 %\cappos{How do I explainthe sandbox TCB???  How is this different from a hypervisor?}
 
 \end{enumerate}
