@@ -1,11 +1,12 @@
 \section{Related Work}
 \label{sec.related_work}
-This section summerizes several approaches similar to Lind such as virtualization or other isolation mechanisms that aim to ensure saftey of previliged code in userspace and kernelspace.
+This section summarises several approaches similar to Lind such as virtualization or other isolation mechanisms 
+that aim to ensure safety of previliged code in user space and kernel space.
 
 %\lois{Do all of your subtopics fall into this one category? If not, this introductory sentence should be modified}
 
 \subsection{Virtualization}
-|lois{A general comment that really holds for the whole paper. If this draft is
+\lois{A general comment that really holds for the whole paper. If this draft is
  emphasizing Lind as a new type of virtual machine, then I think that should be
  be more clearly delineated throughout the paper. I also think you have to delineate how Lind differs from hypervisors}
  
@@ -78,9 +79,14 @@ Lind deals with these concerns by using a much smaller and safer TCB.
 Library OSes allow applications to efficiently
 obtain the benefits of virtual machines,
 including security isolation, host platform compatibility, and
-migration. Libra \cite {Libra} is an example of a library OS that provides applications the possibility to customize their OSs within VMs. This solution is similar to the exokernel approach where a small trusted kernel (exokernel) is separated from the untrusted libraries that function as an abstraction layer between the applications and the underlying hardware. Libra utilizes a hyperviosr instead of the exokernel to deliver efficient portability and performance.
+migration. Libra \cite {Libra} is an example of a library OS that provides applications the possibility to customize their OSs within VMs. 
+This solution is similar to the exokernel approach where a small trusted kernel (exokernel) is separated from the untrusted libraries 
+that function as an abstraction layer between the applications and the underlying hardware. 
+Libra utilizes a hypervisor instead of the exokernel to deliver efficient portability and performance.
 
-Drawbridge \cite{Drawbridge-11} is another approach that uses picoprocesses (lightweight containers) securtiy monitor (to enforce rules) and a library OS to present a Windows persona for a wide variety of Windows applications.Similar to Lind, it restrics access from usermode to host OS through a number of operations that pass through the security monitor. 
+Drawbridge \cite{Drawbridge-11} is another approach that uses picoprocesses (lightweight containers) security monitor (to enforce rules) 
+and a library OS to present a Windows persona for a wide variety of Windows applications.Similar to Lind, 
+it restricts access from usermode to host OS through a number of operations that pass through the security monitor. 
 %\lois{How does this fit with Lind?}
 
 %This approach brings many of the benefits of VM based temporal,
@@ -121,17 +127,20 @@ interacts with the system call execution engine.
 %Approaches for delegation and filtering have been extensively studied. For example,
 %along with their respective tradeoffs between security and
 %performance.
-Janus (J2) \cite{Janus0:96, Janus:99} is an SCI solution for confining untrusted applications that includes system call filtering and sandboxing mechanisms.Garfinkel et al. in another effort, introduces Ostia \cite{SCI-04}, where system calls are delegated to agents that enforce the policies. Ostia resolves the tight dependencies with the underlying OS through process emulation and the agents model at the userspace. Other issues in utilizing SCI solutions include the difficulty of appropriately replicating OS semantics, multi-threaded applications that cause race conditions, or indirect paths to resources that are often overlooked. \lois{This sentence is somewhat incomplete and I do not know which Garfinkel paper it references. I think all the SCI comments could be condensed into one sentence. Without knowing what is being referenced I am not  sure whether I have properly cut things}
+Janus (J2) \cite{Janus0:96, Janus:99} is an SCI solution for confining untrusted applications that includes system call filtering 
+and sandboxing mechanisms.Garfinkel et al. in another effort, introduces Ostia \cite{SCI-04}, where system calls are delegated to 
+agents that enforce the policies. Ostia resolves the tight dependencies with the underlying OS through process emulation and 
+the agents model at the userspace. Other issues in utilizing SCI solutions include the difficulty of appropriately replicating OS semantics, 
+multi-threaded applications that cause race conditions, or indirect paths to resources that are often overlooked. 
 In addition, system calls that are denied can cause inconsistencies that are discussed in \cite{Problems-SCI}.
 
 Recently, Wang et al. \cite{Jitk} discuss the issues of traditional SCI systems
-in the context of in-kernel interpreters such as Seccomp, which is used by several
- security critical applications, including Chrome, OpenSSH and Tor.
- The authors propose Jitk architecture to avoid the weaknesses in traditional
-  kernelspace system call interceptors that arise from the unforeseen bugs within
-	the interceptors. Jitk provides a formal verification tool that ensure the
-	correct translation of the userspace submitted code, e.g. the  the BSD packet
-	filter and INET-DIAG.
+in the context of in-kernel interpreters such as Seccomp, which is used by several 
+security critical applications, including Chrome, OpenSSH and Tor. 
+The authors propose Jitk architecture to avoid the weaknesses in traditional 
+kernelspace system call interceptors that arise from the unforeseen bugs within 
+the interceptors. Jitk provides a formal verification tool that ensure the 
+correct translation of the userspace submitted code, e.g. the  the BSD packet filter and INET-DIAG.
 
 %The kernel module enforces policy, denies direct access to restricted
 %resources, and delegates certain calls to an emulation library.
@@ -142,7 +151,8 @@ in the context of in-kernel interpreters such as Seccomp, which is used by sever
 %Nevertheless, this technique is very useful and has inspired many new techniques, such as library OSes.
 %The concepts behind system call interposition have evolved into other modern techniques and has benefited many security systems, including Lind.
 
-The SCI approach is very similar to the Lind isolation mechanism but a key difference is the actual execution of a system call through the Lind's reimplementation to ensure safe POSIX API for the userspace applications.
+The SCI approach is very similar to the Lind isolation mechanism but a key difference is the actual execution 
+of a system call through the Lind's reimplementation to ensure safe POSIX API for the userspace applications.
 
 \subsection{Software Fault Isolation}
 Software fault isolation (SFI) is an alternative to hardware memory
