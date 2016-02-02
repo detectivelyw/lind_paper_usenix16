@@ -5,16 +5,15 @@ Though Lind shows potential as an effective method for protecting privileged cod
 further investigation is required to address issues that were not included in our
 initial study.
 %We discuss the limitations of Lind in this section.
-First, our metric relies on identifying lines of code in the kernel that are
- executed when running applications in secure systems. It is not clear if
- existing hypervisors are small and compact enough to consider all the
- identified paths traversing off executing applications as common paths or
-  whether there is still substantial benefit from our metric. \lois{This is a bit
-  confusing for several reasons. First, does your perceived limitation come from doing
-  the trace while the application is running? Or is the concern that hypervisors
-  are too large? Or, for that matter, why are we now talking about hypervisors when
-  up front in the paper we establish we are NOT DISCUSSING hypervisors? Please resolve all
-  the above.}In %our
+First, our metric relies on identifying lines of code in the kernel that are 
+executed when running applications in secure systems. 
+Our current study only focuses on OS kernel protection, while the area of hypervisor-based
+VMs is also very interesting and worth looking into.  
+It is not clear if 
+existing hypervisors are small and compact enough to consider all the 
+identified paths traversing off executing applications as common paths or 
+whether there is still substantial benefit from our metric. 
+In %our 
 future work we will %explore
 investigate if the bug metric works well for %operating system virtual machines with a hypervisor.
 hypervisor-based VMs.
@@ -22,10 +21,12 @@ hypervisor-based VMs.
 A second limitation stems from our criteria for determining if a kernel trace is
 safe or risky. In our study, the criteria involved checking the trace against a list
  f historical kernel bugs.
-  %However, not all bugs can be accurately checked in this manner.
+ %However, not all bugs can be accurately checked in this manner.
 But due to the nature of bugs our proposed metric can not assure if a portion of code
-is absolutely a safe or a risky area in kernel.\lois{Doesn't this statement challenge
-every claim your paper is making?} For example, bugs that are caused
+is absolutely a safe or a risky area in kernel.
+So we are just trying to reduce the chances of triggering underlying kernel bugs, but can 
+not promise to avoid all bugs. 
+For example, bugs that are caused
 by a race condition cannot be identified by directly checking if certain lines of
 code have been executed. For complicated bugs that involve defects in the internal
 kernel data structures, or require complex triggering conditions across multiple
@@ -56,5 +57,4 @@ Our experiments were limited to Linux kernel 3.14.1 and some of the typical virt
 It would be interesting
 %and beneficial to the advance of secure systems
 if similar tests could be run in other widely-used operating systems. In particular, it would be interesting to see if 
-having the host and guest VM utilize different operating systems provides better protection. 
-\gholami{I dont understand the last sentence.}
+having the host and guest VM run different operating systems would produce different security impacts. 
