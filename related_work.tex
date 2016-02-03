@@ -3,8 +3,12 @@
 This section summarizes other kernel security approaches, such as virtualization
  or other isolation mechanisms
 that aim to ensure the safety of privileged code in user space and kernel space.
+\lois{Justin and Yanyan: In reviewing this section, consider re-organizing this
+literature around how these sources relate to the function of Lind rather than
+just techniques used.}
 
-%\lois{Do all of your subtopics fall into this one category? If not, this introductory sentence should be modified}
+%\lois{Do all of your subtopics fall into this one category? If not,
+this introductory sentence should be modified}
 
 \subsection{Virtualization}
 
@@ -59,7 +63,7 @@ VirtualBox.
 Security by isolation \cite{Qubes}, \cite{Overshadow},
 \cite{SecureVM}, \cite{HypSec} is a feature of OS virtualization that
 provides safe executing environments through containment for multiple
-user-level virtual environments that share the same hardware. This
+user-level virtual environments sharing the same hardware. This
 approach relies on the VMM to confine untrusted applications within
 guest OSs. However, there are limitations due to
 the large attack vectors against the hypervisors, including
@@ -71,20 +75,27 @@ vulnerabilities of software and configuration risk.
 %\cite{Virt-Issues}. Attackers are able to exploit vulnerabilities to
 %escape these systems and access arbitrary code in the underlying host
 %systems.
+\lois{what is the connection between the above sentences and Lind?}
 Lind deals with these concerns by using a much smaller and safer TCB.
 
 \textbf{Library OS.}
 Library OSes allow applications to efficiently
 obtain the benefits of virtual machines,
 including security isolation, host platform compatibility, and
-migration. Libra \cite {Libra} is an example of a library OS that provides applications the possibility to customize their OSs within VMs.
-This solution is similar to the exokernel approach where a small trusted kernel (exokernel) is separated from the untrusted libraries
+migration. Libra \cite {Libra} is an example of a library OS that allows
+applications to customize their OSs within VMs.
+This solution is similar to the exokernel approach where a small trusted kernel
+ is separated from the untrusted libraries
 that function as an abstraction layer between the applications and the underlying hardware.
-Libra utilizes a hypervisor instead of the exokernel to deliver efficient portability and performance.
+Libra utilizes a hypervisor instead of the exokernel to deliver efficient
+portability and performance. \lois{Ok..so what is the connection}
 
-Drawbridge \cite{Drawbridge-11} is another approach that uses picoprocesses (lightweight containers) security monitor (to enforce rules)
-and a library OS to present a Windows persona for a wide variety of Windows applications.Similar to Lind,
-it restricts access from usermode to host OS through a number of operations that pass through the security monitor.
+Drawbridge \cite{Drawbridge-11} is another approach that uses picoprocesses
+ (lightweight containers) security monitor (to enforce rules)
+and a library OS to present a Windows persona for a wide variety of
+Windows applications. Similar to Lind,
+it restricts access from usermode to host OS through a number
+of operations that pass through the security monitor.
 %\lois{How does this fit with Lind?}
 
 %This approach brings many of the benefits of VM based temporal,
