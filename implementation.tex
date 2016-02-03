@@ -7,27 +7,27 @@ for running untrusted user programs on vulnerable OS kernels.
 Lind adapts two basic technologies as its building blocks\textendash
 Google's Native Client (NaCl), and Seattle's Repy.
 
-As described in Figure \ref{fig:design}, our design has
+As described in Figure \ref{fig:design} and Section 4.2, our design has
 two main components\textendash a computation module that isolates the
 application and a library OS module that isolates the complex
-portions of POSIX, a standard OS interface Lind provides
+portions of POSIX, a standard OS interface Lind provides.
 We choose Google's Native Client (NaCl) ~\cite{NaCl-09} as the computation
 module because NaCl is a widely used environment for efficient execution of legacy code in the
-form of x86 and ARM binaries. 
-Seattle's Repy is used as our library OS module (Figure \ref{fig:architecture}), since it is a restricted subset of Python, 
+form of x86 and ARM binaries.
+Seattle's Repy is used as our library OS module (Figure \ref{fig:architecture}), since it is a restricted subset of Python,
 that works as a sandbox to provide a safer environment to run untrusted code.
 
 \begin{figure}%[h]
 \centering
 	\includegraphics[width=1.0\columnwidth]{diagram/lind_architecture_new.png}
 	\caption{Architecture of Lind including various components such as NaCl, NaCl glibc, and Repy Sandbox.
-	User level application issues system calls that are dispatched through the Repy OS connector that bridges the Lind system to the OS Kernel.}
+	User level applications will issue system calls that are dispatched through the Repy OS connector that bridges the Lind system to the OS Kernel.}
 \label{fig:architecture}
 \end{figure}
 
 \subsection{The Computation Module of Lind: Google's Native Client}
 
-We utilize NaCl in our design to isolate the computation of the user application 
+We utilize NaCl in our design to isolate the computation of the user application
 from the kernel.
 NaCl allows Lind to work on most types of legacy code.
 It compiles the programs to produce a binary with software fault isolation.
@@ -77,7 +77,7 @@ and allow attackers to access the OS kernel and gain kernel privilege.
 We used Seattle's Repy system API module due to its tiny sandbox kernel
 (comprised of only around 8,000 LOC). Using Repy also fit our key design principle that
 our proposed system should only access the safe portions of the OS kernel.
-The Repy sandbox kernel, has 33 basic API functions, including 13 network functions,
+The Repy sandbox kernel has 33 basic API functions, including 13 network functions,
 6 file functions, 6 threading functions,
 and 8 miscellaneous functions
  (Table \ref{table:RepyKernel}) \cite{Repy-10}, \cite{RepyKernel}. Most of those functions are simple and
@@ -196,13 +196,13 @@ another part of the trusted code base.  As it is the only piece of code added
 to the system call paths of the TCB, the Repy sandbox kernel's security is of
 paramount concern.
 
-The sandbox kernel consists of only 8K LOC.
-The code is written to provide straightforward access to the minimal set
+The sandbox kernel consists of only 8K LOC, and
+is written to provide straightforward access to the minimal set
 of the system call API needed to build general computational functionality.
 The code is written using style guidelines designed to ease security auditing
  of the code~\cite{style}.
 
-The sandbox kernel code has been
+The Repy kernel code has been
 audited by a professional penetration tester.  Since 2010, there has also been
 a bug bounty program for security flaws in the sandbox.
 The code is deployed in daily use across thousands of devices,
@@ -210,7 +210,7 @@ including on the Seattle testbed \cite{seattle}, and has been examined by
 hundreds of parties.  Developers have reported
 XXX issues for problems in other parts of the systems. However, to date
 no security flaws have been found in the sandbox kernel.
-This does not provide any strong guarantees that bugs could not exist, and if
+This does not provide any strong guarantees that bugs do not exist, and if
 they do, the security of the system could be compromised.
 However, having a small, easily auditable piece of code helps to reduce the
 risk of this occurrence.
@@ -241,7 +241,7 @@ This program is responsible for accessing the system on behalf of the Lind libra
  OS. A NaCl sandbox is built on top of the Repy sandbox.
 
 To service a system call in NaCl, a server routine marshals its arguments into a text string,
-and sends the call and the arguments to Repy sandbox.
+and sends the call and the arguments to the Repy sandbox.
 The library OS then executes the appropriate system call, marshals the result and
 returns it back to NaCl. The result is eventually returned as the appropriate native type to the calling program.
 
@@ -253,11 +253,12 @@ returns it back to NaCl. The result is eventually returned as the appropriate na
 
 The only complex part of Lind is the library OS, which runs in Repy.
 However, because Python is a very powerful language that provides rich functions,
-it helps to make the construction of Lind easier. The downside of Python is that it is considered ``slow'', 
-because it is dynamically typed rather than statically typed, it is interpreted rather than compiled, 
-and Python's object model can lead to inefficient memory access. 
+it helps to make the construction of Lind easier. The downside of Python is that
+some consider the language ``slow'',
+because it is dynamically typed rather than statically typed, it is interpreted rather than compiled,
+and Python's object model can lead to inefficient memory access.
 Nevertheless, the internals of an application in Lind are run in NaCl, a very high performance
-environment. 
+environment.
 This balances the performance of the system, with the ease of implementation and maintenance
 of the library OS component of Lind.
 
@@ -273,5 +274,5 @@ Lind uses a native interface for execution,
 allowing CPU-and-memory-intensive applications to run at speeds that are equivalent
  to NaCl and near native speed.
 
-In Sectioin \ref{sec.evaluation}}, we report how the dual sandboxes and other elements
+In Section \ref{sec.evaluation}}, we report how the dual sandboxes and other elements
 of Lind performed in head-to-head evaluation against other virtualization systems.
