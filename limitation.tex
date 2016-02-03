@@ -5,15 +5,15 @@ Though Lind shows potential as an effective method for protecting privileged cod
 further investigation is required to address issues that were not included in our
 initial study.
 %We discuss the limitations of Lind in this section.
-First, our metric relies on identifying lines of code in the kernel that are 
-executed when running applications in secure systems. 
+First, our metric relies on identifying lines of code in the kernel that are
+executed when running applications in secure systems.
 Our current study only focuses on OS kernel protection, while the area of hypervisor-based
-VMs is also very interesting and worth looking into.  
-It is not clear if 
-existing hypervisors are small and compact enough to consider all the 
-identified paths traversing off executing applications as common paths or 
-whether there is still substantial benefit from our metric. 
-In %our 
+VMs is also very interesting and worth looking into.
+It is not clear if
+existing hypervisors are small and compact enough to consider all the
+identified paths traversing off executing applications as common paths or
+whether there is still substantial benefit from our metric.
+In %our
 future work we will %explore
 investigate if the bug metric works well for %operating system virtual machines with a hypervisor.
 hypervisor-based VMs.
@@ -25,7 +25,7 @@ safe or risky. In our study, the criteria involved checking the trace against a 
 But due to the nature of bugs our proposed metric can not assure if a portion of code
 is absolutely a safe or a risky area in kernel.
 So we are just trying to reduce the chances of triggering underlying kernel bugs, but can 
-not promise to avoid all bugs. 
+not promise to avoid all bugs.
 For example, bugs that are caused
 by a race condition cannot be identified by directly checking if certain lines of
 code have been executed. For complicated bugs that involve defects in the internal
@@ -52,9 +52,9 @@ Lind has not been optimized for performance, so the results we present here shou
 We would like to explore what existing OS VM optimizations can be safely applied
 and what their impact might be.
 
-We would also like to test our metric in other popular operating systems, such as Windows and Mac OS. 
-Our experiments were limited to Linux kernel 3.14.1 and some of the typical virtualization systems that existed in Linux. 
+We would also like to test our metric in other popular operating systems, such as Windows and Mac OS.
+Our experiments were limited to Linux kernel 3.14.1 and some of the typical virtualization systems that existed in Linux.
 It would be interesting
 %and beneficial to the advance of secure systems
-if similar tests could be run in other widely-used operating systems. In particular, it would be interesting to see if 
-having the host and guest VM run different operating systems would produce different security impacts. 
+if similar tests could be run in other widely-used operating systems. In particular, it would be interesting to see if
+having the host and guest VM run different operating systems would produce different security impacts.

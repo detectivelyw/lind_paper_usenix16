@@ -8,16 +8,16 @@ A key idea of our design is that all code \emph{including the complex part
 of the operating system API} should have a very small TCB that accesses only
 commonly used kernel paths.
 Any complex or possibly risky system functions
-are reimplemented by our own code within a sandbox. In this manner, any bugs
+are reimplemented using memory-safe code within a sandbox. In this manner, any bugs
 or failures within the implementation of these complex system functions
 are contained by the sandbox. As a result, untrusted code would not be able to
-and trigger sensitive and risky portions of the kernel.
+trigger sensitive and risky portions of the kernel.
 
 
 \begin{figure}%[h]
 \centering
 \includegraphics[width=1.0\columnwidth]{diagram/lind_secure_design_new.png}
-\caption{``Safe-Reimplementation'' design to ensure predictable execution of untrusted user codes 
+\caption{``Safe-Reimplementation'' design to ensure predictable execution of untrusted user codes
 despite existing potential zero-day bugs within the OS kernel.}
 \label{fig:design}
 \end{figure}
@@ -42,8 +42,8 @@ The first is a computation module, which performs functions like type checking,
 object creation, and garbage collection. The second is a library OS that
 serves requests to access the OS kernel.
 Together these components can complete the requirements of running user code.
-First the system invokes the computation module to perform its operations,
-and, if there are, the computation module directs those requests to our
+First, the system invokes the computation module to perform its operations,
+and, if there are riskier calls, the computation module directs those requests to our
 library OS.The library OS then responds to the system call requests and
 return results to the user code, if the requests are granted.
 
@@ -62,14 +62,14 @@ of two parts: a sandbox kernel that provides access to basic but critical
 system calls, and a system API safe reimplementation that implements more
 complex calls, such as file system calls.
 
-The sandbox kernel forms the only TCB of our library OS. 
-We make the kernel extremely small and simple so that it is easy to verify its security. 
+The sandbox kernel forms the only TCB of our library OS.
+We make the kernel extremely small and simple so that it is easy to verify its security.
 The sandbox code provides an API that performs
-a few critical system calls with the most basic parameters.  For example,
-programs need some mechanism to write data to the file system
-and communicate with the network.  The kernel's goal is to provide the ability
-to do so, while utilizing the most simplistic calls possible with the most
-basic arguments. For example, the file system API only need to provide a way
+a few critical system calls with the most basic parameters, such as
+writing data to the file system
+and communicating with the network.  The kernel utilizes the most simplistic calls
+possible with the most
+basic arguments. In the example above, the file system API only need to provide a way
 to write data to storage.  It need not provide a directory abstraction, the
 concept of file permissions, links, or even the concept of multiple files.
 
@@ -81,44 +81,40 @@ concept of file permissions, links, or even the concept of multiple files.
 %Furthermore, the set of arguments used for each call is also highly restricted.
 
 The system API safe reimplementation is a set of more complicated system calls
-derived from functions within the sandbox kernel. 
+derived from functions within the sandbox kernel.
 We reimplement those system calls because we do not want this potentially risky user code
 to have direct access to the underlying OS kernel.
 Instead, our reimplementation layer serves as a mediator between the user code
 and the OS kernel. The reimplementation is safe
 because the reconstructed call is isolated in a sandbox, and the code for the
 reimplementation is written in a memory-safe programming language.
-With this design, even if there are bugs in the function reimplementation,
-they cannot escape from the sandbox and will not reach the underlying OS kernel.
 
 Here is an example of how this reimplementation would work with the symbolic link function.
 If there is a bug in this function, rather than rely on the kernel code paths
 for symbolic links, our sandbox system will implement the incorrect behavior.
-The program will not be forced to quit, but by reimplementing it in the sandbox,
-the code does not have privileged access to the system as the OS kernel does,
-This will not result in a security issue, but instead, the application will just fail.
+This denies the code the privileged access to the system the OS kernel does.
+As a result, instead of creating a security issue, the application will just fail.
 
 With the computation module and the library OS module, unmodified user code is able to run on top of our designed system.
 It is important to note that our design does not rely on any specific technique or tool, and it is possible
 to choose from several different techniques that fit well with the users' specific needs or requirements.
 
 Based on this general system, we implemented a prototype security system based on a controlled kernel access that we called Lind.
-Below we offer a short explanation of one design feature: the use of dual sandboxes. 
+Below we offer a short explanation of one design feature: the use of dual sandboxes.
 The following section offers a more detailed description of Lind's design and implementation.
 
-\subsection{Discussion: Our Design Choice}
+\subsection{The Roles of the Dual Sandboxes}
 
 In reviewing our design, some fundamental questions could be raised about the dual sandbox design choice.
-Why is one not enough? And, if two is good, why not use three or more?
+"Why is one not enough?"" And, "If two is good, why not use three or more?""
 The answer to the first question is that the kernel interface is extremely rich and hard to protect.
 In order to have minimal impact on the kernel, as well as provide sufficient API for legacy applications,
 we need to have one sandbox focuses on protecting the kernel and providing POSIX API,
-while a second sandbox focuses on efficiently executing applications.
-So our approach includes two sandboxes, one as the computation module,
-and the other one as library OS module. As to the second question,
+With two sandboxes, one serves as the computation module,
+while the other one is the library OS module. As to the second question,
 which could be rephrased as ``why not sandbox the sandbox kernel TCB and get more security?,''
 the lowest level sandbox eventually must have some fundamental,
-even if  limited access to system resources, such as memory, and storage, threads.
+even if limited, access to system resources, such as memory, and storage, threads.
 So even if we were to sandbox the sandbox kernel and have additional sandboxes,
 the one at the bottom level will still access the OS kernel in a similar way.
 Thus, having multiple sandboxes does not provide any extra security benefits.
