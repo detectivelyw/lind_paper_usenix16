@@ -1,33 +1,32 @@
 \section{Motivation and Background}
 \label{sec.motivation-and-background}
 
-This section presents some critical background information
-about the function of the OS kernel and why it can be so difficult to protect.
-A model of the shape a potential threat could take is also provided.
+This section presents background information
+relevant to the development of our design metric and the Lind prototype. We
+start by exploring the function of the kernel and why protecting its
+vulnerabilities is so difficult. We then present some assumptions about
+the nature of an attack that could trigger those vulnerabilities.
 %caused by an inability to identify which portions of the kernel are risky.
 
-\subsection{Function and Design of the OS Kernel}
+\subsection{Kernel Function and Vulnerabilities}
 
-The kernel can be thought of as the nerve center of a computer, responsible for
-managing input and output requests from servers and converting this information
-into system calls to execute operations. User applications depend directly on
-their ability to access critical resources from the kernel, such as memory, I/O, or CPU.
-The kernel provides interfaces to serve these requests and essential functionality
- for all applications running in the system.
+Running user applications relies on their ability to access
+critical resources from the kernel, such as memory, I/O, or CPU.
+The kernel provides interfaces to serve these requests
+and essential functionality for all applications running in the system.
+Thus all code, whether sandboxed or untrusted, will make calls
+that are eventually processed by the kernel.
 
 Unfortunately, OS kernels are vulnerable to adversarial attacks, which have
 increased in frequency over time.
+Over the past few years, exploitation of OS kernels has been wide-spread,
+despite substantial efforts by researchers and practitioners.
 In 2014, 215 vulnerabilities in all types of kernels were reported~\cite{NVD},
-of which 125 were in the Linux kernel alone.\lois{These two statements are related
- but they are not cause and effect. The # of vulnerabilities does not directly correlate
- to the number of attacks. The vulnerabilities are in the code, right?}
+of which 125 were in the Linux kernel alone.
 With the constant addition of new features~\cite{Metrics-13}, the kernel's
 attack surface keeps increasing For example, the Linux kernel grew from 6.6 MLOC
-in v2.6.11 (March 2005) to 16.9 MLOC in v3.10 (June 2013)~\cite{Linux-13}. A
-common assumption is that there is a connection between the size of the attack surface and
-its potential vulnerability. \lois{I found a paper that studies this relationship. It
-probably should be cited. I'll provide that information offline. Might also want
-to develop this in a sentence or two}
+in v2.6.11 (March 2005) to 16.9 MLOC in v3.10 (June 2013)~\cite{Linux-13}.\lois{how
+does the larger attack surface tie into its vulnerability?}
 
 %\cappos{Likely cut this.  I think it is excessive.}
 
@@ -52,38 +51,45 @@ to develop this in a sentence or two}
 %applications with a better degree of safety. \yanyan{this paragraph does
 %not say anything new.}
 
-\subsection{Threat Model}
+\subsection{Threat Assumptions}
 
-%The primary =secure system is to restrict a program to a subset of privileges.
-Most systems mediate this access to
-%the underlying operating system through a set of functions.
-One of the great risks of a kernel exploitation is the access it grants a potential
-attacker to privileged code. In most systems, the kernel mediates access to the
-underlying system. Triggering kernel vulnerabilities could extend access privileges
-to attackers,thus sacrificing the intended protection~\cite{Repy-10}.
+%The primary gsecure system is to restrict a program to a subset of privileges. Most systems mediate this access to
+%the underlying operating system through a set of functions. Threats occur when applications obtain access to privileges
+%that were not intentionally granted by the system, and thus the system loses the intended protection~\cite{Repy-10}.
 
-%\gholami{I doubt this is the goal of the system. I think system goals are CIA
-properties that can be assured through confinement for example?}.
+A secure sandbox system can restrict a program to a subset of privileges.
+%\gholami{I doubt this is the goal of the system. I think system goals are CIA properties that can be assured through confienment for example?}.
+Most systems mediate this access to the underlying OS through a set of functions.
+A system can be vulnerable to adversarial attacks
+when an application obtains access to privileges that were not intentionally
+ granted by the system ~\cite{Repy-10}.
 
 The following assumptions about potential threats were used to develop the proposed
- security metric:
+ security metrics
 
 \begin{enumerate}
-\item  Bugs may exist in any complex code, including any security systems
-placed between the kernel and the user applications. These flaws can be triggered
-both intentionally by a malicious party, or unintentionally through contact with
-untrusted programs.
+\item The OS kernel contains at least one bug that is known to an adversarial attacker.
 
-\item An attacker also has the ability to execute code inside
+\item The attacker has the ability to execute code inside
 of a virtualized system, such as an operating system VM or library OS.
+This access may be obtained by writing a malicious application
+that the user executes, or by exploiting a flaw that exists in a user's
+application.
 
-\item Once vulnerabilities are triggered within kernel code, an attacker can gain the
-privileged access delegated to this part of kernel. This gives an attacker unrestricted
-access to the system.
+\item Unintentional bugs may exist in any complex code. This
+includes any security systems placed between the kernel and the user
+applications.
+
+\item Some form of computational containment can feasibly be implemented, so that an isolated program cannot simply
+make arbitrary system calls and access the kernel directly. This containment could
+be provided through mechanisms such as software-fault isolation~\cite{SFI:93} or programming
+language techniques \cite{JS-Sandboxing1, JVM}. %\cappos{cites}
+% or by running isolated code in a distinct region of virtual memory
+%\cappos{cites}.
+
+\item It is feasible to build a functionality that possesses few vulnerabilities as long as codebase is kept to a minimum.
+For example, a sandbox TCB that is built without any virtualization layers (compared to a hypervisor with, i.e, emulation)
+and runs within the same environment of an OS.
+%\cappos{How do I explainthe sandbox TCB???  How is this different from a hypervisor?}
 
 \end{enumerate}
-
-To respond to such a threat, it is feasible to build a functionality that
-possesses few vulnerabilities, as long as the codebase is kept to a minimum.
-
-%\cappos{How do I explainthe sandbox TCB???  How is this different from a hypervisor?}
