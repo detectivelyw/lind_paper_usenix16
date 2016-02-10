@@ -1,78 +1,55 @@
 \section{Developing and Assessing a Quantitative Evaluation Metric for Kernel Security}
 \label{sec.metric}
 
-%The first step to addressing the threat articulated above is to establisha metric
-%by which kernel security can be quantitatively evaluated. In this section we document the development of such a metric.
+%The first step to addressing the threat articulated above is to establish metric
+%by which kernel security can be quantitatively evaluated. In this section
+we document the development of such a metric.
 %First, we look at current commonly used metrics for code complexity and why they may be less than effective.
 %The next section discusses our proposed metric, which focuses on using the kernel code paths accessed by widely used applications.
 %Finally, we use the metric to verify our central hypothesis, by testing for the presence of 40 severe Linux  Kernel bugs.
 
 %\lois{This intro section needs work. I'm not happy with what is  here, though I think it is somewhat clearer than what was there before.}
 
-This section outlines the steps used to develop our proposed metric including
-an analysis of quantitative evaluation of kernel bugs, proposal of our key hypothesis,
-measurement of the reachable areas of kernel by large-scale applications,
-and validation of our hypothesis by examining 40 critical Linux Kernel bugs.
+Before a metric can be developed to meet the threat outlined in Section 2, we need to
+establish a better understanding of basic kernel behavior,and review what we know about
+the risk inherent in privileged code. This section briefly touches on past risk
+metrics, as well as the key hypothesis used to guide our capture and evaluation
+of kernel traces.
 
-\subsection{Risk Metrics for Software Systems}
+\subsection{Risk Metrics for Identifying Kernel Flaws}
 
 Even though there is no widely accepted method for
 quantifying the safety (or risk) of privileged code, a number of researchers have
-examined the issue from several angles.
+examined the issue from different angles. This section summarizes a few important
+findings. Additional information on past methods
+of assessing potential flaws can be found in the Related Work section (Section 8)
 
 %\cappos{Is this really true?  No one has ever proposed a metric?  We do need to do a more detailed analysis of this.
 %I would vote to remove this sentence regardless...} \lois{ I would agree its probably best just to get rid of the sentence.
 %But I believe the goal here was to say that there is no widely accepted and used standard method.}
 
-The Linux kernel is divided into several main sub-directories:
-\texttt{kernel} (main kernel), \texttt{ipc} (inter-process communication),
-\texttt{net} (networking), \texttt{fs} (file system), and \texttt{drivers} (device drivers).
-\lois{Questioning if this belongs here or in related work or background. It reads more like
-the latter}
-Chou \cite{PittSFIeld} demonstrated that certain functions' directories, i.e., \texttt{drivers},
-result in some parts of the Linux kernel having error rates much higher than others.
-The size of kernel source code and maturity of a release also affect how frequently errors occur in the kernel.
-Later in another effort, Palix found that \texttt{drivers} still contains the most faults in
-the Linux kernel, in addition to HAL and \texttt{fs}~\cite{palix2011faults}.
+One approach \cite{PittSFIeld} suggested that certain function
+directories, i.e., \texttt{drivers},
+result in parts of the Linux kernel having error rates much higher than
+others. The size of kernel source code and the maturity of a release also affect
+how frequently errors occur in the kernel.
 
-In ~\cite{engler2001bugs} Engler analyzed system code by static analysis
-to look for contradictions, such as acquired locks that are
-not released. Other work has generated vulnerability
+Other work has generated vulnerability
 signatures~\cite{brumley2006towards}, which match all exploits
 of a given vulnerability. Most of this work is based on a mix of static and
 dynamic analysis, constraint solving and symbolic execution~\cite{chou2003static}.
-However, most of these findings have not yet been used to design
-secure systems.
 
-Researchers in software engineering have also explored different metrics to identify and predict bugs in the systems they design.
-The number of lines of code has been used as one predictor~\cite{Bug-Location}, as has a file's revision status and
-whether or not the file previously contained bugs~\cite{Bug-Location, lewis2013does}.
-
-%Studies have also been conducted based on the number of functions and/or the number of executable lines of code in the function~\cite{Mining-Metrics}.
-%\lois[Isn' this a bit repetitious]
-
-Coverage-based fault localization assumes that execution events that occur mostly in failing
-test cases, but rarely in passing test cases, are more \textit{suspect}
-of being the fault~\cite{jones2002visualization}. Further research in the field lead to measuring the set
-difference of the statements covered by passing and failing test scenarios with run-time events~\cite{agrawal1995fault, jones2005empirical}.
-Additionally, statistical likelihood testcase with a predicate that evaluates to True
-is correlated with failure ~\cite{liblit2005scalable}.\lois{This sentence is somehow incomplete}
-
-%While these metrics can give insight on the possible places where bugs have been located in software systems, they have limitations.
-%Firstly, the metrics mentioned above are not specifically designed for studying bugs in OS kernels.
-%\cappos{Why does this matter?}
-
-%Therefore, they do not take into account the way system calls are invoked by user applications.
-%Moreover, these metrics can not provide information about the accurate location of the bugs within the kernel, which is important to our study.
-%\cappos{Are you going to show that this is true?  Can you explain more about why these do not work?}
-%\cappos{Do existing metrics work on a LOC level?  }
-
-While these metrics can give insight through statistical methods on the possible places
-where bugs may reside in software systems, OS kernel bug discovery has not been emphasized.
-Besides no single metric could fit all possible bug discoveries within different environments.
-In contrast, our metric enables us to precisely specify the risky portions of the OS kernel
-through empirical study of the most critical bugs
-instead of relying on statistical methods such as negative binomial regression model~\cite{Bug-Location}.
+These past methods can provide some insight on where bugs may lie.
+However, they rely on statistical methods such as
+negative binomial regression model~\cite{Bug-Location}. What we set out to
+develop was a metric based on empirical study of
+the most critical bugs. This ad-hoc security metric can be used for
+quantitative measurement and evaluation of the kernel bugs,
+and other vulnerabilities at the level of lines of code by checking against
+known kernel bugs.
+We believe this metric will provide better understanding of kernel security.
+As a result, a secure interface with an isolation mindset can be designed
+to be exposed to the userspace.
 
 %, they have limitations. Firstly, the metrics mentioned above are not specifically designed for studying bugs in OS kernels
 %\cappos{Why does this matter?}
@@ -91,15 +68,6 @@ instead of relying on statistical methods such as negative binomial regression m
 %As a result, the proposed solutions do not make the systems more secure.
 
 %Recognizing this limitation, we propose a novel security metric to
-Our ad-hoc security metric can be used for quantitative measurement and evaluation of the kernel bugs,
-and other vulnerabilities at the level of lines of code by checking against known kernel bugs.
-We believe this metric will provide better understanding of kernel security.
-As a result, a secure interface with an isolation mindset can be designed to be exposed to the userspace.
-Ideally, this would mean exposing only the safe portions of the kernel to the userspace.
-
-There are scenarios where risky portions must be exposed to the kernel as well \gholami {for example?}.
-This kernel coverage safety metric can provide insight on potential attacks and consequently helping us
-to safely reimplement those risky kernel interface or system calls.
 %\lois{does the metric itself tell us HOW to safely-reimplment? Or just tell us whether it needs this reimplementation?}
 
 %\yanyan{I don't think the new metric alerts us tho. maybe say it provides
@@ -108,17 +76,17 @@ to safely reimplement those risky kernel interface or system calls.
 
 \subsection{Key Hypothesis}
 
-Our hypothesis is that kernel paths executed by popular applications, such as Web browsers or text editors,
-are likely to contain fewer exploitable bugs than uncommonly used paths.
-As they are frequently used,
-bugs and vulnerabilities in these common kernel paths are more likely to have
+We began our metric development by positing a hypothesis
+that kernel paths executed by popular applications, such as Web browsers or
+text editors, are likely to contain fewer exploitable bugs than uncommonly used paths.
+As they are frequently used, bugs and vulnerabilities in these common kernel
+paths are more likely to have
 been caught by developers.
 
-Note that this does more than indicate which system calls are ``safe.''
-Even widely used system calls that are considered ``safe'' might become risky in case of rare arguments and flags.
-The proposed metric also excludes odd execution paths through popular system calls. This means
-the chances of harboring kernel bugs in those commonly used kernel paths is slim indeed.
-
+In putting forth this hypothesis, we narrow our "common paths" definition
+to incorporate widely used system calls that might sometimes include rare arguments
+and flags.The proposed metric also excludes odd execution paths through popular
+system calls.
 
 \subsection{Foundation for the Metric: Capturing and Evaluating Kernel Traces}
 
