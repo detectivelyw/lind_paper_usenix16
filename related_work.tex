@@ -9,6 +9,38 @@ just techniques used.}
 
 %\lois{Do all of your subtopics fall into this one category? If not,
 this introductory sentence should be modified}
+ater in another effort, Palix found that \texttt{drivers} still contains the
+most faults inthe Linux kernel, in addition to HAL and \texttt{fs}~\cite{palix2011faults}.
+
+\subsection{Early Kernel Metrics}
+
+As mentioned in Section 3, earlier research metrics have suggested a number
+of approaches to quantifying risk in the OS kernel.
+Palix found that \texttt{drivers} still contains the
+most faults inthe Linux kernel, in addition to HAL and \texttt{fs}~\cite{palix2011faults}.
+In ~\cite{engler2001bugs} Engler analyzed system code by static analysis
+to look for contradictions,such as acquired locks that are
+not released.
+
+
+%Studies have also been conducted based on the number of functions and/or the number of executable lines of code in the function~\cite{Mining-Metrics}.
+%\lois[Isn' this a bit repetitious]
+
+Coverage-based fault localization assumes that execution events that occur mostly in failing
+test cases, but rarely in passing test cases, are more \textit{suspect}
+of being the fault~\cite{jones2002visualization}. Further research in the field lead to measuring the set
+difference of the statements covered by passing and failing test scenarios with run-time events~\cite{agrawal1995fault, jones2005empirical}.
+Additionally, statistical likelihood testcase with a predicate that evaluates to True
+is correlated with failure ~\cite{liblit2005scalable}.\lois{This sentence is somehow incomplete}
+
+%While these metrics can give insight on the possible places where bugs have been located in software systems, they have limitations.
+%Firstly, the metrics mentioned above are not specifically designed for studying bugs in OS kernels.
+%\cappos{Why does this matter?}
+
+%Therefore, they do not take into account the way system calls are invoked by user applications.
+%Moreover, these metrics can not provide information about the accurate location of the bugs within the kernel, which is important to our study.
+%\cappos{Are you going to show that this is true?  Can you explain more about why these do not work?}
+%\cappos{Do existing metrics work on a LOC level?  }
 
 \subsection{Virtualization}
 
@@ -55,7 +87,7 @@ machine is usually fatal. In contrast, Lind with a very small TCB
 OS virtualization techniques can be divided into two categories:
 %Type-I or Type-II virtualization. Examples of Type-I virtualization
 \textit{bare-metal hardware} virtualization, such as VMware ESX Server, Xen,
-LXC~\cite{LXC}, BSDâ€™s jail, Solaris zones, and Hyper-V, and
+LXC~\cite{LXC}, BSDÕs jail, Solaris zones, and Hyper-V, and
 \textit{hosted hypervisor} virtualization such as VMware
 Workstation, VMware Server, VirtualPC and the open-source counterpart
 VirtualBox.
