@@ -57,7 +57,7 @@ protecting the kernel.}
 \subsection{Threat Model}
 
 %The primary =secure system is to restrict a program to a subset of privileges.
-Most systems mediate this access to
+%Most systems mediate this access to
 %the underlying operating system through a set of functions.
 One of the great risks of a kernel exploitation is the access
 it grants a potential attacker to privileged code. In most systems, the kernel
@@ -78,7 +78,7 @@ both intentionally by a malicious party, or unintentionally through contact with
 untrusted programs.
 
 \item An attacker also has the ability to execute code inside
-of a virtualized system, such as an operating system VM or library OS.
+of a virtualization system, such as an operating system VM or library OS.
 
 \item Once vulnerabilities are triggered within kernel code, an attacker can gain the
 privileged access delegated to this part of kernel. This gives an attacker unrestricted
