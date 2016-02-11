@@ -11,10 +11,10 @@ we document the development of such a metric.
 %\lois{This intro section needs work. I'm not happy with what is  here, though I think it is somewhat clearer than what was there before.}
 
 Before a metric can be developed to meet the threat outlined in Section 2, we need to
-establish a better understanding of basic kernel behavior,and review what we know about
+establish a better understanding of basic kernel behavior, and review what we know about
 the risk inherent in privileged code. This section briefly touches on past risk
-metrics, as well as the key hypothesis used to guide our capture and evaluation
-of kernel traces.
+metrics, as well as the key hypothesis used to guide the capture and evaluation
+of kernel traces in our study.
 
 \subsection{Risk Metrics for Identifying Kernel Flaws}
 
@@ -22,7 +22,8 @@ Even though there is no widely accepted method for
 quantifying the safety (or risk) of privileged code, a number of researchers have
 examined the issue from different angles. This section summarizes a few important
 findings. Additional information on past methods
-of assessing potential flaws can be found in the Related Work section (Section 8)
+of assessing potential flaws, in software and operating systems,
+ can be found in the Related Work section (Section 8)
 
 %\cappos{Is this really true?  No one has ever proposed a metric?  We do need to do a more detailed analysis of this.
 %I would vote to remove this sentence regardless...} \lois{ I would agree its probably best just to get rid of the sentence.
@@ -36,17 +37,24 @@ how frequently errors occur in the kernel.
 
 Other work has generated vulnerability
 signatures~\cite{brumley2006towards}, which match all exploits
-of a given vulnerability. Most of this work is based on a mix of static and
+of a given flaw. Most of this work is based on a mix of static and
 dynamic analysis, constraint solving and symbolic execution~\cite{chou2003static}.
+Ozment and Schechter, who studied vulnerabilities in the code base of an OpenBSD
+operating system, determined that a significant extent (61%) of the reported
+vulnerabilities were "foundational," meaning they were introduced prior to the
+initial version studied. They also reported these vulnerabilities
+have a median lifetime of at least 2.6
+years.
 
 These past methods can provide some insight on where bugs may lie.
-However, they rely on statistical methods such as
+However, most rely on statistical methods such as
 negative binomial regression model~\cite{Bug-Location}. What we set out to
 develop was a metric based on empirical study of
 the most critical bugs. This ad-hoc security metric can be used for
 quantitative measurement and evaluation of the kernel bugs,
 and other vulnerabilities at the level of lines of code by checking against
 known kernel bugs.
+
 We believe this metric will provide better understanding of kernel security.
 As a result, a secure interface with an isolation mindset can be designed
 to be exposed to the userspace.
@@ -80,62 +88,54 @@ We began our metric development by positing a hypothesis
 that kernel paths executed by popular applications, such as Web browsers or
 text editors, are likely to contain fewer exploitable bugs than uncommonly used paths.
 As they are frequently used, bugs and vulnerabilities in these common kernel
-paths are more likely to have
-been caught by developers.
+paths are more likely to have been caught by developers.
 
 In putting forth this hypothesis, we narrow our "common paths" definition
 to incorporate widely used system calls that might sometimes include rare arguments
-and flags.The proposed metric also excludes odd execution paths through popular
+and flags. The proposed metric also excludes odd execution paths through popular
 system calls.
 
 \subsection{Foundation for the Metric: Capturing and Evaluating Kernel Traces}
 
 The first step in proving our hypothesis was to capture the lines of kernel
-code executed
-when running applications. The OS kernel code is organized under different
-kernel directories.
+code executed when running applications. The OS kernel code
+is organized under different kernel directories.
 Whenever an application tries to access system resources, such as file
 system, I/O and memory, the kernel code under the corresponding paths is executed. Therefore,
 its code execution reflects the basic behavior of the kernel, in response
-to user application requests.
-Our metric first identified and captured which lines of code in the kernel
-were executed
-when running a user program. We named the resulting captured lines of
-code a \textit{kernel trace}.
-A kernel trace is closely related to the program that generated the trace, so
-by using the kernel traces, a comparison between different
-security systems is possible.
+to user application requests. To better understand this, we identified and
+captured which lines of code in the kernel
+were executed when running a user program, and named them  \textit{kernel traces}.
+Because these traces are closely related to the program that generated them, it is
+possible to compare different security systems.
 To capture the kernel trace, we used \texttt{gcov} \cite{gcov}, a program profiling
 tool that is a standard utility with the GNU compiler collection
-%(GCC)
-suite.
-
+%(GCC) suite.
 
 The second step was to evaluate security aspects of the captured kernel traces,% that we captured.
-using the historical kernel vulnerability reports. We collected a list of
-severe kernel bugs from
-the National Vulnerability Database, the U.S. government repository of
-standards-based vulnerability management data \cite{NVD}. We analyzed the bugs as
-follows. For each bug, we identified the lines of code
-in the kernel that would trigger it. This can be done by examining
-a patch of Linux kernel source code added to fix the bug. From the patch,
-we can identify \textit{which lines of kernel code need to be modified in order to
+using historical kernel vulnerability reports. We collected a list of
+severe kernel bugs from the National Vulnerability Database, the U.S. government repository of
+standards-based vulnerability management data \cite{NVD}. For each bug, we
+identified which lines of code
+in the kernel would trigger by examining the Linux kernel source code
+added as a patch to fix the bug. From the patch,
+we were able to identify \textit{which lines of kernel code need to be modified in order to
 remove the bug}.
 A user program that executes the lines of code changed by a patch to fix a
 kernel bug is considered to have the \textit{potential to exploit that flaw}.
 
 We determined that the lines of code in the kernel would be risky
 if they triggered one or more kernel vulnerability. Other lines of code
-that did not trigger a vulnerability are considered to be safe. We empirically
- labeled the lines of code in the kernel that contain no bugs as "safe lines"
-using the above kernel trace analysis.
-The safe lines of code would then compose the safe portion of the kernel, which can be trusted to build a secure trusted computing base for secure systems.
+that did not trigger a vulnerability are considered to be safe to access.
+These lines of code would then compose the safe portion of the kernel,
+which can be trusted to build a secure trusted computing base for secure systems.
 
 \subsection{Verification of Hypothesis}
 \label{Verification-of-Hypothesis}
 
-To verify our hypothesis that commonly used kernel paths contain fewer bugs,
-we identified these paths as a subset of the total reachable kernel paths as follows.
+We tested the hypothesis that commonly used kernel paths contain fewer bugs,
+by identifying these paths as a subset of the total reachable kernel paths. To do so we
+used three separate techniques.
 
 %\begin{enumerate}
 First, common paths were captured by running the most widely used applications
