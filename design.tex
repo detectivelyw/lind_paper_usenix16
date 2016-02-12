@@ -1,7 +1,13 @@
-\section{A New Design for Building Secure Virtualization Systems}
+\section{Analysis of Current Designs for Secure Virtualization Systems}
 \label{sec.design}
 
-This section discusses how to use the observation
+Many security systems for protecting privileged code have been proposed and
+developed over the years. The challenge for all of these systems is how to
+negotiate between security and the need to provide basic functionality in order to
+allow applications to run. In this section, we explore previous approaches to
+dealing with this safety/usability trade-off
+
+%This section discusses how to use the observation
  that ``commonly used kernel paths'' contain fewer bugs
 (Section {\ref{sec.metric}) to build secure virtualization systems.
 A key idea of our design is that all code \emph{including the complex part
@@ -22,9 +28,16 @@ despite existing potential zero-day bugs within the OS kernel.}
 \label{fig:design}
 \end{figure}
 
-\subsection{Architecture}
+\subsection{Filter SysCalls}
+(yes/no pass)
 
-To execute untrusted applications in a manner that will not trigger bugs
+\subsection {Reimplement Functionality}
+
+\subsection {Hypervisors}
+
+\subsection {Lind-}
+
+execute untrusted applications in a manner that will not trigger bugs
 in the underlying OS kernel, %and cause damage to other parts of the system,
 we must build a virtualization system that can provide isolation and
 containment for any improper operations.
