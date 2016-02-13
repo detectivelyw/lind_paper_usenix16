@@ -1,5 +1,6 @@
 \section{Developing and Assessing a Quantitative Evaluation Metric for Kernel Security}
 \label{sec.metric}
+\cappos{possible intro sentence / paragraph...}
 
 \emph{Key Hypothesis:} Kernel paths that are executed by common applications 
 during everyday use are less likely to contain security flaws.  
@@ -52,6 +53,7 @@ occur in these lines of code.
 \subsection{Experimental Setup}
 
 To test our hypothesis we performed an analysis of Linux kernel version 3.14.1.
+\cappos{Fix the version here please.}
 To trace the kernel, we used \texttt{gcov}~\cite{gcov}.  
 \texttt{gcov} is a program profiling
 tool that is a standard utility with the GNU compiler collection
@@ -128,19 +130,6 @@ possible that additional lines of code must also be executed.
 %that did not trigger a vulnerability would be considered to be safe to access.
 %These lines of code would then compose the common (or safe) portion of the kernel,
 %which can be trusted to build a secure trusted computing base for secure systems.
-\cappos{I'm not sure how we use the fuzzing results here...}
-\textbf{Fuzzing}
-To understand these flaws better, we further examined the reachable lines of 
-code within the kernel using two techniques.  First, 
-we performed system call fuzzing experiments with the Trinity
-system call fuzz tester~\cite{Trinity}. These included 16 child processes
-(Trinity workers) executing each Linux system call with 1 million iterations.
-Second, we used the Linux Test Project (LTP)~\cite{LTP}, a test suite written
-using detailed kernel knowledge.  This test suite is meant to exercise the ...
-
-The (primarily) black box fuzzing technique from Trinity and test suite of
-LTP combine to...
-
 \subsection{Results and Analysis}
 \label{Verification-of-Hypothesis}
 
@@ -210,9 +199,67 @@ below 1:1.
 
 
 
+\textbf{Comparison with other metrics}
+We are not the first to propose a metric for which kernel code may be buggy.
+Many metrics work at a coarser granularity than our work, which focuses on
+individual lines of code.  This is particularly key because at a file 
+granularity, we found that commonly used programs touched parts of
+XX files that contained flaws\cappos{fill in}...  In fact, XX common 
+programs executed functions that later were patched to fix security
+flaws, indicating the need to better localize bugs.
+
+Earlier work by Ozment, et al. \cappos{cite} demonstrated that code that
+had been around longer in the BSD kernel tended to have fewer bugs.  To
+understand how this compares with our metric, we examined the date at which
+each line of code that was changed in a patch was previously modified.  We
+found ...
 
 
-\cappos{I'm leaving the old text here.}
+\cappos{Is this part of the Chou study relevant??  I would otherwise cut this
+text.}
+The study also suggested that the size of kernel source code and the
+maturity of a release also affect how frequently errors occur in the kernel.
+
+Chou, et al.~\cite{PittSFIeld} showed that certain parts of the kernel
+were more vulnerable than others. In particular, device drivers have 
+much higher error rates than those in other parts of the kernel.
+We found that this ...\cappos{fill in}
+
+
+\cappos{I'm not convinced we benefit from doing this.  It seems like we are 
+digressing just to say that this doesn't work.}
+However, this led us to consider that perhaps since drivers are not used
+in many scenarios, code that is unreachable in some situations may have a 
+different vulnerability profile.  To text this, we 
+further examined the reachable lines of 
+code within the kernel using two techniques.  First, 
+we performed system call fuzzing experiments with the Trinity
+system call fuzz tester~\cite{Trinity}. These included 16 child processes
+(Trinity workers) executing each Linux system call with 1 million iterations.
+Second, we used the Linux Test Project (LTP)~\cite{LTP}, a test suite written
+using detailed kernel knowledge.  This test suite is meant to exercise the ...
+
+The (primarily) black box fuzzing technique from Trinity and test suite of
+LTP combine to reach 44.6\% of the kernel, including all 12.4\% of common
+paths.  The occurrence of security in the reachable portion is actually 
+slightly higher than the unreachable portion.  This is true despite
+approximately 1/3 of this code, the commonly-used paths, only containing
+a single flaw.  This means that the rate of bug occurrence in reachable, but
+not commonly-used kernel paths is actually higher than that in unused
+code.  We speculate that this may be because of a higher rate of bug discovery
+in code that is available to execute in diverse configurations.
+
+
+\textbf{Metric Conclusion}
+To summarize, we demonstrated that the metric of looking at commonly-used
+kernel paths provides a statistically significant ($\alpha=0.01$, 
+$\rho=0.0015$) means for predicting where in the kernel exploitable flaws 
+will be found in the future.  For the remainder of the paper, we will 
+focus on using this result to build more secure systems.
+
+
+\cappos{I'm leaving the old text here.  I would cut the remainder of this
+section starting here.}
 The results show that 38.5\% of the total reachable kernel paths are commonly
 used. More importantly, only 2.5\% of the total studied bugs had traces
 in the common paths, while 50\% of the bugs resided in the total reachable
@@ -257,7 +304,7 @@ Table \ref{table:vulnerabilities_commonly_used_kernel_paths}.
 % macrodata-level information of each traversed path for final data analysis.
 %\cappos{I'm not sure what the point of this is...  Also, when are Docker
 %and Lind used in gathering the metric data!?!}}
-% %\lois{transformed to what? And, how?
+% %\loistransformed to what? And, how?
 %
 %\label{fig:datacollection}
 %\end{figure}
@@ -265,16 +312,6 @@ Table \ref{table:vulnerabilities_commonly_used_kernel_paths}.
 %\yanyan{I feel this is a bit early to make this conclusion.}
 %\lois{does the slight wording change answer your concern, Yanyan?}
 
-
-\begin{figure}%[h]
-\centering
-\includegraphics[width=1.0\columnwidth]{diagram/kernelcoverage.png}
-\caption{Percentage of different kernel areas that were reached during
- LTP and Trinity system call fuzzing experiments.
- \yiwen{This figure will be replaced. I am working on a new one that will show 
- where different bugs are located.}}
-\label{fig:coverage}
-\end{figure}
 
 
 %Although the total reachable paths coverage is not 100\% of the entire
@@ -437,16 +474,6 @@ past studies of potential flaws.
 %I would vote to remove this sentence regardless...} \lois{ I would agree its probably best just to get rid of the sentence.
 %But I believe the goal here was to say that there is no widely accepted and used standard method.}
 
-One study of the Linux kernel \cite{PittSFIeld} suggested that certain parts of the kernel
-were more vulnerable than others. Chou et al. demonstrated that some function
-directories, i.e., \texttt{drivers},
-lead to higher error rates in some parts of the kernel than in
-others. The study also suggested that he size of kernel source code and the
-maturity of a release also affect how frequently errors occur in the kernel.
-Other work has generated vulnerability
-signatures~\cite{brumley2006towards}, which match all exploits
-of a given flaw. Most of this work is based on a mix of static and
-dynamic analysis, constraint solving and symbolic execution~\cite{chou2003static}.
 
 Other researchers have attempted to study the lifecycle of vulnerabilities—when they are
 initiated and how long they last. Ozment and Schechter, who studied
@@ -491,4 +518,20 @@ to be exposed to the userspace.
 %\yanyan{I don't think the new metric alerts us tho. maybe say it provides
 %as a guidance which parts are risky?} \cappos{end of text}
 
+
+Other work has generated vulnerability
+signatures~\cite{brumley2006towards}, which match all exploits
+of a given flaw. Most of this work is based on a mix of static and
+dynamic analysis, constraint solving and symbolic execution~\cite{chou2003static}.
+
+
+\begin{figure}%[h]
+\centering
+\includegraphics[width=1.0\columnwidth]{diagram/kernelcoverage.png}
+\caption{Percentage of different kernel areas that were reached during
+ LTP and Trinity system call fuzzing experiments.
+ \yiwen{This figure will be replaced. I am working on a new one that will show 
+ where different bugs are located.}}
+\label{fig:coverage}
+\end{figure}
 
