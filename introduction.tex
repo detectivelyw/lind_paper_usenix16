@@ -3,61 +3,65 @@
 
 Despite the best efforts of programmers to develop systems free of vulnerabilities,
 researchers frequently uncover new flaws in operating system kernels that can be
-triggered by untrusted programs. To block access to these unknown security flaws
+triggered by untrusted programs. To reduce security flaws
 a variety of techniques, including operating system virtualization, library OSes,
 and system call interposition, have been proposed. However, security comparisons
 between diverse systems are often qualitative in nature, making it hard to
-discern which practices actually improve security.
+discern which practices actually improve security.\yanyan{why we need comparisons?}
 
-In this work, we devise a metric that provides a strongly correlated \cappos{check}
-indicator of where bugs will later arise in the Linux kernel. Namely, we demonstrate
+In this work, we devise a metric that provides a strong indication of where bugs will arise in the Linux kernel. Namely, we demonstrate
 that executing lines of kernel code that are not used by popular programs represent
-a substantial security risk. We support this concept by performing a quantitative
+a substantial security risk. We support this hypothesis by performing a quantitative
  analysis of resilience to flaws in two versions of the Linux kernel, and examine
 where within the kernel bugs will later be discovered. We found that only 3-5\%
  \cappos{fix} of flaws occur in commonly used code, despite accounting for
  38-40\% \cappos{check} of the reachable kernel code.
 
-Guided by this metric, we propose the safely-reimplement design pattern, a new
-technique for building virtualization systems. In this design pattern, the operating
-system interface (e.g., POSIX) is re-implemented inside a restricted environment
+Guided by this metric, we propose the safely-reimplement design, a new
+technique for building virtualization systems. In this design, the operating
+system interface (e.g., POSIX) is re-implemented in a restricted environment
 (e.g., a sandbox) that limits kernel calls to only commonly-used paths.
 Creating such a safe space requires building complex operating system functionality
 (e.g., directories and permissions) using only commonly used primitives (e.g.,
-read and writing to a file). However, it allows complex functionality to safely
-be implemented, even if it is buggy or malicious, since it only has access to
-parts of the kernel that are very unlikely to contain flaws. Bugs or failures
-will be contained within the restricted environment. This ensures that the attacker
-will be unable to trigger bugs in less commonly-used kernel paths, even if the
- (likely buggy) operating system interface code contains flaws.
+read and writing to a file). However, it allows complex functionality to be safely
+implemented, even if it is buggy or malicious. 
+%since it only has access to parts of the kernel that are very unlikely
+%to contain flaws.  
+This ensures that an attacker will be unable to trigger bugs in less 
+commonly-used kernel paths. As a result, bugs or failures
+will be contained within the restricted environment.
+%even if the (likely buggy) operating system interface code contains flaws.
 
-Using this design paradigm, we develop a prototype virtualization system capable
-of running untrusted user programs on vulnerable kernel code. Dubbed Lind, the
+Using this design, we develop a prototype virtualization system for
+running untrusted user programs on vulnerable kernel code. Dubbed Lind, the
 prototype adapts two existing technologies-Google's Native Client (NaCl) and
-Seattle's Repy to handle distinctly different tasks. NaCl serves as a computational
+%Seattle's Repy 
+an operating system interface
+to handle distinctly different tasks. NaCl serves as a computational
 module that isolates binaries, providing memory safety for a legacy program like
-Apache while passing the calls to the operating system interface.  As described
-in the design pattern above, the operating system interface, called SafePOSIX,
-is isolated within the Repy sandbox, which forces it to only call common code paths.
-The SafePOSIX reimplements complex operating system functionality in an isolated
-environment provided by the small (8K LOC) Repy sandbox kernel. This provides
+Apache while passing the calls to the operating system interface.  
+%As described in the design above, 
+The operating system interface, called SafePOSIX,
+is isolated within a sandbox that restricts the interface to invoke only common code paths.
+SafePOSIX reimplements complex operating system functionality in an isolated
+environment provided by the small (8K LOC) sandbox kernel. This provides
 straightforward access to the required common kernel paths while allowing more
-complex functionality to be built on top.
-In this manner, Lind can offer enhanced security without losing basic functionality.
+complex functionality to be built.
+As a result, Lind can offer enhanced security without losing basic functionality.
 
 To test the effectiveness of Lind, we replicated 35 kernel bugs in the Linux kernel
 version X.X.X .  We ran these programs in eight different environments, including
-popular commercial systems such as VirtualBox, VMWare Workstation, Docker, LXC,
-KVM, QEMU, as well as the research systems Graphene and Lind. Our results show
+commercial systems VirtualBox, VMWare Workstation, Docker, LXC,
+KVM, QEMU, and research prototypes Graphene and Lind. Our results show
 that applications run in Lind were the least likely to trigger kernel bugs,
 with only one out of the 35 (2.9\%) kernel vulnerabilities tested being found.
-Furthermore, our results show that virtualization systems that use fewer kernel
-paths that are not commonly executed, tend to have better resilience to vulnerabilities
+Furthermore, our results show that virtualization systems that use kernel
+paths that are commonly executed, tend to have better resilience to vulnerabilities
 in the underlying kernel.  \cappos{check}
 
 In summary, the main contributions of this paper are as follows:
 
-\begin{itemize}
+\begin{itemize}\setlength\itemsep{0em}
 \item
 We propose and test a novel metric for quantitatively measuring and evaluating
 the security of privileged code, such as in an OS kernel.
@@ -68,7 +72,7 @@ as predicted by our metric.
 
 \item
 We apply the metric to a secure design that accesses only commonly-used
-kernel paths. System calls from uncommon paths are reimplemented within a
+kernel paths. System calls from uncommon paths are reimplemented in a
 restricted environment.
 
 \item
@@ -82,20 +86,19 @@ we examined.
 \end{itemize}
 
 The remainder of this paper is organized as follows.
-Section \ref{sec.motivation-and-background} provides key background material on
+Section \ref{sec.motivation-and-background} provides background on
 how the kernel functions and why it is vulnerable to attack.
-Section \ref{sec.metric}, introduces our proposed kernel security metric and how
+Section \ref{sec.metric} introduces our proposed kernel security metric and how
 we verified our central hypothesis. The
-design pattern derived from this metric, as well as how it compares to other kernel
+design derived from this metric, as well as how it compares to other kernel
 protection strategies,
-is then discussed in Section \ref{sec.design}. Section \ref{sec.implementation},
+is discussed in Section \ref{sec.design}. Section \ref{sec.implementation}
 describes the implementation of Lind. In Section \ref{sec.evaluation} the security and
 efficiency of Lind is tested against other virtualization systems.
 Section \ref{sec.limitation} outlines the current
 limitations of the Lind prototype and possible future initiatives.
 Finally, Section \ref{sec.related_work} reviews existing tools and techniques that share
-Lind's security techniques and goals, and we conclude our remarks in
-Section \ref{sec.conclusion}.
+Lind's security techniques and goals, and Section \ref{sec.conclusion} concludes.
 
 
 
