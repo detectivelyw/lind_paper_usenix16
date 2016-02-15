@@ -50,7 +50,7 @@ occur in these lines of code.
 %and flags. The proposed metric also excludes odd execution paths through popular
 %system calls.
 
-\subsection{Experimental Setup}
+\subsection{Experiment Setup}
 
 To test our hypothesis we performed an analysis of Linux kernel version 3.13.0.
 %\cappos{Fix the version here please.}
@@ -184,33 +184,47 @@ possible that additional lines of code must also be executed.
 %
 %\subsubsection{Results and Evaluation}
 We now examine our hypothesis given traces for the commonly-used kernel
-paths and the set of lines that were patched to fix bugs.  We found that only
+paths and the set of lines that were patched to fix bugs.  We found that 
 only 1 of the 40 kernel bugs falls within the commonly-used paths, despite 
 the commonly-used kernel paths consisting of 12.4\% of the kernel.  
 To examine the statistical significance of these findings we did the following 
 analysis.
-\cappos{Draft statistical analysis text from Dan.  Needs work...}
-For analysis, we chose to model the rate of defect occurrence per LOC as
-drawn from a Poisson distribution since we believe each bug occurs
-independently, at a constant rate, proportional to the number of lines of
-code, and they do not overlap each other. This is consistent with the work
-of Mayer, et. al.\cappos{Convert the following to a citation: (Mayer, Alan, and Alan Sykes. "A probability model for analysing
-complexity metrics data." Software Engineering Journal 4.5 (1989):
-254-258.)}. Our hypothesis is that bugs occur at different rates SET-A and
-SET-B. To validate our hypothesis we tested the null-hypothesis that bugs
-occur at the same rate in SET-A and SET-B. We used a Uniformly Most
-Powerful unbiased (UMPU) test \cappos{Convert this too please: (Shiue, 
-Wei-Kei, and Lee J. Bain. "Experiment
-size and power comparisons for two-sample Poisson tests." Applied
-Statistics (1982): 130-134.)} to allow comparisons of unequally sized code
-frames. We used the R package rateratio.test to perform the calculation. At
-a significance level of $\alpha=0.01$, the test was significant at
-$\rho=0.0015$, rejecting the null hypothesis that both sets of bugs are 
-drawn from the
-same distribution. The test also reported a 95\% confidence interval of
-0.002-0.525 indicating that ratios between bug-rates in each SET are well
-below 1:1.
 
+%\cappos{Draft statistical analysis text from Dan.  Needs work...}
+We assume that kernel bugs occur at an average rate proportional to the 
+number of lines of kernel code, and independently of the time since the last 
+bug occurrence. Furthermore, the rate of defect occurrence per LOC 
+follows a Poisson distribution. 
+%For analysis, we chose to model the rate of defect occurrence per LOC as
+%drawn from a Poisson distribution since we believe each bug occurs
+%independently, at a constant rate, proportional to the number of lines of
+%code, and they do not overlap each other. 
+This is consistent with the work of Mayer, et. al.~\cite{mayer1989probability}. 
+%\cappos{Convert the following to a citation: (Mayer, Alan, and Alan Sykes. 
+%"A probability model for analysing complexity metrics data." Software 
+%Engineering Journal 4.5 (1989):254-258.)}. 
+Our hypothesis is that bugs occur at different rates in the kernel. Without 
+loss of generality, we assume that the kernel can be divided into two sets, 
+$A$ and $B$, where bugs occur at rates $\lambda_A$ and 
+$\lambda_B$, and $\lambda_A \neq \lambda_B$. Given the null-hypothesis 
+that the rate of defect occurrences is the same in set $A$ and $B$ 
+(or bugs in $A$ and $B$ are drawn from the same Poisson distribution), 
+%To validate our hypothesis we tested the null-hypothesis that bugs
+%occur at the same rate in SET-A and SET-B. 
+we used the Uniformly Most Powerful Unbiased (UMPU) test~\cite{shiue1982experiment} 
+%\cappos{Convert this too please: (Shiue, 
+%Wei-Kei, and Lee J. Bain. "Experiment
+%size and power comparisons for two-sample Poisson tests." Applied
+%Statistics (1982): 130-134.)} 
+to compare unequal-sized code blocks. \yanyan{why code has to be equal sized?}
+%We used the R package rateratio.test to perform the calculation. 
+At a significance level of $\alpha=0.01$, the test was significant at
+$\rho=0.0015$, rejecting the null-hypothesis. 
+%that both sets of bugs are drawn from the same distribution. 
+The test also reported a 95\% confidence interval of
+0.002-0.525, indicating that ratios between bug-rates in each set are well
+below 1. \yanyan{which set is the risky set? e.g., we can say the ratio 
+$\lambda_A / \lambda_B<<1$ so that B is the risky set.}
 
 
 \textbf{Comparison with other metrics}
@@ -222,7 +236,7 @@ XX files that contained flaws\cappos{fill in}...  In fact, XX common
 programs executed functions that later were patched to fix security
 flaws, indicating the need to better localize bugs.
 
-Earlier work by Ozment, et al. \cappos{cite} demonstrated that code that
+Earlier work by Ozment, et al.~\cite{ozment2006milk} demonstrated that code that
 had been around longer in the BSD kernel tended to have fewer bugs.  To
 understand how this compares with our metric, we examined the date at which
 each line of code that was changed in a patch was previously modified.  We
@@ -489,7 +503,7 @@ past studies of potential flaws.
 %But I believe the goal here was to say that there is no widely accepted and used standard method.}
 
 
-Other researchers have attempted to study the lifecycle of vulnerabilitiesÑwhen they are
+Other researchers have attempted to study the lifecycle of vulnerabilitiesï¿½when they are
 initiated and how long they last. Ozment and Schechter, who studied
 vulnerabilities in the code base of an OpenBSD
 operating system, determined that a significant extent (61%) of the reported
@@ -542,7 +556,7 @@ dynamic analysis, constraint solving and symbolic execution~\cite{chou2003static
 \begin{figure}%[h]
 \centering
 \includegraphics[width=1.0\columnwidth]{diagram/kernelcoverage.png}
-\caption{Percentage of different kernel areas that were reached during
+\caption{\small Percentage of different kernel areas that were reached during
  LTP and Trinity system call fuzzing experiments.
  \yiwen{This figure will be replaced. I am working on a new one that will show 
  where different bugs are located.}}
