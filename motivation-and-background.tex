@@ -1,18 +1,18 @@
 \section{Goals and Threat Model}
 \label{sec.motivation-and-background}
 
-Our goal in this work is to use our metric to understand how to better design
+Our goal in this work is to use our metric to guide better design
 security systems, such as virtual machines.  Specifically, we focus on 
 situations where there is a \emph{host OS} that contains vulnerabilities
-than an attacker would like to exploit.  To try to combat this, 
-code is executed inside of a \emph{security system}, such as a guest OSVM, 
+that an attacker could exploit.  To combat this, 
+code is executed in a \emph{security system}, such as a guest OS VM, 
 system call interposition module, or library OS.  The attacker is able to
-run an \emph{attack program} inside of this security system with the goal of
+run an \emph{attack program} in this security system with the goal of
 exploiting an unpatched vulnerability in the host OS. 
 
 An attacker could potentially take two approaches to achieve their
 goal.  First, the attack program could exploit a flaw in the host OS by 
-performing an action inside of the security system that triggers a flaw in
+performing an action in the security system that triggers a flaw in
 the host OS.  Effectively, the attacker is taking advantage of the security 
 system utilizing paths in the kernel which have vulnerabilities.
 Second, the attack program could exploit a flaw in the security system to 
@@ -22,22 +22,23 @@ the attacker to trigger a known expolit.  We discuss both of these attack
 scenarios in this work.
 
 
-However, we do consider several potential solutions out of scope of this
+Several potential solutions are out of scope of this
 paper.  We do not compare with solutions that do not run on a full-fledged 
 privileged operating system, such as virtualization that uses a 
 hypervisor~\cappos{cite Xen, etc.} or hardware-based virtualization 
-solution\cappos{cite NoHype}.  We will need to do more measurement and analysis
+solution\cappos{cite NoHype}. \yanyan{because they don't cover all kernel paths?} 
+We will need to do more measurement and analysis
 in future work to see if security flaws in these systems also fall along
 paths in the privileged functionality that are not commonly-used by popular
 programs.
 
 To summarize, our threat model assumes:
 
-\begin{itemize}
+\begin{itemize}\setlength\itemsep{0em}
 \item The attacker knows about one or more unpatched vulnerabilities in the 
 host OS.
 
-\item The attacker is permitted to execute code inside of the security
+\item The attacker is permitted to execute code in the security
 system.
 
 \item If the attack program can trigger a vulnerability in any privileged code,
