@@ -3,28 +3,30 @@
 
 Many security systems for protecting privileged code have been proposed and
 developed over the years. The challenge for all of these systems is how to
-negotiate between security and the need to provide basic functionality in order to
-allow applications to run. In this section, we explore previous approaches to
-dealing with this safety/usability trade-off
+balance security and functionality for applications. In this section, we explore previous approaches to
+dealing with this safety/usability trade-off.
 
-%This section discusses how to use the observation
+\yanyan{the two paragraphs are disconnected.}
+This section discusses how to use the observation
  that ``commonly used kernel paths'' contain fewer bugs
 (Section {\ref{sec.metric}) to build secure virtualization systems.
 A key idea of our design is that all code \emph{including the complex part
-of the operating system API} should have a very small TCB that accesses only
+of the operating system interface} should have a very small TCB that accesses only
 commonly used kernel paths.
 Any complex or possibly risky system functions
-are reimplemented using memory-safe code within a sandbox. In this manner, any bugs
-or failures within the implementation of these complex system functions
-are contained by the sandbox. As a result, untrusted code would not be able to
+are reimplemented using memory-safe code in a sandbox. 
+%In this manner, any bugs
+%or failures within the implementation of these complex system functions
+%are contained by the sandbox. 
+As a result, untrusted code would not be able to
 trigger sensitive and risky portions of the kernel.
 
 
 \begin{figure}%[h]
 \centering
 \includegraphics[width=1.0\columnwidth]{diagram/lind_secure_design_new.png}
-\caption{``Safe-Reimplementation'' design to ensure predictable execution of untrusted user codes
-despite existing potential zero-day bugs within the OS kernel.}
+\caption{\small ``Safe-Reimplementation'' design to ensure predictable execution of untrusted user code
+despite existing potential zero-day bugs in the OS kernel.}
 \label{fig:design}
 \end{figure}
 
@@ -35,9 +37,9 @@ despite existing potential zero-day bugs within the OS kernel.}
 
 \subsection {Hypervisors}
 
-\subsection {Lind-}
+\subsection {Lind}
 
-execute untrusted applications in a manner that will not trigger bugs
+To execute untrusted applications in a manner that will not trigger bugs
 in the underlying OS kernel, %and cause damage to other parts of the system,
 we must build a virtualization system that can provide isolation and
 containment for any improper operations.
@@ -45,19 +47,24 @@ One approach to building such a system is to place it entirely in the userspace,
 and to restrict both the size of the sandbox kernel and its access to the
 OS kernel (Figure \ref{fig:design}).
 This approach has advantages over others that require modifications to
-the OS kernel itself, as it avoids the risk of threat escalation. If modified modules
-are inside the OS kernel, they have kernel privileges that could allow attacks
+the OS kernel. 
+%as it avoids the risk of threat escalation. 
+If a modified modules is in the OS kernel and is compromised, it exposes 
+kernel privileges that could allow attacks
 on the underlying system, as well as any applications run on top of it.
 
 As shown in Figure \ref{fig:design}, our secure virtualization system
 has two components.
 The first is a computation module, which performs functions like type checking,
-object creation, and garbage collection. The second is a library OS that
+object creation, and garbage collection. \yanyan{at this point I'm confused why
+we need a compute module. I think Sec 4.4.1 answers this well (run binary code).
+It would work better if 4.4.1 is moved here.}
+The second is a library OS that
 serves requests to access the OS kernel.
 Together these components can complete the requirements of running user code.
 First, the system invokes the computation module to perform its operations,
 and, if there are riskier calls, the computation module directs those requests to our
-library OS.The library OS then responds to the system call requests and
+library OS. The library OS then responds to the system call requests and
 return results to the user code, if the requests are granted.
 
 \subsubsection{The Computation Module}
@@ -83,7 +90,7 @@ writing data to the file system
 and communicating with the network.  The kernel utilizes the most simplistic calls
 possible with the most
 basic arguments. In the example above, the file system API only need to provide a way
-to write data to storage.  It need not provide a directory abstraction, the
+to write data to storage. \yanyan{where is the example?} It need not provide a directory abstraction, the
 concept of file permissions, links, or even the concept of multiple files.
 
 %It should have a set of capabilities that enable the construction of essential and more complicated functions.
@@ -94,7 +101,7 @@ concept of file permissions, links, or even the concept of multiple files.
 %Furthermore, the set of arguments used for each call is also highly restricted.
 
 The system API safe reimplementation is a set of more complicated system calls
-derived from functions within the sandbox kernel.
+derived from functions in the sandbox kernel.
 We reimplement those system calls because we do not want this potentially risky user code
 to have direct access to the underlying OS kernel.
 Instead, our reimplementation layer serves as a mediator between the user code
@@ -107,6 +114,8 @@ If there is a bug in this function, rather than rely on the kernel code paths
 for symbolic links, our sandbox system will implement the incorrect behavior.
 This denies the code the privileged access to the system the OS kernel does.
 As a result, instead of creating a security issue, the application will just fail.
+\yanyan{this paragraph feels a bit weak. instead of blocking or denying, do 
+we do anything else?}
 
 With the computation module and the library OS module, unmodified user code is able to run on top of our designed system.
 It is important to note that our design does not rely on any specific technique or tool, and it is possible
@@ -122,7 +131,7 @@ In reviewing our design, some fundamental questions could be raised about the du
 "Why is one not enough?"" And, "If two is good, why not use three or more?""
 The answer to the first question is that the kernel interface is extremely rich and hard to protect.
 In order to have minimal impact on the kernel, as well as provide sufficient API for legacy applications,
-we need to have one sandbox focuses on protecting the kernel and providing POSIX API,
+we need to have one sandbox focuses on protecting the kernel and providing POSIX API.
 With two sandboxes, one serves as the computation module,
 while the other one is the library OS module. As to the second question,
 which could be rephrased as ``why not sandbox the sandbox kernel TCB and get more security?,''
@@ -131,3 +140,5 @@ even if limited, access to system resources, such as memory, and storage, thread
 So even if we were to sandbox the sandbox kernel and have additional sandboxes,
 the one at the bottom level will still access the OS kernel in a similar way.
 Thus, having multiple sandboxes does not provide any extra security benefits.
+\yanyan{it's better to tie in with earlier paragraphs and talk about why we need 
+computation + lib OS. we normally don't do Q\&A like this.}
