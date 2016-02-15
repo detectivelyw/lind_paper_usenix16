@@ -44,19 +44,20 @@ Apache while passing the calls to the operating system interface.
 The operating system interface, called SafePOSIX,
 is isolated within a sandbox that restricts the interface to invoke only common code paths.
 SafePOSIX reimplements complex operating system functionality in an isolated
-environment provided by the small (8K LOC) sandbox kernel. This provides
+environment provided by a small (8K LOC) sandbox kernel. This provides
 straightforward access to the required common kernel paths while allowing more
 complex functionality to be built.
-As a result, Lind can offer enhanced security without losing basic functionality.
+As a result, Lind can offer enhanced security without sacrificing basic functionality.
 
-To test the effectiveness of Lind, we replicated 35 kernel bugs in the Linux kernel
-version X.X.X .  We ran these programs in eight different environments, including
+To demonstrate the effectiveness of Lind, we replicated 35 kernel bugs in the Linux kernel
+version X.X.X.  We ran these programs \yanyan{what are these programs? 35 kernel 
+bugs?} in eight different environments, including
 commercial systems VirtualBox, VMWare Workstation, Docker, LXC,
 KVM, QEMU, and research prototypes Graphene and Lind. Our results show
 that applications run in Lind were the least likely to trigger kernel bugs,
 with only one out of the 35 (2.9\%) kernel vulnerabilities tested being found.
-Furthermore, our results show that virtualization systems that use kernel
-paths that are commonly executed, tend to have better resilience to vulnerabilities
+Furthermore, our results show that virtualization systems that use commonly 
+executed kernel paths tend to have better resilience to vulnerabilities
 in the underlying kernel.  \cappos{check}
 
 In summary, the main contributions of this paper are as follows:
@@ -81,22 +82,22 @@ the reimplementation design and a strictly controlled access to the kernel
 through a very small trusted computing base.
 
 \item
-We test Lind and find it triggers only one (2.9\%) of the kernel vulnerabilities
+We evaluate Lind and find it triggers only one (2.9\%) of the kernel vulnerabilities
 we examined.
 \end{itemize}
 
 The remainder of this paper is organized as follows.
 Section \ref{sec.motivation-and-background} provides background on
-how the kernel functions and why it is vulnerable to attack.
+how the kernel functions and its vulnerabilities.
 Section \ref{sec.metric} introduces our proposed kernel security metric and how
-we verified our central hypothesis. The
+we verified our key hypothesis. The
 design derived from this metric, as well as how it compares to other kernel
 protection strategies,
 is discussed in Section \ref{sec.design}. Section \ref{sec.implementation}
 describes the implementation of Lind. In Section \ref{sec.evaluation} the security and
 efficiency of Lind is tested against other virtualization systems.
-Section \ref{sec.limitation} outlines the current
-limitations of the Lind prototype and possible future initiatives.
+Section \ref{sec.limitation} outlines the 
+limitations of Lind and possible future initiatives.
 Finally, Section \ref{sec.related_work} reviews existing tools and techniques that share
 Lind's security techniques and goals, and Section \ref{sec.conclusion} concludes.
 
