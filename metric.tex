@@ -52,62 +52,53 @@ occur in these lines of code.
 
 \subsection{Experiment Setup}
 
-To test our hypothesis we performed an analysis of Linux kernel version 3.13.0.
+To test our hypothesis we performed an analysis of two different versions of
+the Linux kernel, version 3.13.0 and 3.14.1.  Our findings for these 
+versions are quantitatively and qualitatively similar, so we report on 
+the results for 3.13.0 in this section and use 3.14.1 in our evaluation.
 %\cappos{Fix the version here please.}
 To trace the kernel, we used \texttt{gcov}~\cite{gcov}.  
 \texttt{gcov} is a program profiling
 tool that is a standard utility with the GNU compiler collection
 (GCC) suite that indicates which lines of kernel code are executed as an
 application executes.
-\cappos{I'm confused about why we have different bug sets for this section and
-section 6.  Aren't they using the same kernel version?}
-\yiwen{The bug datasets are different for this section and section 6. And they are targeting 
-two different kernel versions. One reason is these are two different studies conducted at 
-different times. Another reason is that we do not want people to think our evaluation is 
-tailored to what we have found in the metrics section. Using a different dataset for section 6 
-provides a cross validation, which makes our results more convincing.}
 
 \textbf{Commonly-Used Kernel Paths}
 To capture the commonly-used kernel paths, we used two strategies concurrently.
 First, we attempted to capture the normal use behavior of popular applications.
-To do this, two students used each of the 
-applications in the 200 most popular Debian packages~\cite{Top-Packages} for 
-Debian version 7.0. 
-Since many such packages are libraries that other programs
-depend on, this resulted in using 50 \cappos{Exactly 50?} \yiwen{Yes. Exactly 50. We chose to stop when we have 50 of them working.} applications.
+To do this, two students used the 
+applications in the 50 most popular Debian packages~\cite{Top-Packages} 
+(omitting libraries) for Debian version 7.0. 
+%Since many such packages are libraries that other programs
+%depend on, this resulted in using 50 \cappos{Exactly 50?} \yiwen{Yes. Exactly 50. We chose to stop when we have 50 of them working.} applications.
 The students used each application for its designed
 task (e.g., writing, spell checking, and then printing a letter in a text
 editor, or recoloring and adding a caption to a picture in image processing 
 software).  In instances where there were two applications that performed a 
 similar task (e.g., Mozilla Firefox and Google Chrome), both programs were
-used to perform similar tasks.  These tests were completed during a discrete 
-period of 20 hours over 5 days \cappos{what are you trying to say by 
-saying this?  What do you mean by discrete?} 
-\yiwen{want to give readers an idea of how long our experiments took. 
-And by discrete, I mean the student was not working 20 hours continuously. 
-The 20 hours time was accumulated during 5 days.}
+used to perform similar tasks.  These tests were completed over 20 hours of
+total use over 5 calendar days. 
+\cappos{Were the results the same for the two students?  What percent of LOC
+varied?}
 
 The second strategy was to try to capture the total range of uses for a 
 specific computer user.  Hence the student used the workstation as their
 desktop machine for a 1 week period.  They worked on their homework, did
 software development, communicated with friends and family, and performed
-similar tasks using this system.  Whenever software was needed (e.g., Skype),
+similar tasks using this system.  Whenever software was needed 
 it was installed and then used. 
-\yiwen{The above description is mostly correct. The student did use the machine to 
-do homework, programming, accessing the internet, and using emails. The student 
-did not use Skype in our test. }
 
 Using these two strategies together, we obtained a profile of the lines of
 kernel code (which we make publicly available~\cappos{cite}), that indicates
 a set of commonly-used kernel paths.
 
-\cappos{What does the following text actually mean?}
-\yiwen{The following file system operations should belong to the second strategy about 
-uses for a specific computer user. The student performed file system operations, like creating 
-a folder, deleting a file, etc. during his daily use of the computer, which is part of our test.}
-Several other operations needed to access common paths were conducted, including
-intensive file management tasks to create/read/update or delete files and
-directories from the underlying filesystem. 
+%\cappos{What does the following text actually mean?}
+%\yiwen{The following file system operations should belong to the second strategy about 
+%uses for a specific computer user. The student performed file system operations, like creating 
+%a folder, deleting a file, etc. during his daily use of the computer, which is part of our test.}
+%Several other operations needed to access common paths were conducted, including
+%intensive file management tasks to create/read/update or delete files and
+%directories from the underlying filesystem. 
 
 %The first step in proving our hypothesis was to capture the lines of kernel
 %code executed when running applications. 
