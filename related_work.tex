@@ -9,7 +9,7 @@ that aim to ensure the safety of privileged code in user space and kernel space.
 
 %\lois{Do all of your subtopics fall into this one category? If not,
 
-\textbf{Other Kernel Safety Metrics.}
+\textbf{Safety Metrics.}
 Earlier research metrics have suggested a number
 of approaches to quantifying risk in the OS kernel.
 Palix found that \texttt{drivers} contains the
@@ -38,6 +38,21 @@ is correlated with failure~\cite{liblit2005scalable}.
 %Moreover, these metrics can not provide information about the accurate location of the bugs within the kernel, which is important to our study.
 %\cappos{Are you going to show that this is true?  Can you explain more about why these do not work?}
 %\cappos{Do existing metrics work on a LOC level?  }
+
+Prior work has also looked at the evolution of safety defects. For example, 
+Ozment et al.~\cite{ozment2006milk} and Li et al.~\cite{li2006have} have 
+both studied how the numbers of defects and security issues evolved over 
+time. Ozment reported a decrease in the rate at which new vulnerabilities 
+are reported by studying the age of vulnerabilities in OpenBSD. Li 
+reported an increase in security bugs by studying the number and relative 
+percentage of bugs. However, neither of these two approaches allowed 
+an investigation on how vulnerabilities are distributed. Our work is
+motivated by Schroter et al.~\cite{schroter2006predicting} and Neuhaus 
+et al.~\cite{neuhaus2007predicting}. Schroter observed that bugs and
+failures are correlated in code. Neuhaus discovered that in Mozilla's code base
+some domains are more risky than others, and being associated with a 
+particular domain increases the risk of having a vulnerability. In this work, 
+we apply similar insight to OS kernel design.
 
 \textbf{Virtualization.}
 \textit{Language-based virtualization.}
@@ -164,22 +179,22 @@ interacts with the system call execution engine
 %Approaches for delegation and filtering have been extensively studied. For example,
 %along with their respective tradeoffs between security and
 %performance.
-Janus (J2) \cite{Janus0:96, Janus:99} is an SCI solution for confining untrusted 
-applications that includes system call filtering and sandboxing mechanisms. 
-Garfinkel et al. in another effort, introduces Ostia \cite{SCI-04}, where system 
-calls are delegated to agents that enforce the policies. 
+%Janus (J2) \cite{Janus0:96, Janus:99} is an SCI solution for confining untrusted 
+%applications that includes system call filtering and sandboxing mechanisms. 
+%Garfinkel et al. in another effort, introduces Ostia \cite{SCI-04}, where system 
+%calls are delegated to agents that enforce the policies. 
 %Ostia resolves the tight dependencies with the underlying OS through process emulation and
 %the agents model at the userspace. 
 Issues in SCI include the difficulty of appropriately replicating OS semantics,
 multi-threaded applications that cause race conditions, or indirect paths to resources that are often overlooked.
 In addition, system calls that are denied can cause inconsistencies~\cite{Problems-SCI}.
 %
-Recently, Wang et al. \cite{Jitk} discuss the issues of traditional SCI systems
-in the context of in-kernel interpreters such as Seccomp, which is used by several
-security critical applications, including Chrome, OpenSSH and Tor.
-The authors propose Jitk architecture to avoid the weaknesses in traditional
-kernelspace system call interceptors that arise from the unforeseen bugs within
-the interceptors. 
+%Recently, Wang et al. \cite{Jitk} discuss the issues of traditional SCI systems
+%in the context of in-kernel interpreters such as Seccomp, which is used by several
+%security critical applications, including Chrome, OpenSSH and Tor.
+%The authors propose Jitk architecture to avoid the weaknesses in traditional
+%kernelspace system call interceptors that arise from the unforeseen bugs within
+%the interceptors. 
 %Jitk provides a formal verification tool that ensure the
 %correct translation of the userspace submitted code, e.g. 
 %the  the BSD packet filter and INET-DIAG.
@@ -204,9 +219,9 @@ code analysis. In this approach, memory
 writes are protected and code jumps cannot access predefined memory of
 other programs to execute their code.
 
-The preliminary design of SFI was build on RISC
-architectures. The authors of PittSFIeld \cite{PittSFIeld} optimized and
-extended the original SFI to support CISC architectures.
+%The preliminary design of SFI was build on RISC
+%architectures. The authors of PittSFIeld \cite{PittSFIeld} optimized and
+%extended the original SFI to support CISC architectures.
 %For this purpose, the source instructions are padded with no-ops to fit, i.e.
 %in the 16-byte x86 byte chunk alignment, where a call instruction is
 %appended. A sequence of instructions form a instruction streams that
@@ -218,14 +233,14 @@ extended the original SFI to support CISC architectures.
 %extendability of object-oriented programming languages to eliminate
 %the need for remote calls to achieve high throughput.
 %
-Nooks \cite{Nooks:03} is another SFI-based solution that provides
-a protected environment for running device drivers by isolating kernel
-modules. 
+%Nooks \cite{Nooks:03} is another SFI-based solution that provides
+%a protected environment for running device drivers by isolating kernel
+%modules. 
 %Nooks' runtime environment is located within the
 %kernel and it includes the majority of drivers that needs to be protected
 %from each other.
-These SFI containers embody the extensions to demonstrate the integrity
-validation check in conjunction with the host environment resources.
+%These SFI containers embody the extensions to demonstrate the integrity
+%validation check in conjunction with the host environment resources.
 %i.e. network nook and video nook are two protection
 %domains without the possibility for memory writes outside their
 %protection domain. The Nook layer function as a reference monitor
@@ -256,7 +271,7 @@ validation check in conjunction with the host environment resources.
 
 Google provided Native Client (NaCl) \cite{NaCl-09} for
 Chrome browser to allow native executable code to be run directly in a
-browser using the PittSFIeld semantics. NaCl prevents suspicious code
+browser. NaCl prevents suspicious code
 from memory corruption or direct access to the underlying system
 resources. For this purpose NaCl loads untrusted modules from the
 trusted modules into two different address spaces, where in most SFI
