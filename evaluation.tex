@@ -9,12 +9,13 @@ protecting the OS kernel, we conducted a series of experiments designed to answe
 four fundamental questions:
 
 \begin{itemize}
-\item How does Lind compare to other virtualization systems
-in protecting against historical Linux kernel bugs?
+\item \textit{How does Lind compare to other virtualization systems
+in protecting against historical Linux kernel bugs?}
 (\S{\ref{Linux-Kernel-Bug-Test-and-Evaluation}})
+\yiwen{I am wondering if we should say ``zero-day bugs'' instead of ``historical bugs''.}
 
-\item How much of the underlying kernel code is exposed and, therefore,
-vulnerable in different virtualization systems?
+\item \textit{How much of the underlying kernel code is exposed and, therefore,
+vulnerable in different virtualization systems?}
 (\S{\ref{Reachable-Kernel-Trace-Analysis-for-Different-Virtualization-Systems}})
 %\yiwen{This question may need to be refined. Why is the question important to the readers?
 %What is the take-away? The reachable kernel paths reflect an important security property
@@ -23,70 +24,42 @@ vulnerable in different virtualization systems?
 %here at addressing your concerns. I agree its an important point to emphasize correctly.
 %We might need to tweak it a bit more.}
 
-\item If Lind's Repy sandbox kernel has bugs, how much of a threat does this pose?
+\item \textit{If Lind's SafePOSIX reimplementation has bugs, how much of a threat does this pose?}
 (\S{\ref{Reachable-Kernel-Trace-Analysis-for-Repy-Sandbox}})
 
-\item In our implemented prototype Lind, what would be the expected overhead in
-real-world applications?
+\item \textit{In our implemented prototype Lind, what would be the expected overhead in
+real-world applications?}
 (\S{\ref{Performance-Evaluation}})
 \end{itemize}
 
-This section describes the set-up of our experiment, and argues
-how the results support the merits of our secure design and its Lind prototype.
+This section describes the set-up of our experiment, 
+shows our experimental results, 
+and argues how the results support the merits of our secure design and its Lind prototype.
 %\yiwen{If we claim the above sentence, then we need to say more about our secure design,
 %which can be hard. Possibly remove ``our secure design'' and just keep ``Lind
 %prototype.''}
 %\lois{There might be some value to keeping the phrase in, since we
 %are emphasizing the design and not the product.}
 
-\subsection{Evaluation Methodology}
+\subsection{Experiment Methodology}
 
 Our evaluation strategy was to directly compare the performance of Lind
 against
 seven other existing virtualization systems\textendash VirtualBox, VMWare
 Workstation,
-Docker, LXC, QEMU, KVM and Graphene. We also compared it against Native Linux and used
+Docker, LXC, QEMU, KVM and Graphene. 
+\yiwen{Should we talk about why we choose those systems and give some background information 
+about them to readers who might not be familiar with some of them? 
+It might be useful to state that we did pick up those systems in a systematic way.}
+We also compared it against Native Linux and used
 those results as a baseline for evaluation. Because Native Linux is the
 original OS,
 without virtualization and additional protection, this data helps to
 clarify the security benefits of Lind,
 as well as whatever performance overhead costs the system may incur.
 
-\textbf{Experimental setup.}
-We conducted our experiments under Linux kernel 3.14.1, using the following
-protocols:
 
-\begin{itemize}
-\item We identified and examined a list of  69 historical bugs that have
-specifically
-targeted Linux kernel 3.14.1 \cite{CVE-Datasource}. By analyzing
-security kernel patches for those bugs,
-we identified the lines of code in the kernel that correspond to each
-one.
-
-\item In order to test if a bug can be triggered, we created or located C
-code capable of exploiting each of the kernel bugs \cite{Exploit-Database}.
-We were only able to trigger and obtain results for
-35 out of the 69 bugs in our experiments, either because of a difficulty in
-clearly determining if triggering had occurred, or an inability,
-at this time, to find code to trigger them. We decided to focus our study on
-only these bugs and leave the other, more complex ones, to future work and analysis.
-
-\item We compiled and ran the exploit C code under each virtualization
-system to
-obtain their kernel traces, and then used our kernel trace safety metric to
-determine
-if a specific bug was triggered.
-
-\item Lastly, to analyze the reachable kernel paths for each of the
-virtualization systems,
-we conducted system call fuzzing (similar to our approach in \S{\ref{sec.metric}}) to obtain
-the kernel trace in each system.
-We repeated the system call fuzzing within Repy to obtain its
-kernel trace as well.
-\end{itemize}
-
-\subsection{Analysis of Study Results}
+\subsection{Experimental Setup, Results and Analysis}
 
 As dictated by the study questions listed above, our tests were conducted
 and appraised primarily from a security perspective.
@@ -289,7 +262,26 @@ not triggered).}
 \label{table:trigger_vulnerabilities}
 \end{table*}
 
+\textbf{Setup.}
+To evaluate how well each virtualization system protect the Linux kernel against 
+reported zero-day bugs, we identified and examined a list of  69 historical bugs that have
+specifically targeted Linux kernel 3.14.1 \cite{CVE-Datasource}. 
+By analyzing security kernel patches for those bugs,
+we identified the lines of code in the kernel that correspond to each one. 
 
+In order to test if a bug can be triggered, we created or located C
+code capable of exploiting each of the kernel bugs \cite{Exploit-Database}.
+We were only able to trigger and obtain results for 35 out of the 69 bugs in our experiments, 
+either because of a difficulty in clearly determining if triggering had occurred, or an inability,
+at this time, to find code to trigger them. We decided to focus our study on
+only these bugs and leave the other, more complex ones, to future work and analysis.
+
+We compiled and ran the exploit C code under each virtualization system to
+obtain their kernel traces, and then used our kernel trace safety metric to
+determine if a specific bug was triggered.
+
+\noindent
+\textbf{Results.}
 We found that a substantial number of bugs could be triggered in existing
 virtualization systems {See Table \ref{table:trigger_vulnerabilities}.
 A full 35 out of 35 (100\%) bugs were triggered in Native Linux,
@@ -437,6 +429,15 @@ Systems}
 \label{table:trace-systems}
 \end{table}
 
+\textbf{Setup.}
+To analyze the reachable kernel paths for each of the
+virtualization systems,
+we conducted system call fuzzing with Trinity (similar to our approach in \S{\ref{sec.metric}}) to obtain
+the kernel trace in each system. 
+All experiments were conducted under Linux kernel 3.14.1.
+
+\noindent
+\textbf{Results.}
 We obtained the total reachable kernel trace for
 each of the tested systems (including Lind)
 and further analyzed the components of those traces. These results
@@ -492,9 +493,18 @@ it has better control over the access to the OS kernel.
 Therefore, better results can be achieved with Lind, as a natural
 outcome of its design. \lois{too big an assumption?}
 
-\subsubsection{Impact of Potential Vulnerabilities in the Repy Sandbox}
+\subsubsection{Impact of Potential Vulnerabilities in Lind's SafePOSIX reimplementation}
 \label{Reachable-Kernel-Trace-Analysis-for-Repy-Sandbox}
 
+\textbf{Setup.}
+To understand what potential risks could be posed if Lind's SafePOSIX reimplementation 
+has vulnerabilities, we need to see what portion of the kernel could be reached by 
+leveraging the Repy sandbox kernel. Therefore, we conducted system call fuzzing with Trinity 
+to obtain the reachable kernel trace in Repy sandbox kernel. 
+This experiment was conducted under Linux kernel 3.14.1.
+
+\noindent
+\textbf{Results.}
 An important question about Lind's security properties is what would happen if
 there is a bug or a failure in Lind's TCB,
 the Repy sandbox kernel? To determine if a flaw in the TCB could endanger the kernel,
@@ -561,14 +571,24 @@ how its performance compared to other systems in a real-world application.
 Note that we did not optimize the performance of Lind in any way before running
 these tests.
 
-We first compiled and ran three widely used applications:
+\noindent
+\textbf{Setup.}
+To test the overhead in Lind for running real-world applications, 
+we first compiled and ran three widely used applications:
 a primes calculator, GNU \texttt{grep}, and GNU \texttt{wget}. All ran unaltered and
 correctly inside Lind. The source code of each of the applications remained
 unmodified. To run the applications, it was sufficient to just recompile the
 source code using NaCl's compiler and Lind's \texttt{glibc} to call
 into SafePOSIX.
+
+Next, we ran the Tor router software version 0.2.3 in Lind. Tor simply
+needs to be recompiled to run in Lind.
+We used the benchmarks that come with Tor to test its common operations.
+
+\noindent
+\textbf{Results.}
 Figure \ref{fig:performance_applications} shows the runtime performance
-results.
+results for running the primes calculator, GNU \texttt{grep}, and GNU \texttt{wget}. 
 The primes application run in Lind has a 6\% performance overhead compared to
 Native Linux. CPU bound applications, like the primes, engender little overhead,
 because they run only inside the NaCl computation sandbox. No system calls are required,
@@ -584,10 +604,7 @@ the call.  The additional computation of SafePOSIX produced the additional
 overhead. \lois{Is this slowdown significant? Would a slowdown of this magnitude
 be acceptable in the real world?}
 
-Next, we ran the Tor router software version 0.2.3 in Lind. Tor simply
-needs to be recompiled to run in Lind.
-We used the benchmarks that come with Tor to test its common operations.
-A summary of the results is shown in Table \ref{table:performance_tor}. The
+A summary of the results for Tor is shown in Table \ref{table:performance_tor}. The
 benchmarks focus on cryptographic operations,
 which are CPU intensive, but also make system calls like \texttt{getpid}, and reads to
 \texttt{/dev/urandom}.
@@ -598,8 +615,7 @@ Cell processing executes full packet encryption and decryption. In our
 test, Lind slowed down these operations by 2.5x to 5x. We believe these
 slowdowns are due to the increased code size produced by NaCl,
 %\cappos{I'm not sure why this would be.  Does NaCl show this too?}
-and the
-increased overhead from Lind's safe POSIX system call interface.
+and the increased overhead from Lind's safe POSIX system call interface.
 
 As shown above, Lind generally incurs some performance overhead.
 It should be noted that, we have not yet attempted to optimize its performance.
