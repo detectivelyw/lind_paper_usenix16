@@ -1,28 +1,27 @@
 \section{Conclusion}
 \label{sec.conclusion}
 
-The idea of isolating untrusted user applications from the underlying privileged code
-to avoid its exploitation by bugs has been realized in different implementations,
-but there is no standard method for creating this isolation.
-In addition, experience suggests that isolation by itself does not guarantee the security of a system.
+%The idea of isolating untrusted user applications from the underlying privileged code
+%to avoid its exploitation by bugs has been realized in different implementations,
+%but there is no standard method for creating this isolation.
+%In addition, experience suggests that isolation by itself does not guarantee the security of a system.
 %
 In this paper, we proposed a new metric based on quantitative measures derived from
 the execution of kernel code when running user applications.
-We tested the hypothesis that commonly used kernel paths contain fewer bugs.
-Using our metric, we generated findings that suggest the hypothesis is reasonable,
- and it become the key principle behind a new design for building secure systems,
-which was used to implement a new virtualized security system called Lind. Designed with a minimized
-"trusted computing base" (TCB) and interacting only with the kernel in a minimal and safe
+We verified the hypothesis that commonly used kernel paths contain fewer bugs.
+%Using our metric, we generated findings that suggest the hypothesis is reasonable,
+% and it become the key principle behind a new design for building secure systems,
+Our metric was used to implement a new virtualized security system called Lind. Designed with a minimized
+TCB and interacting only with the kernel in a minimal and safe
 way, Lind addresses the need to support riskier system calls by securely
 reconstructing complex, yet essential OS functionality inside a sandbox.
 %
 Evaluation results have shown that Lind is the least likely to trigger historically-reported kernel bugs,
 when compared to other virtualization systems, such as VirtualBox, VMWare Workstation, Docker, LXC, 
 QEMU, KVM and Graphene.
-This suggests that systems using our design are likely to be more secure.
+%This suggests that systems using our design are likely to be more secure.
 
-All of the data and source code for this paper is available to other
-researchers.  Lind is open source and available at: XXX.  The kernel
-trace data can be accessed on the Lind website.  For access
-to the kernel exploit code created in this study, please contact the
-authors.
+All of the data and source code for this paper is available at: XXX. \yanyan{fill in} 
+The kernel trace data can be accessed on the Lind website at YYY.  \yanyan{fill in} 
+%For access to the kernel exploit code created in this study, please contact the
+%authors.
