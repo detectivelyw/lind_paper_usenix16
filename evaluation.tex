@@ -88,177 +88,214 @@ overhead of Lind.
 %needs to be taken seriously.
 
 \begin{table*}%[!ht]
-%\scriptsize
-%\centering
+\scriptsize
+\centering
 
-\caption {Linux Kernel Bugs, and Vulnerabilities in Different Virtualization Systems
+\caption {\small Linux Kernel Bugs, and Vulnerabilities in Different Virtualization Systems
 ({\color{red}\ding{51}}: vulnerability triggered;
 {\color{blue}\ding{51}}: vulnerability triggered with Guest Additions; \ding{55}: vulnerability
 not triggered).}
 
-\resizebox{0.68\textwidth}{!}{\begin{minipage}{\textwidth}
+%\resizebox{0.68\textwidth}{!}{\begin{minipage}{\textwidth}
 
-\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|}\hline
-\textbf{Vulnerability}    &  \textbf{Native Linux}  &  \textbf{VirtualBox}
-&  \textbf{VMWare Workstation}
- & \textbf{Docker} & \textbf{LXC} &
- \textbf{QEMU} & \textbf{KVM} &
- \textbf{Graphene} & \textbf{Lind} \\
+\begin{tabular}{|p{1.7cm}|l|l|p{1cm}|p{1cm}|p{.8cm}|p{1cm}|p{.8cm}|p{1cm}|p{.8cm}|}\hline
+
+\multirow{2}{1.7cm}{\bf Vulnerability}    &  \multirow{2}{.7cm}{\bf Native Linux}  &  \multirow{2}{*}{\bf VirtualBox}
+&  \multirow{2}{.7cm}{\bf VMWare}
+ & \multirow{2}{1cm}{\bf Docker} & \multirow{2}{1cm}{\bf LXC} &
+\multirow{2}{1cm}{\bf QEMU} & \multirow{2}{1cm}{\bf KVM} &
+\multirow{2}{1cm}{\bf Graphene} & \multirow{2}{1cm}{\bf Lind} \\ 
+& & & & & & & & & \\
 \hline
- CVE-2015-5706 & {\color{red}\ding{51}} & {\color{blue}\ding{51}} &
-{\color{blue}\ding{51}} & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
-{\color{red}\ding{51}} & {\color{red}\ding{51}} &
-{\color{red}\ding{51}} &
+
+ CVE-2015-5706 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & {\color{blue}\ding{51}} &
+\multirow{1}{1cm}{{\color{blue}\ding{51}}} & \multirow{1}{1cm}{{\color{red}\ding{51}}} & 
+\multirow{1}{1cm}{{\color{red}\ding{51}}} & \multirow{1}{1cm}{{\color{red}\ding{51}}} & 
+\multirow{1}{1cm}{{\color{red}\ding{51}}} & \multirow{1}{1cm}{{\color{red}\ding{51}}} & 
 \ding{55}  \\
- CVE-2015-0239 & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
-{\color{red}\ding{51}} & \ding{55} & {\color{red}\ding{51}} &
-{\color{red}\ding{51}} & {\color{red}\ding{51}} &
+
+ CVE-2015-0239 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & {\color{red}\ding{51}} &
+\multirow{1}{1cm}{{\color{red}\ding{51}}} & \ding{55} & \multirow{1}{1cm}{{\color{red}\ding{51}}} &
+\multirow{1}{1cm}{{\color{red}\ding{51}}} & \multirow{1}{1cm}{{\color{red}\ding{51}}} &
  \ding{55}  & \ding{55}  \\
- CVE-2014-9584 & {\color{red}\ding{51}} & \ding{55}  &
+ 
+ CVE-2014-9584 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & \ding{55}  &
  \ding{55}  & \ding{55} & \ding{55} &
  \ding{55}& \ding{55} &
  \ding{55}  & \ding{55}  \\
- CVE-2014-9529 & {\color{red}\ding{51}} & {\color{red}\ding{51}}  &
-\ding{55}  & \ding{55} & {\color{red}\ding{51}} &
+ 
+ CVE-2014-9529 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & {\color{red}\ding{51}}  &
+\ding{55}  & \ding{55} & \multirow{1}{1cm}{{\color{red}\ding{51}}} &
 \ding{55}& \ding{55} &
 \ding{55}  & \ding{55}  \\
- CVE-2014-9322 & {\color{red}\ding{51}} & {\color{red}\ding{51}}  &
-\ding{55}  & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
-{\color{red}\ding{51}}& {\color{red}\ding{51}} &
-{\color{red}\ding{51}}  & \ding{55}
+
+ CVE-2014-9322 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & {\color{red}\ding{51}}  &
+\ding{55}  & \multirow{1}{1cm}{{\color{red}\ding{51}}} & \multirow{1}{1cm}{{\color{red}\ding{51}}} &
+\multirow{1}{1cm}{{\color{red}\ding{51}}} & \multirow{1}{1cm}{{\color{red}\ding{51}}} &
+\multirow{1}{1cm}{{\color{red}\ding{51}}}  & \ding{55}
 \\
- CVE-2014-9090 & {\color{red}\ding{51}} & \ding{55}  &
+
+ CVE-2014-9090 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & \ding{55}  &
  \ding{55}  & \ding{55} & \ding{55} &
  \ding{55} & \ding{55} &
  \ding{55}  & \ding{55}  \\
- CVE-2014-8989 & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
-{\color{red}\ding{51}} & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
-{\color{red}\ding{51}} & {\color{red}\ding{51}} &
-{\color{red}\ding{51}} &
+ 
+ CVE-2014-8989 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & {\color{red}\ding{51}} &
+\multirow{1}{1cm}{{\color{red}\ding{51}}} & \multirow{1}{1cm}{{\color{red}\ding{51}}} & 
+\multirow{1}{1cm}{{\color{red}\ding{51}}} & \multirow{1}{1cm}{{\color{red}\ding{51}}} & 
+\multirow{1}{1cm}{{\color{red}\ding{51}}} & \multirow{1}{1cm}{{\color{red}\ding{51}}} & 
 \ding{55}  \\
- CVE-2014-8559 & {\color{red}\ding{51}} & \ding{55}  &
+
+ CVE-2014-8559 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & \ding{55}  &
  \ding{55}  & \ding{55} & \ding{55} &
  \ding{55} & \ding{55} &
  \ding{55}  & \ding{55}  \\
- CVE-2014-8369 & {\color{red}\ding{51}} & \ding{55}  &
+ 
+ CVE-2014-8369 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & \ding{55}  &
  \ding{55}  & \ding{55} & \ding{55} &
  \ding{55} & \ding{55} &
  \ding{55}  & \ding{55}  \\
- CVE-2014-8160 & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
-{\color{red}\ding{51}} & \ding{55} & {\color{red}\ding{51}} &
+ 
+ CVE-2014-8160 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & {\color{red}\ding{51}} &
+\multirow{1}{1cm}{{\color{red}\ding{51}}} & \ding{55} & \multirow{1}{1cm}{{\color{red}\ding{51}}} &
 \ding{55} & \ding{55} &
 \ding{55}  & \ding{55}  \\
- CVE-2014-8134 & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
-{\color{red}\ding{51}} & \ding{55} & {\color{red}\ding{51}} &
-\ding{55} & \ding{55} &
-{\color{red}\ding{51}}  & \ding{55}
+
+ CVE-2014-8134 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & {\color{red}\ding{51}} &
+\multirow{1}{1cm}{{\color{red}\ding{51}}} & \ding{55} & \multirow{1}{1cm}{{\color{red}\ding{51}}} &
+\ding{55} & \ding{55} & \multirow{1}{1cm}{{\color{red}\ding{51}}}  & \ding{55}
 \\
- CVE-2014-8133 & {\color{red}\ding{51}} & {\color{red}\ding{51}}  &
+
+ CVE-2014-8133 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & {\color{red}\ding{51}}  &
 \ding{55}  & \ding{55} & \ding{55} &
 \ding{55} & \ding{55} &
 \ding{55}  & \ding{55}  \\
- CVE-2014-8086 & {\color{red}\ding{51}} & {\color{blue}\ding{51}} &
-{\color{blue}\ding{51}} & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
+
+ CVE-2014-8086 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & {\color{blue}\ding{51}} &
+\multirow{1}{1cm}{{\color{blue}\ding{51}}} & \multirow{1}{1cm}{{\color{red}\ding{51}}} & 
+\multirow{1}{1cm}{{\color{red}\ding{51}}} &
 \ding{55} & \ding{55} &
 \ding{55} & \ding{55}  \\
- CVE-2014-7975 & {\color{red}\ding{51}} & \ding{55}  &
+
+ CVE-2014-7975 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & \ding{55}  &
  \ding{55}  & \ding{55} & \ding{55} &
  \ding{55} & \ding{55} &
  \ding{55}  & \ding{55}  \\
- CVE-2014-7970 & {\color{red}\ding{51}} & \ding{55}  &
+ 
+ CVE-2014-7970 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & \ding{55}  &
  \ding{55}  & \ding{55} & \ding{55} &
  \ding{55} & \ding{55} &
  \ding{55}  & \ding{55}  \\
- CVE-2014-7842 & {\color{red}\ding{51}} & \ding{55}  &
+ 
+ CVE-2014-7842 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & \ding{55}  &
  \ding{55}  & \ding{55} & \ding{55} &
  \ding{55} & \ding{55} &
  \ding{55}  & \ding{55}  \\
- CVE-2014-7826 & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
-{\color{red}\ding{51}} & \ding{55} & \ding{55}  &
-\ding{55} & \ding{55} &
-{\color{red}\ding{51}}  & \ding{55}
+ 
+ CVE-2014-7826 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & {\color{red}\ding{51}} &
+\multirow{1}{1cm}{{\color{red}\ding{51}}} & \ding{55} & \ding{55}  &
+\ding{55} & \ding{55} & \multirow{1}{1cm}{{\color{red}\ding{51}}}  & \ding{55}
 \\
- CVE-2014-7825 & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
-{\color{red}\ding{51}} & \ding{55} & \ding{55} &
-\ding{55} & \ding{55} &
-{\color{red}\ding{51}}  & \ding{55}
+
+ CVE-2014-7825 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & {\color{red}\ding{51}} &
+\multirow{1}{1cm}{{\color{red}\ding{51}}} & \ding{55} & \ding{55} &
+\ding{55} & \ding{55} & \multirow{1}{1cm}{{\color{red}\ding{51}}}  & \ding{55}
 \\
- CVE-2014-7283 & {\color{red}\ding{51}} & \ding{55}  &
+
+ CVE-2014-7283 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & \ding{55}  &
  \ding{55}  & \ding{55} & \ding{55} &
  \ding{55} & \ding{55} &
  \ding{55}  & \ding{55}  \\
- CVE-2014-5207 & {\color{red}\ding{51}} & \ding{55}  &
+ 
+ CVE-2014-5207 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & \ding{55}  &
  \ding{55}  & \ding{55} & \ding{55} &
  \ding{55} & \ding{55} &
  \ding{55}  & \ding{55}  \\
- CVE-2014-5206 & {\color{red}\ding{51}} & \ding{55}  &
-{\color{red}\ding{51}}  & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
-\ding{55} & \ding{55} &
-\ding{55}  & \ding{55}
-\\
- CVE-2014-5045 & {\color{red}\ding{51}} & \ding{55}  &
- \ding{55}  & \ding{55} & \ding{55} &
- \ding{55} & \ding{55} &
- \ding{55}  & \ding{55}  \\
- CVE-2014-4943 & {\color{red}\ding{51}} & \ding{55}  &
- \ding{55}  & \ding{55} & \ding{55} &
- \ding{55} & \ding{55} &
- \ding{55}  & \ding{55}  \\
- CVE-2014-4667 & {\color{red}\ding{51}} & \ding{55}  &
- \ding{55}  & \ding{55} & \ding{55} &
- \ding{55} & \ding{55} &
- {\color{red}\ding{51}}  & \ding{55}  \\
- CVE-2014-4508 & {\color{red}\ding{51}} & \ding{55}  &
- \ding{55}  & \ding{55} & \ding{55} &
- \ding{55} & \ding{55} &
- \ding{55}  & \ding{55}  \\
- CVE-2014-4171 & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
-{\color{red}\ding{51}} & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
-{\color{red}\ding{51}} & {\color{red}\ding{51}} &
-{\color{red}\ding{51}} & {\color{red}\ding{51}}  \\
- CVE-2014-4157 & {\color{red}\ding{51}} & \ding{55}  &
- \ding{55}  & \ding{55} & \ding{55} &
- \ding{55} & \ding{55} &
- \ding{55}  & \ding{55}  \\
- CVE-2014-4014 & {\color{red}\ding{51}} & \ding{55}  &
-{\color{red}\ding{51}}  & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
+ 
+ CVE-2014-5206 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & \ding{55}  &
+\multirow{1}{1cm}{{\color{red}\ding{51}}}  & \multirow{1}{1cm}{{\color{red}\ding{51}}} & 
+\multirow{1}{1cm}{{\color{red}\ding{51}}} &
 \ding{55} & \ding{55} &
 \ding{55}  & \ding{55}
 \\
- CVE-2014-3940 & {\color{red}\ding{51}} & {\color{blue}\ding{51}}  &
-\ding{55}  & {\color{red}\ding{51}} & {\color{red}\ding{51}} &
+
+ CVE-2014-5045 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & \ding{55}  &
+ \ding{55}  & \ding{55} & \ding{55} &
+ \ding{55} & \ding{55} &
+ \ding{55}  & \ding{55}  \\
+ 
+ CVE-2014-4943 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & \ding{55}  &
+ \ding{55}  & \ding{55} & \ding{55} &
+ \ding{55} & \ding{55} &
+ \ding{55}  & \ding{55}  \\
+ 
+ CVE-2014-4667 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & \ding{55}  &
+ \ding{55}  & \ding{55} & \ding{55} &
+ \ding{55} & \ding{55} & \multirow{1}{1cm}{{\color{red}\ding{51}}}  & \ding{55}  \\
+ 
+ CVE-2014-4508 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & \ding{55}  &
+ \ding{55}  & \ding{55} & \ding{55} &
+ \ding{55} & \ding{55} &
+ \ding{55}  & \ding{55}  \\
+ 
+ CVE-2014-4171 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & {\color{red}\ding{51}} &
+\multirow{1}{1cm}{{\color{red}\ding{51}}} & \multirow{1}{1cm}{{\color{red}\ding{51}}} & 
+\multirow{1}{1cm}{{\color{red}\ding{51}}} & \multirow{1}{1cm}{{\color{red}\ding{51}}} & 
+\multirow{1}{1cm}{{\color{red}\ding{51}}} & \multirow{1}{1cm}{{\color{red}\ding{51}}} & 
+\multirow{1}{1cm}{{\color{red}\ding{51}}}  \\
+
+ CVE-2014-4157 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & \ding{55}  &
+ \ding{55}  & \ding{55} & \ding{55} &
+ \ding{55} & \ding{55} &
+ \ding{55}  & \ding{55}  \\
+ 
+ CVE-2014-4014 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & \ding{55}  &
+\multirow{1}{1cm}{{\color{red}\ding{51}}}  & \multirow{1}{1cm}{{\color{red}\ding{51}}} & 
+\multirow{1}{1cm}{{\color{red}\ding{51}}} &
+\ding{55} & \ding{55} &
+\ding{55}  & \ding{55}
+\\
+
+ CVE-2014-3940 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & {\color{blue}\ding{51}}  &
+\ding{55}  & \multirow{1}{1cm}{{\color{red}\ding{51}}} & \multirow{1}{1cm}{{\color{red}\ding{51}}} &
 \ding{55} & \ding{55} &
 \ding{55}  & \ding{55}  \\
- CVE-2014-3917 & {\color{red}\ding{51}} & {\color{red}\ding{51}}  &
+
+ CVE-2014-3917 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & {\color{red}\ding{51}}  &
 \ding{55}  & \ding{55} & \ding{55} &
 \ding{55} & \ding{55} &
 \ding{55}  & \ding{55}  \\
- CVE-2014-3153 & {\color{red}\ding{51}} & \ding{55}  &
+
+ CVE-2014-3153 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & \ding{55}  &
   \ding{55}  & \ding{55} & \ding{55} &
   \ding{55} & \ding{55} &
   \ding{55}  & \ding{55}  \\
- CVE-2014-3144 & {\color{red}\ding{51}} & \ding{55}  &
+  
+ CVE-2014-3144 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & \ding{55}  &
  \ding{55}  & \ding{55} & \ding{55} &
  \ding{55} & \ding{55} &
  \ding{55}  & \ding{55}  \\
- CVE-2014-3122 & {\color{red}\ding{51}} & \ding{55}  &
+ 
+ CVE-2014-3122 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & \ding{55}  &
  \ding{55}  & \ding{55} & \ding{55} &
  \ding{55} & \ding{55} &
  \ding{55}  & \ding{55}  \\
- CVE-2014-2851 & {\color{red}\ding{51}} & \ding{55}  &
+ 
+ CVE-2014-2851 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & \ding{55}  &
  \ding{55}  & \ding{55} & \ding{55} &
  \ding{55} & \ding{55} &
  \ding{55}  & \ding{55}  \\
- CVE-2014-0206 & {\color{red}\ding{51}} & \ding{55}  &
+ 
+ CVE-2014-0206 & \multirow{1}{.7cm}{{\color{red}\ding{51}}} & \ding{55}  &
  \ding{55}  & \ding{55} & \ding{55} &
  \ding{55} & \ding{55} &  \ding{55}  & \ding{55}  \\
 \hline
- {\bf Vulnerabilities Triggered} & {\bf 35/35 (100\% )} & {\bf 14/35 (40\%)} &
+
+ {\bf Vulnerabilities Triggered} & \multirow{2}{1cm}{\bf 35/35 (100\%)} & {\bf 14/35 (40\%)} &
  {\bf 11/35 (31.4\%)}  & {\bf 8/35 (22.9\%)} & {\bf 12/35 (34.3\%)} & {\bf 5/35 (14.3\%)} & {\bf 5/35 (14.3\%)} &
  {\bf 8/35 (22.9\%)}  & {\bf 1/35 (2.9\%)}  \\
 \hline
 \end{tabular}
-\end{minipage}}
 \label{table:trigger_vulnerabilities}
 \end{table*}
 
