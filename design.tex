@@ -6,38 +6,33 @@ developed over the years. The challenge for all of these systems is how to
 balance security and functionality for applications. In this section, we explore previous approaches to
 dealing with this safety/usability trade-off.
 
-\yanyan{the two paragraphs are disconnected.}
-This section discusses how to use the observation
+\subsection{System Call Interposition}
+
+
+\subsection {Functionality Reimplementation}
+
+
+\subsection {Our New Design: Functionality Safe Reimplementation}
+To take a further step in building secure virtualization systems, 
+we devised a design that adds an additional layer of security to 
+the existing idea of functionality reimplementation. 
+
+In our design, we leverage our key observation
  that ``commonly used kernel paths'' contain fewer bugs
 (Section {\ref{sec.metric}) to build secure virtualization systems.
 A key idea of our design is that all code \emph{including the complex part
 of the operating system interface} should have a very small TCB that accesses only
 commonly used kernel paths.
 Any complex or possibly risky system functions
-are reimplemented using memory-safe code in a sandbox. 
+are reimplemented using memory-safe code inside a sandbox. 
 %In this manner, any bugs
 %or failures within the implementation of these complex system functions
 %are contained by the sandbox. 
 As a result, untrusted code would not be able to
-trigger sensitive and risky portions of the kernel.
-
-
-\begin{figure}%[h]
-\centering
-\includegraphics[width=1.0\columnwidth]{diagram/lind_secure_design_new.png}
-\caption{\small ``Safe-Reimplementation'' design to ensure predictable execution of untrusted user code
-despite existing potential zero-day bugs in the OS kernel.}
-\label{fig:design}
-\end{figure}
-
-\subsection{Filter SysCalls}
-(yes/no pass)
-
-\subsection {Reimplement Functionality}
-
-\subsection {Hypervisors}
-
-\subsection {Lind}
+trigger sensitive and risky portions of the kernel. 
+Thus, we call our design ``functionality safely reimplementation'', 
+which provides extra security than those that only reimplement 
+complex functionality but without proper isolation and protection. 
 
 To execute untrusted applications in a manner that will not trigger bugs
 in the underlying OS kernel, %and cause damage to other parts of the system,
@@ -66,6 +61,30 @@ First, the system invokes the computation module to perform its operations,
 and, if there are riskier calls, the computation module directs those requests to our
 library OS. The library OS then responds to the system call requests and
 return results to the user code, if the requests are granted.
+
+
+\begin{figure}%[h]
+\centering
+\includegraphics[width=1.0\columnwidth]{diagram/Virtualization_Design_Model_03.png}
+\caption{\small ``System Call Interposition'' design.}
+\label{fig:design}
+\end{figure}
+
+\begin{figure}%[h]
+\centering
+\includegraphics[width=1.0\columnwidth]{diagram/Virtualization_Design_Model_02.png}
+\caption{\small ``Functionality Reimplementation'' design.}
+\label{fig:design}
+\end{figure}
+
+\begin{figure}%[h]
+\centering
+\includegraphics[width=1.0\columnwidth]{diagram/Virtualization_Design_Model_01.png}
+\caption{\small ``Safe Reimplementation'' design to ensure predictable execution of untrusted user code
+despite existing potential zero-day bugs in the OS kernel.}
+\label{fig:design}
+\end{figure}
+
 
 \subsubsection{The Computation Module}
 
