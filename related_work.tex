@@ -88,7 +88,7 @@ still pose a threat~\cite{JavaBugs, Java-Lessons}.
 %discovered many severe bugs in Java \cite{Java-Lessons}.
 Any bug or failure in a programming language virtual
 machine is usually fatal. In contrast, Lind with a very small TCB
-enhances security of privileged code compared to the above. \lois{why?}
+enhances security of privileged code compared to the above due to fewer LOC which in turn reduces the number of potential bugs or weaknesses. %\lois{why?}
 %\lois{OK, what does the TCB have to do with these languages?}
 
 %because of the POSIX implementation with Repy to build the sandbox.
@@ -109,7 +109,7 @@ user-level virtual environments sharing the same hardware. This
 approach relies on the VMM to confine untrusted applications within
 guest OSs. However, there are limitations due to
 the large attack vectors against the hypervisors, including
-vulnerabilities of software and configuration risk.
+vulnerabilities of software and configuration risk. Lind avoids such restrictions due to a smaller TCB.
 %For example, the
 %small code footprint of a hypervisor can become a potential
 %vulnerability and lead to serious problems. Maintaining two OSs in
@@ -117,7 +117,7 @@ vulnerabilities of software and configuration risk.
 %\cite{Virt-Issues}. Attackers are able to exploit vulnerabilities to
 %escape these systems and access arbitrary code in the underlying host
 %systems.
-\lois{what is the connection between the above sentences and Lind?}
+%\lois{what is the connection between the above sentences and Lind?}
 Lind deals with these concerns by using a much smaller and safer TCB.
 
 \textit{Library OS.}
@@ -161,12 +161,11 @@ in an untrusted cloud host.
 %addresses the dual challenges of
 %executing unmodified legacy binaries and protecting them from a
 %malicious host.
-Its library OS technique is similar to Lind but differs in
-that existing library OS systems rely heavily on
-the underlying kernels to perform system functions. In contrast, Lind only
-relies on a very limited set of system functions,
-and reconstructs most OS functions with its own safe Repy code.
-\yanyan{please add comparison of Drawbridge/Bascule/Haven to Lind.}
+The library OS technique relies extensively on
+the underlying kernels to perform system functions. While in Lind only
+o a limited set of system functions resembles the kernel functions through safe Repy code. Unsimilar to Lind, Drawbridge, Bascule or Haven donot ensure safty of the system for zero-day vulnerability attacks through enforcing the policies in a two-step verification.
+
+%&\yanyan{please add comparison of Drawbridge/Bascule/Haven to Lind.}
 
 \textbf{System Call Interposition.}
 System call interposition (SCI) provides
