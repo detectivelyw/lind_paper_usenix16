@@ -1,21 +1,84 @@
 \section{Analysis of Current Designs for Secure Virtualization Systems}
 \label{sec.design}
 
-Many security systems for protecting privileged code have been proposed and
-developed over the years. The challenge for all of these systems is how to
-balance security and functionality for applications. In this section, we explore previous approaches to
-dealing with this safety/usability trade-off.
+%Many security systems for protecting privileged code have been proposed and
+%developed over the years. The challenge for all of these systems is how to
+%balance security and functionality for applications. In this section, we explore previous approaches to
+%dealing with this safety/usability trade-off.
+
+To design and build a secure virtualization system, a fundamental question is 
+how to provide essential system functionality. 
+Basically, there are two approaches. 
+One is to check and pass through system calls to the underlying kernel, 
+which is recognized as ``System Call Interposition''. 
+The other one is to rebuild system functionality with new code, 
+which we call ``Functionality Reimplementation''. 
+In this section, we highlight the key ideas of those designs, and discuss their deficiencies in 
+preventing attackers from triggering and exploiting vulnerabilities in the underlying host kernel. 
+Our new design, inspired by the idea of ``Functionality Reimplementation'', takes a step further 
+to ensure the safety of reimplementation by sandboxing it.  
 
 \subsection{System Call Interposition}
+System call interposition is a long-existing idea that leads to the design and implementation of 
+sandboxing systems, like Janus \cite{Janus0:96, Janus:99}. 
+A main feature of system call interposition is that it relies on the underlying kernel to provide 
+system functionality. To prevent attackers from undermining the system, a system call filter module 
+is introduced. System calls from untrusted user code cannot access the kernel directly. Instead, the 
+requests to use system functionality are handed to and mediated by the system call filter. 
+The system call filter will then check the predefined security policy to decide which system calls are 
+allowed to pass to the underlying kernel, and which ones must be stopped. The security policy usually 
+can be defined by the system administrator through a policy engine. 
+Figure \ref{fig:design_system_call_interposition} illustrates the general design of a system call interposition system. 
 
+The idea of imposing system call interposition to design secure virtualization systems was once popular, 
+because it gave developers great power to be able to define security policies that could pass or stop a 
+system call in a straightforward way. It seems that system call interposition allowed developers more control over 
+the system, or at least gave them an illusion of that. However, it turns out that this design idea suffers a lot from making 
+policy decisions and implementation over complicated. First, in order to make a policy decision, the system needs to 
+obtain and interpret the OS state associated with the programs it is monitoring. The complexity of OS states 
+makes this process hard and incorrect information on the OS states will result in inaccurate policy decision. 
+Second, there are many indirect paths to access and modify resources. Overlooking those paths would render the 
+system call interposition policy ineffective, because attackers will be able to bypass the imposed security checks. 
+Moreover, many side-effects of blocking certain system calls could affect the function of desired system calls. And 
+it is very hard for developers to fully understand the side-effects of all the system calls in an interface as complex as 
+the UNIX API. All those problems make it very hard to design and build a secure virtualization system with the idea of 
+system call interposition alone. Eventually, developers turned to the idea of reimplementation, which is more practical. 
 
 \subsection {Functionality Reimplementation}
+Over the years, researchers and developers have pushed forward the frontline of building secure virtualization systems. 
+Using system call interposition alone is not sufficient to serve the purpose of a modern system, where complex and risky 
+system functionality is require to exist. Many virtualization systems have implemented their own system interface and library, 
+such as recent Library OS systems Drawbridge \cite{Drawbridge-11}, Bascule \cite{Bascule}, and Graphene \cite{Graphene-14}. 
+To provide richer functionality and run large and complex programs, some virtualization systems even have the full functionality 
+of an OS, such as OS VM systems VirtualBox, and VMWare Workstation. All those systems do more than just system call interposition, 
+they have their own OS functionality reimplemented in their codebase, which we call ``Functionality Reimplementation''.
 
+The key idea of functionality reimplementation is to not fully rely on the underlying kernel to provide system functions. 
+Instead, essential OS function are written with new code. As illustrated in Figure \ref{fig:design_functionality_reimplementation}, 
+in this kind of design, the system will have its own system functionality reimplemented and provided to the user code. And when 
+it has to communicate with the underlying kernel to access key resources like memory, CPU, and disk storage, it will do so with 
+its underlying TCB code, which can access the kernel directly. 
+For example, in a recent Library OS system Graphene \cite{Graphene-14}, it reimplements its own Linux system calls in the 
+\texttt{libLinux.so} module. And when it needs to acquire essential resources from the kernel, it has the module that they call 
+Platform Adaptation Layer (PAL). The PAL module has access to the kernel and provides basic ABI functions to the OS library.  
+
+The idea of functionality reimplementation is popular, because it provides a realistic solution to build practical virtualization systems 
+with rich functionality. However, it is not as secure as people have thought and leaves plenty opportunities for attackers. 
+To begin with, in order to provide rich functions, systems under this design have introduced a large codebase and increased its TCB. 
+The complexity of the OS functions can easily result in bugs and vulnerabilities in the new reimplementation code. Some vulnerabilities 
+will directly cause a privilege escalation, which allows attackers to escape the sandbox and execute arbitrary code on the host OS. 
+Moreover, besides those severe vulnerabilities that let attackers take direct control of the machine, even operations that are considered 
+legal and harmless in the guest OS may open up a system call paths into the underlying host OS and cause a problem there. 
+This second type of problems can be fatal, as it has the ability to reach and trigger vulnerabilities in the underlying OS kernel. 
+
+Problems with the existing functionality reimplementation design indicate that there are a lot more to do to build secure virtualization systems. 
+Inspired by the idea of reimplementation, but not satisfied with a reimplementation without protection, we set out to explore a new design 
+that puts security as our priority.  
 
 \subsection {Our New Design: Functionality Safe Reimplementation}
 To take a further step in building secure virtualization systems, 
 we devised a design that adds an additional layer of security to 
-the existing idea of functionality reimplementation. 
+the existing idea of functionality reimplementation.
 
 In our design, we leverage our key observation
  that ``commonly used kernel paths'' contain fewer bugs
