@@ -5,9 +5,9 @@ Despite the best efforts of programmers to develop systems free of vulnerabiliti
 researchers frequently uncover new flaws in operating system kernels that can be
 triggered by untrusted programs. To reduce security flaws
 a variety of techniques, including operating system virtualization, library OSes,
-and system call interposition, have been proposed. However, security comparisons
-between diverse systems are often qualitative in nature, making it hard to
-discern which practices actually improve security.\yanyan{why we need comparisons?}
+and system call interposition, have been proposed. Understanding the level of security in such visualization technologies through a quantitative approach is a challenging issue. For example, security comparisons between diverse systems are often qualitative in nature which makes it hard to discern which practices actually improve security.
+
+%\yanyan{why we need comparisons?}
 
 In this work, we devise a metric that provides a strong indication of where bugs will arise in the Linux kernel. Namely, we demonstrate
 that executing lines of kernel code that are not used by popular programs represent
@@ -50,8 +50,8 @@ complex functionality to be built.
 As a result, Lind can offer enhanced security without sacrificing basic functionality.
 
 To demonstrate the effectiveness of Lind, we replicated 35 kernel bugs in the Linux kernel
-version X.X.X.  We ran these programs \yanyan{what are these programs? 35 kernel 
-bugs?} in eight different environments, including
+version 3.14.1. We exploited these 25 kernel bugs %\yanyan{what are these programs? 35 kernel bugs?}
+in eight different virtualized environments including
 commercial systems VirtualBox, VMWare Workstation, Docker, LXC,
 KVM, QEMU, and research prototypes Graphene and Lind. Our results show
 that applications run in Lind were the least likely to trigger kernel bugs,
