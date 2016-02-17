@@ -8,15 +8,14 @@ In order to evaluate Lind's effectiveness in containing untrusted code and
 protecting the OS kernel, we conducted a series of experiments designed to answer
 four fundamental questions:
 
-\begin{itemize}
-\item \textit{How does Lind compare to other virtualization systems
+\textit{How does Lind compare to other virtualization systems
 in protecting against historical Linux kernel bugs?}
-(\S{\ref{Linux-Kernel-Bug-Test-and-Evaluation}})
+(Section~{\ref{Linux-Kernel-Bug-Test-and-Evaluation}})
 \yiwen{I am wondering if we should say ``zero-day bugs'' instead of ``historical bugs''.}
 
-\item \textit{How much of the underlying kernel code is exposed and, therefore,
+\textit{How much of the underlying kernel code is exposed and, therefore,
 vulnerable in different virtualization systems?}
-(\S{\ref{Reachable-Kernel-Trace-Analysis-for-Different-Virtualization-Systems}})
+(Section~{{\ref{Reachable-Kernel-Trace-Analysis-for-Different-Virtualization-Systems}})
 %\yiwen{This question may need to be refined. Why is the question important to the readers?
 %What is the take-away? The reachable kernel paths reflect an important security property
 %of the system design. We want to express this point.}
@@ -24,13 +23,12 @@ vulnerable in different virtualization systems?}
 %here at addressing your concerns. I agree its an important point to emphasize correctly.
 %We might need to tweak it a bit more.}
 
-\item \textit{If Lind's SafePOSIX reimplementation has bugs, how much of a threat does this pose?}
-(\S{\ref{Reachable-Kernel-Trace-Analysis-for-Repy-Sandbox}})
+\textit{If Lind's SafePOSIX reimplementation has bugs, how much of a threat does this pose?}
+(Section~{{\ref{Reachable-Kernel-Trace-Analysis-for-Repy-Sandbox}})
 
-\item \textit{In our implemented prototype Lind, what would be the expected overhead in
+\textit{In our implemented prototype Lind, what would be the expected overhead in
 real-world applications?}
-(\S{\ref{Performance-Evaluation}})
-\end{itemize}
+(Section~{{\ref{Performance-Evaluation}})
 
 This section describes the set-up of our experiment, 
 shows our experimental results, 
@@ -62,17 +60,35 @@ as well as whatever performance overhead costs the system may incur.
 \subsection{Experimental Setup, Results and Analysis}
 
 As dictated by the study questions listed above, our tests were conducted
-and appraised primarily from a security perspective.
-(\S{\ref{Linux-Kernel-Bug-Test-and-Evaluation}} --
+and appraised primarily from a security perspective
+(Section~{{\ref{Linux-Kernel-Bug-Test-and-Evaluation}} --
 %\S{\ref{Reachable-Kernel-Trace-Analysis-for-Different-Virtualization-Systems}},
-\S{\ref{Reachable-Kernel-Trace-Analysis-for-Repy-Sandbox}}).
+Section~{{\ref{Reachable-Kernel-Trace-Analysis-for-Repy-Sandbox}}).
 However, to get some idea of its potential efficacy
 in real-world settings, we also measured and evaluated the performance
-overhead of Lind.
-(\S{\ref{Performance-Evaluation}})
+overhead of Lind
+(Section~{{\ref{Performance-Evaluation}})
 
 \subsubsection{Linux Kernel Bug Test and Evaluation}
 \label{Linux-Kernel-Bug-Test-and-Evaluation}
+
+\textbf{Setup.}
+To evaluate how well each virtualization system protect the Linux kernel against 
+reported zero-day bugs, we identified and examined a list of  69 historical bugs that have
+specifically targeted Linux kernel 3.14.1 \cite{CVE-Datasource}. 
+By analyzing security kernel patches for those bugs,
+we identified the lines of code in the kernel that correspond to each one. 
+
+In order to test if a bug can be triggered, we created or located C
+code capable of exploiting each of the kernel bugs \cite{Exploit-Database}.
+We were only able to trigger and obtain results for 35 out of the 69 bugs in our experiments, 
+either because of a difficulty in clearly determining if triggering had occurred, or an inability,
+at this time, to find code to trigger them. We decided to focus our study on
+only these bugs and leave the other, more complex ones, to future work and analysis.
+
+We compiled and ran the exploit C code under each virtualization system to
+obtain their kernel traces, and then used our kernel trace safety metric to
+determine if a specific bug was triggered.
 
 %\lois{I think this whole first paragraph can come out. All this information has
 %been stated already. This is an evaluation of the RESULTS}
@@ -87,7 +103,27 @@ overhead of Lind.
 %kernel bugs when running applications, is a problem that
 %needs to be taken seriously.
 
-\begin{table*}%[!ht]
+\noindent
+\textbf{Results.}
+We found that a substantial number of bugs could be triggered in existing
+virtualization systems {See Table \ref{table:trigger_vulnerabilities}.
+A full 35 out of 35 (100\%) bugs were triggered in Native Linux,
+while the other programs had somewhat lower rates: 14/35 (40\%) in
+VirtualBox,
+11/35 (31.4\%)  in VMWare Workstation, 8/35 (22.9\%)  in Docker,
+12/35 (34.3\%)  in LXC, 5/35 (14.3\%)  in QEMU, 5/35 (14.3\%)  in KVM,
+and 8/35 (22.9\%) bugs in Graphene.
+In comparison, only 1 out of 35 bugs  (2.9\%) was triggered in Lind.
+
+To better understand these performance results, and particularly why Lind's
+performance was so strong, we take a closer look at four
+vulnerabilities from Table \ref{table:trigger_vulnerabilities}. These short case
+studies show how different system design philosophies can have 
+different security impacts.
+\yiwen{The following analysis needs to be refined. 
+I need to rework with more information about the system call paths.}
+
+\begin{table*}[!ht]
 \scriptsize
 \centering
 
@@ -299,47 +335,8 @@ not triggered).}
 \label{table:trigger_vulnerabilities}
 \end{table*}
 
-\textbf{Setup.}
-To evaluate how well each virtualization system protect the Linux kernel against 
-reported zero-day bugs, we identified and examined a list of  69 historical bugs that have
-specifically targeted Linux kernel 3.14.1 \cite{CVE-Datasource}. 
-By analyzing security kernel patches for those bugs,
-we identified the lines of code in the kernel that correspond to each one. 
 
-In order to test if a bug can be triggered, we created or located C
-code capable of exploiting each of the kernel bugs \cite{Exploit-Database}.
-We were only able to trigger and obtain results for 35 out of the 69 bugs in our experiments, 
-either because of a difficulty in clearly determining if triggering had occurred, or an inability,
-at this time, to find code to trigger them. We decided to focus our study on
-only these bugs and leave the other, more complex ones, to future work and analysis.
-
-We compiled and ran the exploit C code under each virtualization system to
-obtain their kernel traces, and then used our kernel trace safety metric to
-determine if a specific bug was triggered.
-
-\noindent
-\textbf{Results.}
-We found that a substantial number of bugs could be triggered in existing
-virtualization systems {See Table \ref{table:trigger_vulnerabilities}.
-A full 35 out of 35 (100\%) bugs were triggered in Native Linux,
-while the other programs had somewhat lower rates: 14/35 (40\%) in
-VirtualBox,
-11/35 (31.4\%)  in VMWare Workstation, 8/35 (22.9\%)  in Docker,
-12/35 (34.3\%)  in LXC, 5/35 (14.3\%)  in QEMU, 5/35 (14.3\%)  in KVM,
-and 8/35 (22.9\%) bugs in Graphene.
-In comparison, only 1 out of 35 bugs  (2.9\%) was triggered in Lind.
-
-To better understand these performance results, and particularly why Lind's
-performance was so strong, we take a closer look at four
-vulnerabilities from Table \ref{table:trigger_vulnerabilities}. These short case
-studies show how different system design philosophies can have 
-different security impacts.
-\yiwen{The following analysis needs to be refined. 
-I need to rework with more information about the system call paths.}
-
-\begin{itemize}
-
-\item \emph{All systems vulnerable.}  Representative bug: CVE-2014-4171.
+\emph{\textbf{All systems vulnerable.}}  Representative bug: CVE-2014-4171.
 This is the only vulnerability in our test that was triggered in every
 system, including Lind. It resides inside the \texttt{mm/shmem.c} kernel path and
 can be triggered by using \texttt{mmap()} system call to access a hole in the memory.
@@ -360,7 +357,7 @@ host OS kernel.
 %How does this happen when the underlying file isn't a unique file underneath?}
 Therefore, this vulnerability was triggered in every system.
 
-\item \emph{Only Native Linux vulnerable.}  Representative bug: CVE-2014-5045.
+\emph{\textbf{Only Native Linux vulnerable.}}  Representative bug: CVE-2014-5045.
 This vulnerability was only triggered inside Native Linux. It resides in the
 \texttt{fs/namei.c} kernel path and was triggered because
 the \texttt{mountpoint\_last()}
@@ -381,7 +378,7 @@ Furthermore, symbolic links in those systems will be contained within the virtua
 and will not be able to reach the underlying OS. In this case, those virtualization systems provide enough
 isolation to prevent this bug from happening.
 
-\item \emph{Some systems safe, some systems vulnerable.}  Representative bug: CVE-2014-8086.
+\emph{\textbf{Some systems safe, some systems vulnerable.}}  Representative bug: CVE-2014-8086.
 This vulnerability was not triggered inside Graphene and Lind, but was triggered inside
 VirtualBox, VMWare workstation, Docker, and Native Linux. It resides in
 the \texttt{fs/ext4/file.c} kernel path, and can be triggered by a file system write
@@ -396,7 +393,7 @@ Other systems like VirtualBox, VMWare Workstation, Docker, and Native Linux,
 all suffer from this vulnerability because calls go directly into the host OS
 kernel.
 
-\item \emph{Only Lind safe.}  Representative bug: CVE-2015-5706. As
+\emph{\textbf{Only Lind safe.}}  Representative bug: CVE-2015-5706. As
 shown in our results, this vulnerability was triggered in every
 virtualization system we tested, and in Native Linux, but not in Lind. This vulnerability
 is closely related to file system calls and file flags, resides in the \texttt{fs/namei.c}
@@ -419,7 +416,6 @@ pass through to the underlying OS kernel.
 In this case, the \texttt{O\_TMPFILE} file flag was
 allowed in Native Linux, VirtualBox, VMWare Workstation, Docker, and Graphene.
 
-\end{itemize}
 
 As shown in the above four cases, bugs are usually triggered by
 complex system calls,
@@ -438,7 +434,7 @@ Systems}
 \begin{table}
 \centering
 \scriptsize
-\caption{Reachable Kernel Trace Analysis for Different Virtualization
+\caption{\small Reachable Kernel Trace Analysis for Different Virtualization
 Systems}
 \begin{tabular}{|l|l|l|l|}
   \hline
@@ -577,7 +573,7 @@ it shows that Lind has the potential to provide strong security to run user appl
 \begin{table}
 \centering
 \scriptsize
-\caption{Comparison of Reachable Kernel Traces within Repy Sandbox Kernel and Native Linux}
+\caption{\small Comparison of Reachable Kernel Traces within Repy Sandbox Kernel and Native Linux}
 \begin{tabular}{|l|l|l|l|l|}
   \hline
   \multirow{3}{.8cm}{\bf Sandbox} & \multicolumn{4}{c|}{\bf Kernel trace} \\ \cline{2-5}
@@ -599,7 +595,7 @@ it shows that Lind has the potential to provide strong security to run user appl
 \begin{figure}
 \centering
 \includegraphics[width=1.0\columnwidth]{diagram/lind_oakland16_performance.pdf}
-\caption{Overhead from Applications Run in Native Linux vs. Lind}
+\caption{\small Overhead from Applications Run in Native Linux vs. Lind}
 \label{fig:performance_applications}
 \end{figure}
 
@@ -670,7 +666,7 @@ is a positive step towards building new secure systems.
 \begin{table}
 \centering
 \scriptsize
-\caption{Performance Results on Tor's Built-in Benchmark Program: Native
+\caption{\small Performance Results on Tor's Built-in Benchmark Program: Native
 Linux vs. Lind.}
 \begin{tabular}{|r|r|r|r|}
   \hline
