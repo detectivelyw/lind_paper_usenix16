@@ -40,7 +40,7 @@ we must build a virtualization system that can provide isolation and
 containment for any improper operations.
 One approach to building such a system is to place it entirely in the userspace,
 and to restrict both the size of the sandbox kernel and its access to the
-OS kernel (Figure \ref{fig:design}).
+OS kernel (Figure \ref{fig:design_safe_reimplementation}).
 This approach has advantages over others that require modifications to
 the OS kernel. 
 %as it avoids the risk of threat escalation. 
@@ -48,7 +48,7 @@ If a modified modules is in the OS kernel and is compromised, it exposes
 kernel privileges that could allow attacks
 on the underlying system, as well as any applications run on top of it.
 
-As shown in Figure \ref{fig:design}, our secure virtualization system
+As shown in Figure \ref{fig:design_safe_reimplementation}, our secure virtualization system
 has two components.
 The first is a computation module, which performs functions like type checking,
 object creation, and garbage collection. \yanyan{at this point I'm confused why
@@ -67,14 +67,14 @@ return results to the user code, if the requests are granted.
 \centering
 \includegraphics[width=1.0\columnwidth]{diagram/Virtualization_Design_Model_03.png}
 \caption{\small ``System Call Interposition'' design.}
-\label{fig:design}
+\label{fig:design_system_call_interposition}
 \end{figure}
 
 \begin{figure}%[h]
 \centering
 \includegraphics[width=1.0\columnwidth]{diagram/Virtualization_Design_Model_02.png}
 \caption{\small ``Functionality Reimplementation'' design.}
-\label{fig:design}
+\label{fig:design_functionality_reimplementation}
 \end{figure}
 
 \begin{figure}%[h]
@@ -82,7 +82,7 @@ return results to the user code, if the requests are granted.
 \includegraphics[width=1.0\columnwidth]{diagram/Virtualization_Design_Model_01.png}
 \caption{\small ``Safe Reimplementation'' design to ensure predictable execution of untrusted user code
 despite existing potential zero-day bugs in the OS kernel.}
-\label{fig:design}
+\label{fig:design_safe_reimplementation}
 \end{figure}
 
 
