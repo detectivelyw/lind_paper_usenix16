@@ -376,7 +376,7 @@ directories and symbolic links.
 %work then?  Also, why doesn't this exist in Docker / LXC?}
 Furthermore, symbolic links in those systems will be contained within the virtualization system's image,
 and will not be able to reach the underlying OS. In this case, those virtualization systems provide enough
-isolation to prevent this bug from happening.
+isolation to prevent this bug.
 
 \emph{\textbf{Some systems safe, some systems vulnerable.}}  Representative bug: CVE-2014-8086.
 This vulnerability was not triggered inside Graphene and Lind, but was triggered inside
@@ -395,7 +395,7 @@ kernel.
 
 \emph{\textbf{Only Lind safe.}}  Representative bug: CVE-2015-5706. As
 shown in our results, this vulnerability was triggered in every
-virtualization system we tested, and in Native Linux, but not in Lind. This vulnerability
+virtualization system we tested, except Lind. This vulnerability
 is closely related to file system calls and file flags, resides in the \texttt{fs/namei.c}
 kernel path, and can be triggered by making a \texttt{path\_openat()} function
 call with file flag \texttt{O\_TMPFILE}. \texttt{path\_openat()} will jump to the wrong
@@ -421,10 +421,12 @@ As shown in the above four cases, bugs are usually triggered by
 complex system calls,
 or basic system calls with complicated or rarely used flags.
 The safely-reimplement design behind Lind, which controls access to the kernel and
-minimizes exposure of vulnerable code, appears to pose
-the least risk of triggering bugs in the underlying OS kernel. To better understand
-the connection between kernel access and the triggering of vulnerable code, our
-next step is to look at the extent and type of exposure inherent in different
+minimizes exposure of vulnerable code, poses
+the least risk of triggering bugs in the underlying OS kernel. 
+
+%To better understand the connection between kernel access and the 
+%triggering of vulnerable code, our next step is to 
+We next look at the extent and type of exposure inherent in different
 virtual security systems.
 
 \subsection{Comparison of Kernel Code Exposure in Different Virtualization
@@ -434,8 +436,8 @@ Systems}
 \begin{table}
 \centering
 \scriptsize
-\caption{\small Reachable Kernel Trace Analysis for Different Virtualization
-Systems}
+\caption{\small Reachable kernel trace analysis for different virtualization
+systems.}
 \begin{tabular}{|l|l|l|l|}
   \hline
   \multirow{3}{1.5cm}{\bf Virtualization system} & \multicolumn{3}{c|}{\bf Kernel trace} \\ \cline{2-4}
@@ -463,16 +465,16 @@ Systems}
 \end{table}
 
 \textbf{Setup.}
-To analyze the reachable kernel paths for each of the
-virtualization systems,
-we conducted system call fuzzing with Trinity (similar to our approach in \S{\ref{sec.metric}}) to obtain
+To analyze the reachable kernel paths for each 
+virtualization system,
+we conducted system call fuzzing with Trinity (similar to our approach in Section~{\ref{sec.metric}}) to obtain
 the kernel trace in each system. 
 All experiments were conducted under Linux kernel 3.14.1.
 
 \noindent
 \textbf{Results.}
 We obtained the total reachable kernel trace for
-each of the tested systems (including Lind)
+each tested system, %(including Lind)
 and further analyzed the components of those traces. These results
 are shown in Table \ref{table:trace-systems}.
 
@@ -487,15 +489,14 @@ A large portion of the kernel paths accessed by Lind lie in
 %or complicated and rarely used arguments/flags. \lois{repetitious? Said already}
 In Lind, only basic function calls,
 like \texttt{open()}, \texttt{close()}, \texttt{read()}, \texttt{write()}, \texttt{mkdir()},
-\texttt{rmdir()}, are allowed. In addition, only commonly used flags are allowed, such as
-for function \texttt{open()}, only
-\texttt{O\_CREAT}, \texttt{O\_EXCL}, \texttt{O\_APPEND}, \texttt{O\_TRUNC},
-\texttt{O\_RDONLY}, \texttt{O\_WRONLY}, and \texttt{O\_RDWR} are permitted.
+\texttt{rmdir()}, are allowed. In addition, only commonly used flags are allowed. For example,
+only \texttt{O\_CREAT}, \texttt{O\_EXCL}, \texttt{O\_APPEND}, \texttt{O\_TRUNC},
+\texttt{O\_RDONLY}, \texttt{O\_WRONLY}, and \texttt{O\_RDWR} are permitted for \texttt{open()}.
 %The use of only those basic system functions together with regularly used flags leads to
 %result that
 As a result, the reachable kernel trace we obtained with Lind is from the safe
 portion of the kernel, which contains fewer bugs
-as verified in \S{\ref{Verification-of-Hypothesis}}.
+as verified in Section~{\ref{Verification-of-Hypothesis}}.
 %the safe portion of the kernel contains fewer kernel bugs.
 %So it make sense that Lind is less likely to trigger kernel bugs.
 
@@ -532,7 +533,7 @@ outcome of its design. \lois{too big an assumption?}
 \textbf{Setup.}
 To understand what potential risks could be posed if Lind's SafePOSIX reimplementation 
 has vulnerabilities, we need to see what portion of the kernel could be reached by 
-leveraging the Repy sandbox kernel. Therefore, we conducted system call fuzzing with Trinity 
+leveraging the Repy sandbox kernel. We conducted system call fuzzing with Trinity 
 to obtain the reachable kernel trace in Repy sandbox kernel. 
 This experiment was conducted under Linux kernel 3.14.1.
 
@@ -542,7 +543,7 @@ An important question about Lind's security properties is what would happen if
 there is a bug or a failure in Lind's TCB,
 the Repy sandbox kernel? To determine if a flaw in the TCB could endanger the kernel,
 we obtained the total reachable kernel trace in Repy and analyzed its
-components.
+components.\yanyan{repetitive?}
 The results are shown in Table \ref{table:trace-Repy}. The trace of Repy is
 slightly larger (5.8\%) than that of Lind.
 Repy's design can not allow attackers or bugs to
@@ -573,7 +574,7 @@ it shows that Lind has the potential to provide strong security to run user appl
 \begin{table}
 \centering
 \scriptsize
-\caption{\small Comparison of Reachable Kernel Traces within Repy Sandbox Kernel and Native Linux}
+\caption{\small Comparison of reachable kernel traces within Repy sandbox dernel and Native Linux.}
 \begin{tabular}{|l|l|l|l|l|}
   \hline
   \multirow{3}{.8cm}{\bf Sandbox} & \multicolumn{4}{c|}{\bf Kernel trace} \\ \cline{2-5}
@@ -595,11 +596,11 @@ it shows that Lind has the potential to provide strong security to run user appl
 \begin{figure}
 \centering
 \includegraphics[width=1.0\columnwidth]{diagram/lind_oakland16_performance.pdf}
-\caption{\small Overhead from Applications Run in Native Linux vs. Lind}
+\caption{\small Overhead from applications run in Native Linux vs. Lind}
 \label{fig:performance_applications}
 \end{figure}
 
-While efficiency was not our main goal, we also evaluated Lind to see
+We evaluated Lind to see
 how its performance compared to other systems in a real-world application.
 Note that we did not optimize the performance of Lind in any way before running
 these tests.
@@ -608,13 +609,13 @@ these tests.
 \textbf{Setup.}
 To test the overhead in Lind for running real-world applications, 
 we first compiled and ran three widely used applications:
-a primes calculator, GNU \texttt{grep}, and GNU \texttt{wget}. All ran unaltered and
+a prime number calculator, GNU \texttt{grep}, and GNU \texttt{wget}. All ran unaltered and
 correctly inside Lind. The source code of each of the applications remained
 unmodified. To run the applications, it was sufficient to just recompile the
 source code using NaCl's compiler and Lind's \texttt{glibc} to call
 into SafePOSIX.
 
-Next, we ran the Tor router software version 0.2.3 in Lind. Tor simply
+Next, we ran the Tor 0.2.3 in Lind. Tor simply
 needs to be recompiled to run in Lind.
 We used the benchmarks that come with Tor to test its common operations.
 
@@ -666,7 +667,7 @@ is a positive step towards building new secure systems.
 \begin{table}
 \centering
 \scriptsize
-\caption{\small Performance Results on Tor's Built-in Benchmark Program: Native
+\caption{\small Performance results on Tor's built-in benchmark program: Native
 Linux vs. Lind.}
 \begin{tabular}{|r|r|r|r|}
   \hline
