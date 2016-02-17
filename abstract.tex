@@ -2,22 +2,38 @@
 Building secure systems that allow untrusted programs to run without
 triggering inherent vulnerabilities %in the underlying privileged code of an
 %operating system (OS) kernel or hypervisor
-is very challenging. 
-%Despite substantial effort by security researchers and system developers to
-%eliminate these flaws, through 
-Techniques such as system call filtering,
-operating system virtualization, and library OSes have been designed to  
-eliminate these vulnerabilities.
-%much still needs to be done
-%to make existing OS kernels secure against intentional or unintentional
-%triggering of these vulnerabilities.
+is very challenging.
+%Despite substantial effort by o
+%eliminate these flaws,
+Through techniques such as system call filtering,
+operating system virtualization, and library OSes, security researchers
+and system developers have attempted to minimize the risk of such flaws.
+However, these technologies can add trusted code that often has new
+exploitable vulnerabilities. In addition, the portions of the underlying kernel
+that these systems use can open contact to complex calls that can trigger these
+flaws.
+
+This paper introduces a new metric to determine where kernel flaws are
+likely to be located, based on the  hypothesis that commonly-used kernel
+paths, executed by popular applications on a daily basis, contain fewer
+vulnerabilities than less-used paths. With this insight, we devise the
+safely-reimplement design, a new technique that limits kernel calls to only
+commonly used paths, and reimplements more complex calls within a secured space
+that builds operating system functionality
+using only commonly-used primitives.
+Finally, we use this design to prototype and test a secure system called Lind.
+The results show that executing malicious code in Lind can reduce the threat
+of attacks on the OS kernel to less than 3\%.
+This result is about an order of magnitude less than existing systems like VirtualBox (40\%),
+VMWare Workstation (31\%), Docker (23\%), LXC (34\%), QEMU (14\%), KVM (14\%), and Graphene (23\%).
+
+
+
 %\gholami{maybe rephrase to: ... these flaws, still it is long away to make
-%existing OS kernels secure.} 
-However, 
-%the limitations of these techniques are two-fold. First, 
-these systems add trusted code that often has new
-exploitable vulnerabilities, and the portions of the underlying kernel
-that these systems use open these vulnerabilities to exploitation.
+%existing OS kernels secure.}
+However,
+%the limitations of these techniques are two-fold. First,
+these systems a
 %As a result, developers can not fully prevent buggy programs from triggering
 %flaws, or attackers from leveraging these bugs.
 %for their own purposes.
@@ -37,8 +53,3 @@ vulnerabilities than less-used paths. With this insight, we devise a
 novel design that implements essential OS functionality in  a
 secure sandbox, minimizing contact between the kernel and riskier system calls.
 % \gholami {is this rephrase of the first sentence?}
-Our evaluation shows that Lind can reduce the threat of
-executing malicious code in the kernel to less than 3\%.
-%an attacker executing code inside Lind can trigger less than 3\%. 
-This result is about an order of magnitude less than existing systems like VirtualBox (40\%),
-VMWare Workstation (31\%), Docker (23\%), LXC (34\%), QEMU (14\%), KVM (14\%), and Graphene (23\%).
