@@ -2,37 +2,33 @@
 \label{sec.motivation-and-background}
 
 Our goal in this work is to use our metric to guide better design
-security systems, such as virtual machines.  Specifically, we focus on 
+security systems, such as virtual machines. Specifically, we focus on 
 situations where there is a \emph{host OS} that contains vulnerabilities
-that an attacker could exploit.  To combat this, 
-code is executed in a \emph{security system}, such as a guest OS VM, 
-system call interposition module, or library OS.  The attacker is able to
-run an \emph{attack program} in this security system with the goal of
-exploiting an unpatched vulnerability in the host OS. 
+that an attacker could exploit. To combat this, code is executed in a \emph{security system}, such as a guest OS VM, system call interposition module, or library OS. The attacker is able to run an \emph{attack program} in this security system with the goal of exploiting an unpatched vulnerability in the host OS.
 
 An attacker could potentially take two approaches to achieve their
-goal.  First, the attack program could exploit a flaw in the host OS by 
+goal. First, the attack program could exploit a flaw in the host OS by 
 performing an action in the security system that triggers a flaw in
-the host OS.  Effectively, the attacker is taking advantage of the security 
+the host OS. Effectively, the attacker is taking advantage of the security 
 system utilizing paths in the kernel which have vulnerabilities.
 Second, the attack program could exploit a flaw in the security system to 
-escape its containment.  Once the attacker has exploited this flaw, the
+escape its containment. Once the attacker has exploited this flaw, the
 attack program can make system calls in the host OS directly, which allows
-the attacker to trigger a known expolit.  We discuss both of these attack 
+the attacker to trigger a known exploit. We discuss both of these attack 
 scenarios in this work.
 
 
 Several potential solutions are out of scope of this
-paper.  We do not compare with solutions that do not run on a full-fledged 
+paper. We do not compare with solutions that do not run on a full-fledged 
 privileged operating system, such as virtualization that uses a 
-hypervisor~\cappos{cite Xen, etc.} or hardware-based virtualization 
-solution\cappos{cite NoHype}. \yanyan{because they don't cover all kernel paths?} 
+hypervisor\cite{Xen-03} or hardware-based virtualization 
+solution\cite{IntelVT} because they don't cover all kernel paths. %\yanyan{because they don't cover all kernel paths?} 
 We will need to do more measurement and analysis
 in future work to see if security flaws in these systems also fall along
 paths in the privileged functionality that are not commonly-used by popular
 programs.
 
-To summarize, our threat model assumes:
+To summarize, our threat model is built on the following assumptions.
 
 \begin{itemize}\setlength\itemsep{0em}
 \item The attacker knows about one or more unpatched vulnerabilities in the 

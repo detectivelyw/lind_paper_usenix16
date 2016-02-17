@@ -5,7 +5,7 @@ Despite the best efforts of programmers to develop systems free of vulnerabiliti
 researchers frequently uncover new flaws in operating system kernels that can be
 triggered by untrusted programs. To reduce security flaws
 a variety of techniques, including operating system virtualization, library OSes,
-and system call interposition, have been proposed. Understanding the level of security in such visualization technologies through a quantitative approach is a challenging issue. For example, security comparisons between diverse systems are often qualitative in nature which makes it hard to discern which practices actually improve security.
+and system call interposition, have been proposed. Understanding the level of security in such virtualization technologies through a quantitative approach is a challenging issue. For example, security comparisons between diverse systems are often qualitative or predictive in nature which makes it hard to discern which practices actually improve security.
 
 %\yanyan{why we need comparisons?}
 
@@ -19,10 +19,10 @@ where within the kernel bugs will later be discovered. We found that only 3-5\%
 
 Guided by this metric, we propose the safely-reimplement design, a new
 technique for building virtualization systems. In this design, the operating
-system interface (e.g., POSIX) is re-implemented in a restricted environment
-(e.g., a sandbox) that limits kernel calls to only commonly-used paths.
+system interface (i.e., POSIX) is re-implemented in a restricted environment
+(i.e., a sandbox) that limits kernel calls to only commonly-used paths.
 Creating such a safe space requires building complex operating system functionality
-(e.g., directories and permissions) using only commonly used primitives (e.g.,
+(i.e., directories and permissions) using only commonly used primitives (i.e.,
 read and writing to a file). However, it allows complex functionality to be safely
 implemented, even if it is buggy or malicious. 
 %since it only has access to parts of the kernel that are very unlikely
