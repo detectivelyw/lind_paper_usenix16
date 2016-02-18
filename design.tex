@@ -196,10 +196,10 @@ We make the kernel extremely small and simple so that it is easy to verify its s
 The sandbox code provides an API that performs
 a few critical system calls with the most basic parameters, such as
 writing data to the file system
-and communicating with the network.  The kernel utilizes the most simplistic calls
+and communicating with the network. The kernel utilizes the most simplistic calls
 possible with the most
-basic arguments. In the example above, the file system API only need to provide a way
-to write data to storage. \yanyan{where is the example?} It need not provide a directory abstraction, the
+basic arguments. In this scenario, the file system API only need to provide functionality of writing data to storage.% \yanyan{where is the example?}
+It eliminates the need of having a direct abstraction, the
 concept of file permissions, links, or even the concept of multiple files.
 
 %It should have a set of capabilities that enable the construction of essential and more complicated functions.
