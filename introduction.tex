@@ -1,7 +1,7 @@
 \section{Introduction}
 \label{sec.introduction}
 
-Despite the best efforts of programmers to develop systems free of vulnerabilities,
+Despite the efforts of programmers to develop systems free of vulnerabilities,
 researchers frequently uncover new flaws in operating system kernels that can be
 triggered by untrusted programs. To reduce security flaws
 a variety of techniques, including system call interposition, operating system
@@ -40,15 +40,16 @@ will be contained within the restricted environment.
 
 Using this design, we develop a prototype virtualization system for
 running untrusted user programs on vulnerable kernel code. Dubbed Lind, the
-prototype adapts two existing technologies-Google's Native Client (NaCl) and
+prototype adapts two existing technologies- Native Client (NaCl) \cite{NaCl-09} and
 %Seattle's Repy
 %an operating system interface
-Repy to handle distinctly different tasks. NaCl serves as a computational
+Restricted Python (Repy)~\cite{Repy-10}, to handle distinctly different tasks. NaCl serves as a computational
 module that isolates binaries, providing memory safety for a legacy program like
 Tor while passing the calls to the operating system interface.
 %As described in the design above,
-Repy, a sandbox technique we used to build our operating system interface, we called SafePOSIX,
+Repy, a sandbox technique we used to build our operating system interface called SafePOSIX,
 which is isolated within Repy to restrict the interface to invoke only common code paths.
+\yanyan{fix this.}
 SafePOSIX reimplements complex operating system functionality in an isolated
 environment provided by a small (8K LOC) Repy sandbox kernel. This provides
 straightforward access to the required common kernel paths while allowing more
@@ -61,9 +62,9 @@ in eight different virtualized environments, including
 commercial systems VirtualBox, VMWare Workstation, Docker, LXC,
 KVM, QEMU, and research prototypes Graphene and Lind. Our results show
 that applications run in Lind were the least likely to trigger kernel bugs,
-with only one out of the 35 (2.9\%) kernel vulnerabilities tested being found.
+with only one out of the 35 (2.9\%) kernel vulnerabilities being found.
 Furthermore, our results show that virtualization systems that use commonly
-executed kernel paths tend to have better resilience to vulnerabilities
+executed kernel paths have better resilience to vulnerabilities
 in the underlying kernel.
 
 In summary, the main contributions of this paper are as follows:
