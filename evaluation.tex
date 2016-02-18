@@ -327,7 +327,7 @@ not triggered).}
  \ding{55} & \ding{55} &  \ding{55}  & \ding{55}  \\
 \hline
 
- {\bf Vulnerabilities Triggered} & \multirow{2}{1cm}{\bf 35/35 (100\%)} & {\bf 14/35 (40\%)} &
+ {\bf Vulnerabilities Triggered} & \multirow{2}{1cm}{\bf 35/35 (100\%)} & {\bf 14/35 (40.0\%)} &
  {\bf 11/35 (31.4\%)}  & {\bf 8/35 (22.9\%)} & {\bf 12/35 (34.3\%)} & {\bf 5/35 (14.3\%)} & {\bf 5/35 (14.3\%)} &
  {\bf 8/35 (22.9\%)}  & {\bf 1/35 (2.9\%)}  \\
 \hline
@@ -342,20 +342,29 @@ system, including Lind. It resides inside the \texttt{mm/shmem.c} kernel path an
 can be triggered by using \texttt{mmap()} system call to access a hole in the memory.
 The \texttt{mmap()} call then invokes \texttt{shmem\_fault()}, which will cause contention
 on \texttt{i\_mmap\_mutex}, and lead to a serious starvation of memory resource.
-Another reason that Lind triggered this bug is because \texttt{mmap()} cannot easily
-be safely reimplemented inside our POSIX API. The call sets up a
+The reason that Lind triggered this bug is because \texttt{mmap()} cannot easily
+be safely reimplemented inside our SafePOSIX API. The call sets up a
 memory region where the OS will later
 intervene and automatically convert all accesses into ones that reach the
 underlying file.  The code does not explicitly make system calls, and as
 a result, with Lind's design we cannot intercept those accesses and call through
-the Repy sandbox kernel. As a result,
+the Repy sandbox kernel. Thus,
 Lind allows \texttt{mmap()} calls to directly access the kernel, which
-opens the chance to trigger this vulnerability. Similarly, in other
-virtualization systems we tested, \texttt{mmap()} is handled by the underlying
-host OS kernel.
-%\cappos{is this really true?  What about in VirtualBox?
-%How does this happen when the underlying file isn't a unique file underneath?}
-Therefore, this vulnerability was triggered in every system.
+opens the chance to trigger this vulnerability. 
+In the library OS system Graphene, similar to Lind, it does not reimplement the 
+\texttt{mmap()} system call in its library module \texttt{libLinux}. Instead, when doing 
+memory allocation operations like \texttt{malloc()} and \texttt{brk()}, Graphene will 
+pass down those system calls to the underlying kernel, and rely on the kernel to 
+perform the \texttt{mmap()} system function. 
+KVM and LXC both reside inside the Linux kernel and inherit the \texttt{mmap()} system function 
+from the kernel. QEMU is built on KVM, and relies on the KVM module to perform \texttt{mmap()} 
+function. Docker is built on LXC, which relies on the LXC module to perform \texttt{mmap()} 
+function. In VirtualBox and VMWare Workstation, the OS VM has its own mechanism to 
+do memory management. During the initial setup, the OS VM needs to request memory resource 
+by making \texttt{mmap()} to the host kernel. In addition, during the runtime of the VM process, 
+when there is excessive memory usage, or reconfiguration of memory allocation, the VM kernel module 
+will attempt to call \texttt{mmap()} to the host kernel. Thus, this vulnerability related with \texttt{mmap()} 
+is exploitable under the virtualization systems that we tested. 
 
 \emph{\textbf{Only Native Linux vulnerable.}}  Representative bug: CVE-2014-5045.
 This vulnerability was only triggered inside Native Linux. It resides in the
