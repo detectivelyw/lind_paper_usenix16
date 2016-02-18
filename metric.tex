@@ -1,6 +1,6 @@
 \section{Developing and Assessing a Quantitative Evaluation Metric for Kernel Security}
 \label{sec.metric}
-\cappos{possible intro sentence / paragraph...}
+%\cappos{possible intro sentence / paragraph...}
 Developing a quantitative metric that could more accurately identify portions of
 the OS kernel that had the highest potential to unleash inherent bugs begins with a
 hypothesis based on observation and common sense. In this section, we show how we
@@ -9,10 +9,10 @@ went about documenting the accuracy of the statement below.
 \emph{Key Hypothesis:} Kernel paths that are executed by common applications
 during everyday use are less likely to contain security flaws.
 
-The key hypothesis in this paper posits that by understanding how and when
+This key hypothesis posits that by understanding how and when
 a line of code in the kernel is used, we can predict its likelihood to
 contain a security flaw.
-The intuition behind this metric is that these code paths are very well tested
+The intuition is that these code paths are very well-tested
 due to their constant use, and thus it is much less likely that security bugs
 will occur in these lines of code.
 %Since there are relatively few security
@@ -57,21 +57,21 @@ will occur in these lines of code.
 \subsection{Experiment Setup}
 
 To test our hypothesis we performed an analysis of two different versions of
-the Linux kernel, version 3.13.0 and 3.14.1.  Our findings for these
-versions are quantitatively and qualitatively similar, so we report on
-the results for 3.13.0 in this section and use 3.14.1 in our evaluation.
+the Linux kernel, 3.13.0 and 3.14.1.  Our findings for these
+versions are quantitatively and qualitatively similar, so we report 
+the results for 3.13.0 in this section and use 3.14.1 in Section~\ref{sec.evaluation}.
 %\cappos{Fix the version here please.}
 To trace the kernel, we used \texttt{gcov}~\cite{gcov}. A standard utility with
 the GNU compiler collection (GCC) suite,
-\texttt{gcov} is a program profiling tool tha indicates which lines of kernel
+\texttt{gcov} is a program profiling tool that indicates which lines of kernel
 code are executed while an application runs.
 
-\textbf{Commonly-Used Kernel Paths}
+\textbf{Commonly-used kernel paths.}
 To capture the commonly-used kernel paths, we used two strategies concurrently.
 First, we attempted to capture the normal usage behavior of popular applications.
 To do this, two students used
 applications in the 50 most popular Debian packages~\cite{Top-Packages}
-(omitting libraries) for Debian version 7.0.
+(omitting libraries) for Debian 7.0.
 %Since many such packages are libraries that other programs
 %depend on, this resulted in using 50 \cappos{Exactly 50?} \yiwen{Yes. Exactly 50. We chose to stop when we have 50 of them working.} applications.
 The students used each application for its designed
@@ -87,11 +87,11 @@ varied?}
 The second strategy was to try to capture the total range of usages for a
 specific computer user. Hence the students used the workstation as their
 desktop machine for a one week period. They did their homework, developed
-software, communicated with friends and family, and performed
-other tasks using this system. Software was installed as needed.
+software, communicated with friends and family, etc., using this system. 
+Software was installed as needed.
 
-Using these two strategies together, we obtained a profile of the lines of
-kernel code (which we make publicly available~\cappos{cite}), that indicate
+Using these two strategies, we obtained a profile of the lines of
+kernel code (publicly available at~\cappos{cite}), that indicate
 a set of commonly-used kernel paths.
 
 %\cappos{What does the following text actually mean?}
@@ -118,14 +118,15 @@ a set of commonly-used kernel paths.
 %tool that is a standard utility with the GNU compiler collection
 %(GCC) suite.
 
-\textbf{Locating Bugs}
-Having identified what code was executed in what paths, we next addressed in
-which of these kernel paths bugs existed. We collected a list of
-severe kernel bugs from the National Vulnerability Database, the U.S.
-government repository of standards-based vulnerability management
-data~\cite{NVD}. For each bug, we
+\textbf{Locating bugs.}
+Having identified the kernel paths used during application execution, we next 
+addressed how bugs are distributed in these paths. We collected a list of
+severe kernel bugs from the National Vulnerability Database~\cite{NVD}. 
+%the U.S. government repository of standards-based vulnerability management
+%data~\cite{NVD}. 
+For each bug, we
 found the patch that fixed the problem and identified
-which lines of kernel code were modified in order to remove the bug.
+which lines of kernel code were modified to remove the bug.
 For the purpose of this study, a user program that can execute a line of kernel
 code changed by such a patch is considered to have the \textit{potential to
 exploit that flaw}.  Note, it is possible that in some situations this may
@@ -179,15 +180,15 @@ possible that additional lines of code must also be executed.
 %\subsubsection{Results and Evaluation}
 We now examine our hypothesis given traces for the commonly-used kernel
 paths and the set of lines that were patched to fix bugs. We found that
-only 1 of the 40 kernel bugs falls within the commonly-used paths, despite
+only one of the 40 \yanyan{35?}kernel bugs falls within the commonly-used paths, despite
 the commonly-used kernel paths making up 12.4\% of the kernel.
-To examine the statistical significance of these findings we did the following
-analysis.
+To verify that bugs are more likely to appear in certain parts of 
+the kernel, we performed the following analysis.
 
 %\cappos{Draft statistical analysis text from Dan.  Needs work...}
-We assume that kernel bugs occur at an average rate proportional to the
+We assume that kernel bugs appear at an average rate proportional to the
 number of lines of kernel code, and independently of the time since the last
-bug occurrence. Furthermore, the rate of defect occurrence per LOC
+bug occurrence. Therefore, the rate of defect occurrence per LOC
 follows a Poisson distribution.\lois{Is a quick definition of what this type of
 distribution entails needed?}
 %For analysis, we chose to model the rate of defect occurrence per LOC as
@@ -198,7 +199,7 @@ This is consistent with the work of Mayer, et. al.~\cite{mayer1989probability}.
 %\cappos{Convert the following to a citation: (Mayer, Alan, and Alan Sykes.
 %"A probability model for analysing complexity metrics data." Software
 %Engineering Journal 4.5 (1989):254-258.)}.
-Our hypothesis is that bugs occur at different rates in the kernel. Without
+Our hypothesis is that bugs occur at different rates in different parts of the kernel. Without
 loss of generality, we assume that the kernel can be divided into two sections,
 $A$ and $B$, where bugs occur at rates $\lambda_A$ and
 $\lambda_B$, and $\lambda_A \neq \lambda_B$. Given the null-hypothesis
@@ -223,11 +224,11 @@ $\lambda_A / \lambda_B<<1$ so that B is the risky set.}\lois{maybe this is just
 echoing Yanyan, but could we get one more sentence that explains in words, not numbers,
 what these numbers mean?}
 
-\textbf{Comparison with other metrics}
+\textbf{Comparison with other metrics.}
 We are not the first to propose a metric for which kernel code may be buggy.
-Many metrics work at a coarser granularity than our work, which focuses on
+Many metrics work at a coarser granularity (e.g., at file level) than our work that focuses on
 individual lines of code.  This is particularly key because at a file
-granularity, we found that commonly used programs touched parts of
+granularity, we found that commonly used programs used parts of
 XX files that contained flaws\cappos{fill in}...  In fact, XX common
 programs executed functions that later were patched to fix security
 flaws, indicating the need to better localize bugs.
@@ -271,7 +272,7 @@ code.  We speculate that this may be because of a higher rate of bug discovery
 in code that is available to execute in diverse configurations.
 
 
-\textbf{Metric Conclusion}
+%\textbf{Metric Conclusion}
 To summarize, we demonstrated that the metric of looking at commonly-used
 kernel paths provides a statistically significant ($\alpha=0.01$,
 $\rho=0.0015$) means for predicting where in the kernel exploitable flaws
@@ -465,13 +466,13 @@ focus on using this result to build more secure systems.
 \subsection{Risk Metrics for Identifying Kernel Flaws}
 \cappos{This section really doesn't tell me why these can't be used.  If you
 say that this study uses a specific statistical method, why does this matter?
-Why can't the Milk or Wine result for age be used? }
+Why can't the Milk or Wine result for age be used? }\yanyan{agreed.}
 
 Even though there is no widely accepted method for
 quantifying the safety (or risk) of privileged code, there have been a number of
 attempts to measure flaws in both software and operating systems. In this section,
 we briefly summarize a few of these approaches. Additional information on
-past studies of potential flaws.
+past studies of potential flaws.\yanyan{sentence not complete?}
 
 %\cappos{Is this really true?  No one has ever proposed a metric?  We do need to do a more detailed analysis of this.
 %I would vote to remove this sentence regardless...} \lois{ I would agree its probably best just to get rid of the sentence.
@@ -479,8 +480,8 @@ past studies of potential flaws.
 
 
 Other researchers have attempted to study the lifecycle of vulnerabilities when they are
-initiated and how long they last. Ozment and Schechter, who studied vulnerabilities in the code base of an OpenBSD operating system, determined that a significant extent (61%) of the reported
-vulnerabilities were "foundational," meaning they were introduced prior to the
+initiated and how long they last. Ozment and Schechter, who studied vulnerabilities in the code base of an OpenBSD operating system, determined that a significant extent (61\%) of the reported
+vulnerabilities were ``foundational," meaning they were introduced prior to the
 initial version studied. They also reported these vulnerabilities
 have a median lifetime of at least 2.6 years.
 
@@ -493,16 +494,16 @@ quantitative measurement and evaluation of the kernel bugs,
 and other vulnerabilities at the level of lines of code by checking against
 known kernel bugs.
 
-We believe this metric will provide better understanding of kernel security.
+We believe this metric will provide better understanding of kernel security.\yanyan{what is "this metric"?}
 As a result, a secure interface with an isolation mindset can be designed
 to be exposed to the userspace.
 
 %, they have limitations. Firstly, the metrics mentioned above are not
-specifically designed for studying bugs in OS kernels
+%specifically designed for studying bugs in OS kernels
 %\cappos{Why does this matter?}
 
 %Therefore, they do not take into account the way system calls are invoked by
-user applications.
+%user applications.
 %Moreover, these metrics can not provide information about the accurate location of the bugs within the kernel,
 %which is important to our study.
 %\cappos{Are you going to show that this is true?  Can you explain more about why these do not work?}
