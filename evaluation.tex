@@ -373,19 +373,24 @@ the \texttt{mountpoint\_last()}
 %\texttt{mountpoint\_last(struct nameidata *nd, struct path *path)}
 function does not properly
 maintain a reference count during attempts to use the \texttt{umount()} system call,
-in conjunction with a symbolic link. Unmounting from a symbolic link could block
- another unmount operation, and allow attackers to cause a denial of service or
- deploy use-after-free exploitation. Lind does not implement symbolic link, but
- similar functionality is implemented entirely
-within SafePOSIX.  The bug would (at most) enable an attacker to execute
-code within the Repy sandbox and it would be contained.
-Other virtualization systems have their own metadata to maintain their file
-directories and symbolic links.
+in conjunction with a symbolic link. Unmounting from a symbolic link could block 
+another unmount operation, and allow attackers to cause a denial of service or 
+deploy use-after-free exploitation. Lind does not implement symbolic link, but 
+even similar functionality that might be risky is implemented entirely
+within its SafePOSIX module. The bug would (at most) enable an attacker to execute
+code within the Repy sandbox and would not harm other parts of the system. 
+Graphene does not implement symbolic link in its Linux system call API, and thus avoids 
+this problem. 
+OS VM like VirtualBox and VMWare Workstation have their own metadata to maintain their file
+directories and symbolic links, which do not directly rely on the host OS. 
 %\cappos{Why did the flag in the first example
 %work then?  Also, why doesn't this exist in Docker / LXC?}
 Furthermore, symbolic links in those systems will be contained within the virtualization system's image,
-and will not be able to reach the underlying OS. In this case, those virtualization systems provide enough
+and will not be able to reach the underlying host OS. In this case, those virtualization systems provide enough
 isolation to prevent this bug.
+Docker/LXC and QEMU/KVM happen to avoid this bug because their kernel module modified the Linux kernel 
+that fixed this problem. It should be noted though that by their design model, they both tend to suffer from 
+the same vulnerabilities that exist inside the Native Linux kernel. 
 
 \emph{\textbf{Some systems safe, some systems vulnerable.}}  Representative bug: CVE-2014-8086.
 This vulnerability was not triggered inside Graphene and Lind, but was triggered inside
