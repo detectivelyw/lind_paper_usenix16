@@ -197,11 +197,12 @@ This is consistent with the work of Mayer, et. al.~\cite{mayer1989probability}.
 %\cappos{Convert the following to a citation: (Mayer, Alan, and Alan Sykes.
 %"A probability model for analysing complexity metrics data." Software
 %Engineering Journal 4.5 (1989):254-258.)}.
-Our hypothesis is that bugs occur at different rates in different parts of the kernel. Without
+Our hypothesis is that bugs occur at different rates in different parts of the kernel, 
+i.e., the risky portion has more bugs. Without
 loss of generality, we assume that the kernel can be divided into two sections,
 $A$ and $B$, where bugs occur at rates $\lambda_A$ and
 $\lambda_B$, and $\lambda_A \neq \lambda_B$. Given the null-hypothesis
-that the rate of defect occurrences is the same in set $A$ and $B$
+that the rate of defect occurrences is the \textit{same} in set $A$ and $B$
 (or bugs in $A$ and $B$ are drawn from the same Poisson distribution),
 %To validate our hypothesis we tested the null-hypothesis that bugs
 %occur at the same rate in SET-A and SET-B.
@@ -215,15 +216,16 @@ to compare unequal-sized code blocks.
 At a significance level of $\alpha=0.01$, the test was significant at
 $\rho=0.0015$, rejecting the null-hypothesis.
 %that both sets of bugs are drawn from the same distribution.
-The test also reported a 95\% confidence interval of
-0.002-0.525, indicating that ratios between bug-rates in each set are well
-below 1. \yanyan{which set is the risky set? e.g., we can say the ratio
-$\lambda_A / \lambda_B<<1$ so that B is the risky set.}\lois{maybe this is just
-echoing Yanyan, but could we get one more sentence that explains in words, not numbers,
-what these numbers mean?}
-\yiwen{We have set A and set B in the kernel. Set A represents the commonly used paths, 
-and set B represents the uncommonly used paths. There is 1 bug in set A, and 19 bugs in set B. 
-$\lambda_A / \lambda_B<<1$, indicating that B is the risky set that tends to have more bugs.}
+The test also reported a 95\% confidence interval that $\lambda_A / \lambda_B 
+\in [0.002, 0.525]$. This indicates that ratios between bug-rates in each set are well
+below 1, and $B$ is the risky set that tends to have more bugs. 
+%\yanyan{which set is the risky set? e.g., we can say the ratio
+%$\lambda_A / \lambda_B<<1$ so that B is the risky set.}\lois{maybe this is just
+%echoing Yanyan, but could we get one more sentence that explains in words, not numbers,
+%what these numbers mean?}
+%\yiwen{We have set A and set B in the kernel. Set A represents the commonly used paths, 
+%and set B represents the uncommonly used paths. There is 1 bug in set A, and 19 bugs in set B. 
+%$\lambda_A / \lambda_B<<1$, indicating that B is the risky set that tends to have more bugs.}
 
 \textbf{Comparison with other metrics.}
 We are not the first to propose a metric for which kernel code may be buggy.
