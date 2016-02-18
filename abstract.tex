@@ -9,22 +9,26 @@ Through techniques such as system call filtering,
 operating system virtualization, and library OS, security researchers
 and system developers have attempted to minimize the risk of such flaws.
 However, these technologies can add trusted code that often has new
-exploitable vulnerabilities. In addition, the portions of the underlying kernel
-that these systems use can open contact to complex calls that can trigger these
-flaws.
+exploitable vulnerabilities. 
+In addition, the complex functions that these systems use can open contact 
+to portions of the underlying kernel that could trigger these flaws.
+%In addition, the portions of the underlying kernel
+%that these systems use can open contact to complex calls that can trigger these
+%flaws.
 
 This paper introduces a new metric to determine where kernel flaws are
 likely to be located, based on the  hypothesis that commonly-used kernel
 paths, executed by popular applications on a daily basis, contain fewer
 vulnerabilities than less-used paths. With this insight, we devise the
-safely-reimplement design, a new technique that limits kernel calls to only
-commonly used paths, and reimplements more complex calls within a secured space
-that builds operating system functionality
-using commonly-used primitives.
-Finally, we use this design to prototype and test a secure system called Lind.
-The results show that executing malicious code in Lind can reduce the threat
-of attacks on the OS kernel to less than 3\%.
-This result is about an order of magnitude less than existing systems like VirtualBox (40\%),
+safely-reimplement design, a new technique that limits kernel access to only
+commonly used paths, and reimplements complex OS functions within a sandbox. 
+%secured space
+%that builds operating system functionality
+%using commonly-used primitives. 
+Finally, we use this design to prototype and test a secure virtualization system called Lind.
+The results show that for the 35 bugs we examined in Linux kernel version 3.14.1, 
+Lind can reduce the threat of attacks on the OS kernel to less than 3\%.
+This result is about an order of magnitude better than existing systems like VirtualBox (40\%),
 VMWare Workstation (31\%), Docker (23\%), LXC (34\%), QEMU (14\%), KVM (14\%), and Graphene (23\%).
 
 
