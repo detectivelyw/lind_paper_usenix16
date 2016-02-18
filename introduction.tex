@@ -4,24 +4,27 @@
 Despite the best efforts of programmers to develop systems free of vulnerabilities,
 researchers frequently uncover new flaws in operating system kernels that can be
 triggered by untrusted programs. To reduce security flaws
-a variety of techniques, including operating system virtualization, library OSes,
-and system call interposition, have been proposed. Understanding the level of security in such virtualization technologies through a quantitative approach is a challenging issue. For example, security comparisons between diverse systems are often qualitative or predictive in nature which makes it hard to discern which practices actually improve security.
+a variety of techniques, including system call interposition, operating system virtualization and library OSes, 
+have been proposed. Understanding the level of security 
+in such virtualization technologies through a quantitative approach is a challenging issue. 
+For example, security comparisons between diverse systems are often qualitative or predictive in nature 
+which makes it hard to discern which practices actually improve security.
 
 %\yanyan{why we need comparisons?}
 
 In this work, we devise a metric that provides a strong indication of where bugs
 will arise in the Linux kernel. Namely, we demonstrate
 that executing lines of kernel code that are not used by popular programs represent
-a substantial security risk. We support this hypothesis by performing a quantitative
- analysis of resilience to flaws in two versions of the Linux kernel, and examine
-where within the kernel bugs will later be discovered. We found that only 3-5\%
- \cappos{fix} of flaws occur in commonly used code, despite accounting for
- 38-40\% \cappos{check} of the reachable kernel code.
+a substantial security risk. We support this hypothesis by performing a quantitative 
+analysis of resilience to flaws in two versions of the Linux kernel, and examine
+where within the kernel bugs will later be discovered. We found that only 2.5\% - 4.0\% 
+of flaws occur in commonly used code, despite accounting for 
+32.2\% - 34.5\% of the reachable kernel code.
 
 Guided by this metric, we propose the safely-reimplement design, a new
 technique for building virtualization systems. In this design, the operating
 system interface (i.e., POSIX) is re-implemented in a restricted environment
-(i.e., a sandbox) that limits kernel calls to only commonly-used paths.
+(i.e., a sandbox) that limits kernel access to only commonly-used paths.
 Creating such a safe space requires building complex operating system functionality
 (i.e., directories and permissions) using only commonly-used primitives (i.e.,
 read and writing to a file). However, it allows complex functionality to be safely
@@ -37,15 +40,15 @@ Using this design, we develop a prototype virtualization system for
 running untrusted user programs on vulnerable kernel code. Dubbed Lind, the
 prototype adapts two existing technologies-Google's Native Client (NaCl) and
 %Seattle's Repy
-an operating system interface
-to handle distinctly different tasks. NaCl serves as a computational
+%an operating system interface 
+Repy to handle distinctly different tasks. NaCl serves as a computational
 module that isolates binaries, providing memory safety for a legacy program like
 Tor while passing the calls to the operating system interface.
 %As described in the design above,
-The operating system interface, called SafePOSIX,
-is isolated within a sandbox that restricts the interface to invoke only common code paths.
+Repy, a sandbox technique we used to build our operating system interface, we called SafePOSIX,
+which is isolated within Repy to restrict the interface to invoke only common code paths.
 SafePOSIX reimplements complex operating system functionality in an isolated
-environment provided by a small (8K LOC) sandbox kernel. This provides
+environment provided by a small (8K LOC) Repy sandbox kernel. This provides
 straightforward access to the required common kernel paths while allowing more
 complex functionality to be built.
 As a result, Lind can offer enhanced security without sacrificing basic functionality.
@@ -59,7 +62,7 @@ that applications run in Lind were the least likely to trigger kernel bugs,
 with only one out of the 35 (2.9\%) kernel vulnerabilities tested being found.
 Furthermore, our results show that virtualization systems that use commonly
 executed kernel paths tend to have better resilience to vulnerabilities
-in the underlying kernel.  \cappos{check}
+in the underlying kernel.
 
 In summary, the main contributions of this paper are as follows:
 
@@ -84,7 +87,8 @@ through a very small trusted computing base.
 
 \item
 We evaluate Lind and find it triggers only one (2.9\%) of the kernel vulnerabilities
-we examined.
+we examined. This result is about an order of magnitude better than the seven other virtualization systems 
+that we tested.
 \end{itemize}
 
 The remainder of this paper is organized as follows.
