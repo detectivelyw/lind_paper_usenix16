@@ -47,10 +47,9 @@ Restricted Python (Repy)~\cite{Repy-10}, to handle distinctly different tasks. N
 module that isolates binaries, providing memory safety for a legacy program like
 Tor while passing the calls to the operating system interface.
 %As described in the design above,
-Repy, a sandbox technique we used to build our operating system interface called SafePOSIX,
-which is isolated within Repy to restrict the interface to invoke only common code paths.
-\yanyan{fix this.}
-SafePOSIX reimplements complex operating system functionality in an isolated
+Repy is a sandbox technique we used to build our operating system interface called SafePOSIX. 
+SafePOSIX is isolated within Repy to restrict the interface to invoke only common code paths.
+It reimplements complex operating system functionality in an isolated
 environment provided by a small (8K LOC) Repy sandbox kernel. This provides
 straightforward access to the required common kernel paths while allowing more
 complex functionality to be built.
