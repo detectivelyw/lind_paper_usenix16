@@ -4,31 +4,33 @@
 Despite the best efforts of programmers to develop systems free of vulnerabilities,
 researchers frequently uncover new flaws in operating system kernels that can be
 triggered by untrusted programs. To reduce security flaws
-a variety of techniques, including system call interposition, operating system virtualization and library OSes, 
-have been proposed. Understanding the level of security 
-in such virtualization technologies through a quantitative approach is a challenging issue. 
-For example, security comparisons between diverse systems are often qualitative or predictive in nature 
-which makes it hard to discern which practices actually improve security.
+a variety of techniques, including system call interposition, operating system
+virtualization and library OSes,
+have been proposed. However, evaluating the level of security
+in such virtualization technologies through a quantitative approach is a challenging issue.
+As security comparisons between diverse systems are often qualitative
+or predictive in nature, it is hard
+to discern which practices actually better protect the kernel.
 
 %\yanyan{why we need comparisons?}
 
 In this work, we devise a metric that provides a strong indication of where bugs
 will arise in the Linux kernel. Namely, we demonstrate
 that executing lines of kernel code that are not used by popular programs represent
-a substantial security risk. We support this hypothesis by performing a quantitative 
-analysis of resilience to flaws in two versions of the Linux kernel, and examine
-where within the kernel bugs will later be discovered. We found that only 2.5\% - 4.0\% 
-of flaws occur in commonly used code, despite accounting for 
+a substantial security risk. We support this hypothesis with data from a quantitative
+analysis of resilience to flaws in two versions of the Linux kernel, and using this data
+to predict where within the kernel bugs will later be discovered. We found that only 2.5\% - 4.0\%
+of flaws occur in commonly used code, despite accounting for only
 32.2\% - 34.5\% of the reachable kernel code.
 
 Guided by this metric, we propose the safely-reimplement design, a new
 technique for building virtualization systems. In this design, the operating
-system interface (i.e., POSIX) is re-implemented in a restricted environment
+system interface (i.e., POSIX) is reimplemented in a restricted environment
 (i.e., a sandbox) that limits kernel access to only commonly-used paths.
 Creating such a safe space requires building complex operating system functionality
-(i.e., directories and permissions) using only commonly-used primitives (i.e.,
-read and writing to a file). However, it allows complex functionality to be safely
-implemented, even if it is buggy or malicious.
+(i.e., directories and permissions) utilizing only commonly-used primitives (i.e.,
+read and writing to a file). However, it allows complex functionality to safely
+run untrusted user programs on vulnerable code.
 %since it only has access to parts of the kernel that are very unlikely
 %to contain flaws.
 This ensures that an attacker will be unable to trigger bugs in less
@@ -40,7 +42,7 @@ Using this design, we develop a prototype virtualization system for
 running untrusted user programs on vulnerable kernel code. Dubbed Lind, the
 prototype adapts two existing technologies-Google's Native Client (NaCl) and
 %Seattle's Repy
-%an operating system interface 
+%an operating system interface
 Repy to handle distinctly different tasks. NaCl serves as a computational
 module that isolates binaries, providing memory safety for a legacy program like
 Tor while passing the calls to the operating system interface.
@@ -87,7 +89,7 @@ through a very small trusted computing base.
 
 \item
 We evaluate Lind and find it triggers only one (2.9\%) of the kernel vulnerabilities
-we examined. This result is about an order of magnitude better than the seven other virtualization systems 
+we examined. This result is about an order of magnitude better than the seven other virtualization systems
 that we tested.
 \end{itemize}
 
@@ -95,8 +97,8 @@ The remainder of this paper is organized as follows.
 Section \ref{sec.metric} describes our key hypothesis and
 how we tested our metric.
 Section \ref{sec.motivation-and-background} presents our goals for using the metric to guide the design
-of effective security systems. 
-%and models the threat of an attacker conducting a kernel exploit. 
+of effective security systems.
+%and models the threat of an attacker conducting a kernel exploit.
 A study of kernel protection strategies, including our newly proposed design
 is discussed in Section \ref{sec.design}. Section \ref{sec.implementation}
 describes the implementation of Lind. In Section \ref{sec.evaluation} the security and
@@ -104,7 +106,8 @@ efficiency of Lind is tested against other virtualization systems.
 Section \ref{sec.limitation} outlines the
 limitations of Lind and possible future initiatives.
 Finally, Section \ref{sec.related_work} reviews existing techniques that share
-Lind's security techniques and goals, and Section \ref{sec.conclusion} concludes.
+Lind's security techniques and goals, and we share some concluding thoughts in
+Section \ref{sec.conclusion}.
 
 
 
