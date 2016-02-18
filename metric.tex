@@ -237,11 +237,11 @@ programs executed 36 functions that later were patched to fix security
 flaws, indicating the need to better localize bugs.
 
 Earlier work by Ozment, et al.~\cite{ozment2006milk} demonstrated that code that
-had been around longer in the BSD kernel tended to have fewer bugs.  To
-understand how this compares with our metric, we examined the date at which
-each line of code that was changed in a patch was previously modified.  We
-found ...
+had been around longer in the BSD kernel tended to have fewer bugs.  
 
+%To understand how this compares with our metric, we examined the date at which
+%each line of code that was changed in a patch was previously modified.  We
+%found ...
 
 %\cappos{Is this part of the Chou study relevant??  I would otherwise cut this text.}
 %The study also suggested that the size of kernel source code and the maturity of a release also affect how frequently errors occur in the kernel.
@@ -262,7 +262,9 @@ we performed system call fuzzing experiments with the Trinity
 system call fuzz tester~\cite{Trinity}. These included 16 child processes
 (Trinity workers) executing each Linux system call with 1 million iterations.
 Second, we used the Linux Test Project (LTP)~\cite{LTP}, a test suite written
-using detailed kernel knowledge.  This test suite is meant to exercise the ...
+using detailed kernel knowledge.  
+This test suite is meant to exercise the existing Linux system call interface to 
+test its correctness, robustness, and performance impact. 
 
 The (primarily) black box fuzzing technique from Trinity and test suite of
 LTP combine to reach 44.6\% of the kernel, including all 12.4\% of common
