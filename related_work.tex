@@ -46,21 +46,23 @@ time. Ozment reported a decrease in the rate at which new vulnerabilities
 are reported by studying the age of vulnerabilities in OpenBSD. Li 
 reported an increase in security bugs by studying the number and relative 
 percentage of bugs. However, neither of these two approaches allowed 
-an investigation on how vulnerabilities are distributed. Our work is
-motivated by Schroter et al.~\cite{schroter2006predicting} and Neuhaus 
-et al.~\cite{neuhaus2007predicting}. Schroter observed that bugs and
-failures are correlated in code. Neuhaus discovered that in Mozilla's code base
+an investigation on how vulnerabilities are distributed. 
+%Our work is motivated by Schroter et al.~\cite{schroter2006predicting} and 
+%Neuhaus et al.~\cite{neuhaus2007predicting}. 
+Schroter et al.~\cite{schroter2006predicting} observed that bugs and
+failures are correlated in code. Neuhaus et al.~\cite{neuhaus2007predicting} 
+discovered that in Mozilla's code base
 some domains are more risky than others, and being associated with a 
-particular domain increases the risk of having a vulnerability. In this work, 
-we apply similar insight to OS kernel design.
+particular domain increases the risk of having a vulnerability. 
+%In this work, we apply similar observation to OS kernel design.
 
 \textbf{Virtualization.}
 \textit{Language-based virtualization.}
-Programming languages that provide safety through virtualization such
-as Java, JavaScript, Lua~\cite{Lua}, and
+Programming languages that provide safety through virtualization like
+Java, JavaScript, Lua~\cite{Lua}, and
 Silverlight~\cite{Silverlight} are commonly used in application-level
-sandboxing. These safe languages provide virtualized environments to
-check the safety of the running code by a monitor process. 
+sandboxing. These languages provide virtualized environments to
+check code safety by a monitor process. 
 %They combine untrusted application code with an interpreter and
 %standard libraries that consolidate routines to perform I/O, network
 %communication, and other sensitive functions.
@@ -71,7 +73,7 @@ check the safety of the running code by a monitor process.
 %memory.
 %
 There are also sandboxing solutions based on type-safety of programming
-languages, i.e. validating through a type-checker \cite{JS-Sandboxing}
+languages, e.g., validating through a type checker \cite{JS-Sandboxing}
 or enforcing security policies on an untrusted system through a
 reference monitor \cite{JS-Sandboxing1}. %Compared to these approaches,
 %the Lind protection model ensures stronger security than just executing the code in a browser's sandbox to isolate untrusted programs.
@@ -96,18 +98,17 @@ enhances security of privileged code compared to the above due to fewer LOC whic
 \textit{OS virtualization.}
 OS virtualization techniques can be divided into two categories:
 %Type-I or Type-II virtualization. Examples of Type-I virtualization
-\textit{bare-metal hardware} virtualization, such as VMware ESX Server, Xen,
+bare-metal hardware virtualization, such as VMware ESX Server, Xen,
 LXC~\cite{LXC}, BSD's jail, Solaris zones, and Hyper-V, and
-\textit{hosted hypervisor} virtualization such as VMware
+hosted hypervisor virtualization such as VMware
 Workstation, VMware Server, VirtualPC and the open-source counterpart
 VirtualBox.
 %
-Security by isolation \cite{Qubes}, \cite{Overshadow},
-\cite{SecureVM}, \cite{HypSec} is a feature of OS virtualization that
+Security by isolation \cite{Qubes, Overshadow, SecureVM, HypSec} is a feature of OS virtualization that
 provides safe executing environments through containment for multiple
 user-level virtual environments sharing the same hardware. This
 approach relies on the VMM to confine untrusted applications within
-guest OSs. However, there are limitations due to
+guest OSes. However, there are limitations due to
 the large attack vectors against the hypervisors, including
 vulnerabilities of software and configuration risk. Lind avoids such restrictions due to a smaller TCB.
 %For example, the
@@ -118,7 +119,7 @@ vulnerabilities of software and configuration risk. Lind avoids such restriction
 %escape these systems and access arbitrary code in the underlying host
 %systems.
 %\lois{what is the connection between the above sentences and Lind?}
-Lind deals with these concerns by using a much smaller and safer TCB.
+%Lind deals with these concerns by using a much smaller and safer TCB.
 
 \textit{Library OS.}
 Library OSes allow applications to efficiently
@@ -161,14 +162,19 @@ in an untrusted cloud host.
 %addresses the dual challenges of
 %executing unmodified legacy binaries and protecting them from a
 %malicious host.
-The library OS technique relies extensively on
-the underlying kernels to perform system functions. While in Lind only
-o a limited set of system functions resembles the kernel functions through safe Repy code. Unsimilar to Lind, Drawbridge, Bascule or Haven donot ensure safty of the system for zero-day vulnerability attacks through enforcing the policies in a two-step verification.
+While the library OS technique relies extensively on
+the underlying kernels to perform system functions, 
+Lind reimplements complex OS functions through memory-safe Repy 
+code, relying on only a limited set of system functions from the Repy 
+sandbox kernel. 
+Unlike Lind, Drawbridge, Bascule 
+or Haven do not have the sandbox environment that properly contains 
+buggy or malicious behavior, and therefore could allow attackers 
+to trigger zero-day vulnerabilities in the underlying kernel. 
 
 %&\yanyan{please add comparison of Drawbridge/Bascule/Haven to Lind.}
 
-\textbf{System Call Interposition.}
-System call interposition (SCI) provides
+\textbf{System Call Interposition} (SCI) provides
 %offers a number of properties that make it attractive to run applications
 secure execution of applications by exposing a minimal kernel surface.
 This approach usually ensures the userspace policies through a monitor process that
@@ -185,7 +191,7 @@ interacts with the system call execution engine
 %Ostia resolves the tight dependencies with the underlying OS through process emulation and
 %the agents model at the userspace. 
 Issues in SCI include the difficulty of appropriately replicating OS semantics,
-multi-threaded applications that cause race conditions, or indirect paths to resources that are often overlooked.
+multi-threaded applications that cause race conditions, and indirect paths to resources that are often overlooked.
 In addition, system calls that are denied can cause inconsistencies~\cite{Problems-SCI}.
 %
 %Recently, Wang et al. \cite{Jitk} discuss the issues of traditional SCI systems
@@ -268,7 +274,7 @@ other programs to execute their code.
 %A major issue of BGI is that it
 %does not solve the vulnerabilities at kernel-levels.
 
-Google provided Native Client (NaCl) \cite{NaCl-09} for
+Google provided Native Client (NaCl) \cite{NaCl-09} as an SFI system for
 Chrome browser to allow native executable code to be run directly in a
 browser. NaCl prevents suspicious code
 from memory corruption or direct access to the underlying system
