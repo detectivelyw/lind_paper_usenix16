@@ -48,8 +48,7 @@ System call interposition was once a popular approach to the design of secure
 virtualization systems because it gave developers the power to set and enforce
 security policies.
 %that could pass or stop a system call in a straightforward way.
-\lois{Does the use of the past tense here suggest
-such an approach is no longer popular?}  However, this design
+However, this design
 is limited by its overly complicated approach to policy decisions and implementation.
 First, to make a policy decision, the system needs to
 obtain and interpret the OS state associated with the programs it is monitoring.
@@ -105,7 +104,8 @@ Functionality reimplementation provides a
 realistic solution to building virtualization systems
 with rich functionality. However, it
 %is not as secure as people have thought and
-leaves plenty of opportunities for attackers.\lois{Proof of this? Citations?}
+leaves plenty of opportunities for attackers. 
+Hundreds of vulnerabilities in existing virtualization systems have been discovered and reported ~\cite{NVD}. 
 First, to provide rich functions, systems using this design have
 introduced larger codebases and increased the size of their TCBs.
 The complexity of OS functions can easily result in bugs and vulnerabilities in
@@ -223,8 +223,6 @@ If there is a bug in this function, rather than rely on the kernel code paths
 for symbolic links, our sandbox system will implement the incorrect behavior.
 This denies the code the privileged access to the system the OS kernel does.
 As a result, instead of creating a security issue, the application will just fail.
-\yanyan{this paragraph feels a bit weak. instead of blocking or denying, do
-we do anything else?}
 
 With the computation module and the library OS module, unmodified user code is able to run on top of our designed system.
 It is important to note that our design does not rely on any specific technique or tool, and it is possible

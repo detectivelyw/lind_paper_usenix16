@@ -74,15 +74,14 @@ applications in the 50 most popular Debian packages~\cite{Top-Packages}
 (omitting libraries) for Debian 7.0.
 %Since many such packages are libraries that other programs
 %depend on, this resulted in using 50 \cappos{Exactly 50?} \yiwen{Yes. Exactly 50. We chose to stop when we have 50 of them working.} applications.
-The students used each application for its designed
-task (i.e., writing, spell checking, and then printing a letter in a text
+Each student used 25 applications for their designed
+tasks (i.e., writing, spell checking, and then printing a letter in a text
 editor, or recoloring and adding a caption to a picture in image processing
 software). In instances where there were two applications that performed a
 similar task (i.e., Mozilla Firefox and Google Chrome), both programs were
 used. These tests were completed over 20 hours of
 total use over 5 calendar days.
-\cappos{Were the results the same for the two students?  What percent of LOC
-varied?}
+%\cappos{Were the results the same for the two students?  What percent of LOC varied?}
 
 The second strategy was to try to capture the total range of usages for a
 specific computer user. Hence the students used the workstation as their
@@ -91,7 +90,7 @@ software, communicated with friends and family, etc., using this system.
 Software was installed as needed.
 
 Using these two strategies, we obtained a profile of the lines of
-kernel code (publicly available at~\cappos{cite}), that indicate
+kernel code (publicly available at~\cite{Lind}), that indicate
 a set of commonly-used kernel paths.
 
 %\cappos{What does the following text actually mean?}
@@ -180,7 +179,7 @@ possible that additional lines of code must also be executed.
 %\subsubsection{Results and Evaluation}
 We now examine our hypothesis given traces for the commonly-used kernel
 paths and the set of lines that were patched to fix bugs. We found that
-only one of the 40 \yanyan{35?}kernel bugs falls within the commonly-used paths, despite
+only one of the 40 kernel bugs falls within the commonly-used paths, despite
 the commonly-used kernel paths making up 12.4\% of the kernel.
 To verify that bugs are more likely to appear in certain parts of 
 the kernel, we performed the following analysis.
@@ -189,8 +188,7 @@ the kernel, we performed the following analysis.
 We assume that kernel bugs appear at an average rate proportional to the
 number of lines of kernel code, and independently of the time since the last
 bug occurrence. Therefore, the rate of defect occurrence per LOC
-follows a Poisson distribution.\lois{Is a quick definition of what this type of
-distribution entails needed?}
+follows a Poisson distribution~\cite{Poisson-distribution}.
 %For analysis, we chose to model the rate of defect occurrence per LOC as
 %drawn from a Poisson distribution since we believe each bug occurs
 %independently, at a constant rate, proportional to the number of lines of
@@ -223,14 +221,17 @@ below 1. \yanyan{which set is the risky set? e.g., we can say the ratio
 $\lambda_A / \lambda_B<<1$ so that B is the risky set.}\lois{maybe this is just
 echoing Yanyan, but could we get one more sentence that explains in words, not numbers,
 what these numbers mean?}
+\yiwen{We have set A and set B in the kernel. Set A represents the commonly used paths, 
+and set B represents the uncommonly used paths. There is 1 bug in set A, and 19 bugs in set B. 
+$\lambda_A / \lambda_B<<1$, indicating that B is the risky set that tends to have more bugs.}
 
 \textbf{Comparison with other metrics.}
 We are not the first to propose a metric for which kernel code may be buggy.
 Many metrics work at a coarser granularity (e.g., at file level) than our work that focuses on
 individual lines of code.  This is particularly key because at a file
 granularity, we found that commonly used programs used parts of
-XX files that contained flaws\cappos{fill in}...  In fact, XX common
-programs executed functions that later were patched to fix security
+32 files that contained flaws. In fact, common
+programs executed 36 functions that later were patched to fix security
 flaws, indicating the need to better localize bugs.
 
 Earlier work by Ozment, et al.~\cite{ozment2006milk} demonstrated that code that
@@ -246,10 +247,10 @@ found ...
 Chou, et al.~\cite{PittSFIeld} showed that certain parts of the kernel
 were more vulnerable than others. In particular, device drivers have
 much higher error rates than those in other parts of the kernel.
-We found that this ...\cappos{fill in}
+%We found that this ...\cappos{fill in}
 
-\cappos{I'm not convinced we benefit from doing this.  It seems like we are
-digressing just to say that this doesn't work.}
+%\cappos{I'm not convinced we benefit from doing this.  It seems like we are
+%digressing just to say that this doesn't work.}
 However, this led us to consider that perhaps since drivers are not used
 in many scenarios, code that is unreachable in some situations may have a
 different vulnerability profile.  To test this, we
@@ -282,18 +283,24 @@ focus on using this result to build more secure systems.
 
 %\cappos{I'm leaving the old text here.  I would cut the remainder of this section starting here.}
 
-%The results show that 38.5\% of the total reachable kernel paths are commonly used. More importantly, only 2.5\% of the total studied bugs had traces in the common paths, while 50\% of the bugs resided in the total reachable kernel paths, which is an indication fewer bugs reside in common paths compared to uncommon paths. The kernel trace coverage of the common paths and the total reachable paths are shown in Figure \ref{fig:coverage}. The results show that the size of commonly-used kernel paths is small, merely 12.4\% of the entire kernel code base.
+%The results show that 38.5\% of the total reachable kernel paths are commonly used. More importantly, 
+%only 2.5\% of the total studied bugs had traces in the common paths, while 50\% of the bugs resided in the 
+%total reachable kernel paths, which is an indication fewer bugs reside in common paths compared to uncommon paths. 
+%The kernel trace coverage of the common paths and the total reachable paths are shown in Figure \ref{fig:coverage}. 
+%The results show that the size of commonly-used kernel paths is small, merely 12.4\% of the entire kernel code base.
 
 %The common paths coverage is also significantly smaller than the total reachable paths coverage (about 1/3 of the entire kernel).
 
-%By combining the kernel traces generated by both Trinity and LTP, we were able to assess the total reachable kernel paths. LTP captured approximately 20\% of kerneltraces that were missed by Trinity, while Trinity provided about 15\% of kernel trace that were not included by LTP.
+%By combining the kernel traces generated by both Trinity and LTP, we were able to assess the total reachable kernel paths. 
+%LTP captured approximately 20\% of kerneltraces that were missed by Trinity, while Trinity provided about 15\% of kernel trace that were not included by LTP.
 
 %Figure \ref{fig:datacollection} shows different tools and platforms that were used for the analysis.
 
 %The results from Figure \ref{fig:subset} and Figure \ref{fig:key_paths_trace} show that the common paths are a subset of the total reachable paths.
 
 %In terms of where the bugs were located, our data suggests that commonly used kernel paths contain only 2.5\% of all the bugs that we studied.
-%Since the total reachable kernel paths contain 50\% of the bugs that were examined in this paper, we can conclude that commonly used kernel paths clearly contain fewer bugs than other portions of the kernel.
+%Since the total reachable kernel paths contain 50\% of the bugs that were examined in this paper, 
+%we can conclude that commonly used kernel paths clearly contain fewer bugs than other portions of the kernel.
 
 %The results of our experiment are shown in the last two columns in
 %Table \ref{table:vulnerabilities_commonly_used_kernel_paths}.
@@ -462,17 +469,17 @@ focus on using this result to build more secure systems.
 
 
 
-\cappos{This will be trimmed...}
+%\cappos{This will be trimmed...}
 \subsection{Risk Metrics for Identifying Kernel Flaws}
-\cappos{This section really doesn't tell me why these can't be used.  If you
-say that this study uses a specific statistical method, why does this matter?
-Why can't the Milk or Wine result for age be used? }\yanyan{agreed.}
+%\cappos{This section really doesn't tell me why these can't be used.  If you
+%say that this study uses a specific statistical method, why does this matter?
+%Why can't the Milk or Wine result for age be used? }\yanyan{agreed.}
 
 Even though there is no widely accepted method for
 quantifying the safety (or risk) of privileged code, there have been a number of
 attempts to measure flaws in both software and operating systems. In this section,
-we briefly summarize a few of these approaches. Additional information on
-past studies of potential flaws.\yanyan{sentence not complete?}
+we briefly summarize a few of these approaches to provide information on
+past studies of potential flaws.
 
 %\cappos{Is this really true?  No one has ever proposed a metric?  We do need to do a more detailed analysis of this.
 %I would vote to remove this sentence regardless...} \lois{ I would agree its probably best just to get rid of the sentence.
@@ -480,7 +487,8 @@ past studies of potential flaws.\yanyan{sentence not complete?}
 
 
 Other researchers have attempted to study the lifecycle of vulnerabilities when they are
-initiated and how long they last. Ozment and Schechter, who studied vulnerabilities in the code base of an OpenBSD operating system, determined that a significant extent (61\%) of the reported
+initiated and how long they last. Ozment and Schechter, who studied vulnerabilities in the code base of an OpenBSD operating system, 
+determined that a significant extent (61\%) of the reported
 vulnerabilities were ``foundational," meaning they were introduced prior to the
 initial version studied. They also reported these vulnerabilities
 have a median lifetime of at least 2.6 years.
@@ -494,7 +502,7 @@ quantitative measurement and evaluation of the kernel bugs,
 and other vulnerabilities at the level of lines of code by checking against
 known kernel bugs.
 
-We believe this metric will provide better understanding of kernel security.\yanyan{what is "this metric"?}
+We believe our metric will provide better understanding of kernel security.
 As a result, a secure interface with an isolation mindset can be designed
 to be exposed to the userspace.
 
