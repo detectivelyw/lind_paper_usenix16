@@ -163,12 +163,14 @@ in an untrusted cloud host.
 %executing unmodified legacy binaries and protecting them from a
 %malicious host.
 While the library OS technique relies extensively on
-the underlying kernels to perform system functions, in Lind only
-a limited set of system functions resemble the kernel functions 
-through safe Repy code. \yanyan{this sentence has a grammar error.} Unlike Lind, Drawbridge, Bascule 
-or Haven do not ensure safty of the system for zero-day vulnerability 
-attacks through enforcing the policies in a two-step verification.\yanyan{I 
-thought we have dual sandboxes, not two step verification.}
+the underlying kernels to perform system functions, 
+Lind reimplements complex OS functions through memory-safe Repy 
+code, relying on only a limited set of system functions from the Repy 
+sandbox kernel. 
+Unlike Lind, Drawbridge, Bascule 
+or Haven do not have the sandbox environment that properly contains 
+buggy or malicious behavior, and therefore could allow attackers 
+to trigger zero-day vulnerabilities in the underlying kernel. 
 
 %&\yanyan{please add comparison of Drawbridge/Bascule/Haven to Lind.}
 
