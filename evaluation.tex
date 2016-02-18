@@ -9,9 +9,9 @@ protecting OS kernel, we conducted a series of experiments to answer
 four fundamental questions:
 
 \textit{How does Lind compare to other virtualization systems
-in protecting against historical Linux kernel bugs?}
+in protecting against zero-day Linux kernel bugs?}
 (Section~{\ref{Linux-Kernel-Bug-Test-and-Evaluation}})
-\yiwen{I am wondering if we should say ``zero-day bugs'' instead of ``historical bugs''.}
+%\yiwen{I am wondering if we should say ``zero-day bugs'' instead of ``historical bugs''.}
 
 \textit{How much of the underlying kernel code is exposed, and is thus
 vulnerable in different virtualization systems?}
@@ -46,10 +46,12 @@ against
 seven other existing virtualization systems\textendash VirtualBox, VMWare
 Workstation,
 Docker, LXC, QEMU, KVM and Graphene. 
-\yiwen{Should we talk about why we choose those systems and give some background information 
-about them to readers who might not be familiar with some of them? 
-It might be useful to state that we did pick up those systems in a systematic way.}
-We also compared it against Native Linux as a baseline for comparison. 
+We chose those seven systems because they are widely used virtualization systems 
+that are representative of the most popular design models. Among them, 
+VirtualBox and VMWare Workstation are very popular commercial OS VM products. 
+LXC and KVM are Linux kernel modules, Docker and QEMU are well known open source projects. 
+And Graphene is an open source research project. 
+We also compared against Native Linux as a baseline for comparison. 
 %Because Native Linux is the original OS,
 %without virtualization and additional protection, this data helps to
 %clarify the security benefits of Lind,
@@ -120,8 +122,8 @@ we take a closer look at four
 vulnerabilities from Table \ref{table:trigger_vulnerabilities}. These short case
 studies show how different system design philosophies can have 
 different security impacts.
-\yiwen{The following analysis needs to be refined. 
-I need to rework with more information about the system call paths.}
+%\yiwen{The following analysis needs to be refined. 
+%I need to rework with more information about the system call paths.}
 
 \begin{table*}[!ht]
 \scriptsize
@@ -538,8 +540,8 @@ leads to potential kernel bug exploitation. The results in Table
 To summarize, our analysis signals that Lind triggers the fewest kernel bugs because
 %lies in the important fact that
 it has better control over the access to the OS kernel.
-Therefore, better results can be achieved with Lind, as a natural
-outcome of its design. \lois{too big an assumption?}
+%Therefore, better results can be achieved with Lind, as a natural
+%outcome of its design. 
 
 \subsection{Impact of Potential Vulnerabilities in Lind's SafePOSIX reimplementation}
 \label{Reachable-Kernel-Trace-Analysis-for-Repy-Sandbox}
@@ -554,7 +556,9 @@ This experiment was conducted under Linux kernel 3.14.1.
 \noindent
 \textbf{Results.}
 An important question about Lind's security properties is what would happen if there is a bug or a failure in Lind's TCB,
-the Repy sandbox kernel? %To determine if a flaw in the TCB could endanger the kernel, we obtained the total reachable kernel trace in Repy and analyzed its components.\yanyan{repetitive?}
+the Repy sandbox kernel? 
+%To determine if a flaw in the TCB could endanger the kernel, we obtained 
+%the total reachable kernel trace in Repy and analyzed its components.\yanyan{repetitive?}
 
 The results are shown in Table \ref{table:trace-Repy}. The trace of Repy is
 slightly larger (5.8\%) than that of Lind.
@@ -647,8 +651,10 @@ We expect other CPU bound processes to behave similarly.
 slowdown was roughly 19x. Since they are both I/O heavy applications,
 each repeatedly calls into the SafePOSIX code which then reimplements
 the call.  The additional computation of SafePOSIX produced the additional
-overhead. \lois{Is this slowdown significant? Would a slowdown of this magnitude
-be acceptable in the real world?}
+overhead. We have not conducted any performance optimization for Lind. 
+As we focus on the security aspect first, we leave that to future work.  
+%\lois{Is this slowdown significant? Would a slowdown of this magnitude
+%be acceptable in the real world?}
 
 A summary of the results for Tor is shown in Table \ref{table:performance_tor}. The
 benchmarks focus on cryptographic operations,
@@ -668,10 +674,10 @@ It should be noted that, we have not yet attempted to optimize its performance.
 However, since an attack on the kernel can have devastating
 consequences, %at this initial stage,
 a tradeoff between security and performance could be justified.
-The fact that Lind is able to run many
-\cappos{4 applications isn't many...
-Do we have Apache numbers or something else to quantify?}
-\yiwen{I am looking at more apps and libs that we can run and test in Lind.}
+The fact that Lind is able to run 
+%\cappos{4 applications isn't many...
+%Do we have Apache numbers or something else to quantify?}
+%\yiwen{I am looking at more apps and libs that we can run and test in Lind.}
 legacy applications
 suggests that it
 is a positive step towards building new secure systems.
