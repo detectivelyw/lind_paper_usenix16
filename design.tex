@@ -14,20 +14,21 @@ or ``System Call Interposition (SCI)."
 The other is to rebuild system functionality with new code,
 which we call ``functionality reimplementation."
 In this section, we highlight the key ideas behind both designs, and
-discuss their deficiencies in preventing attacks 
-%from triggering and exploiting vulnerabilities 
+discuss their deficiencies in preventing attacks
+%from triggering and exploiting vulnerabilities
 in the kernel.
-Lastly, inspired by the idea of ``functionality reimplementation," 
-%but taking it a step further, 
+Lastly, inspired by the idea of ``functionality reimplementation,"
+%but taking it a step further,
 we present a third
-alternative that ensures the safety of reimplementation by sandboxing.
+alternative that ensures the safety of reimplementation through isolation
+within a secure environment.
 
 \subsection{System Call Interposition (SCI)}
-SCI is the long-standing idea behind sandboxing systems like Janus 
+SCI is the long-standing idea behind sandboxing systems like Janus
 \cite{Janus0:96, Janus:99}. It relies on the underlying kernel
 to provide system functionality. To prevent attackers from undermining the system,
 SCI uses a system call filter module to mediate requests
-from untrusted user code instead of allowing it go directly to the kernel.
+from untrusted user code instead of allowing it to go directly to the kernel.
 The filter will check a predefined security policy to decide which system calls are
 allowed to pass to the underlying kernel, and which ones must be stopped.
 %The security policy usually
@@ -45,7 +46,7 @@ of a system call interposition system.
 
 System call interposition was once a popular approach to the design of secure
 virtualization systems because it gave developers the power to set and enforce
-security policies. 
+security policies.
 %that could pass or stop a system call in a straightforward way.
 \lois{Does the use of the past tense here suggest
 such an approach is no longer popular?}  However, this design
@@ -58,27 +59,27 @@ Second, there are many indirect paths in the kernel that can be accessed.
 Overlooking those paths would render the
 system call interposition policy ineffective, because attackers will be able to
 bypass the imposed security checks. Moreover, many side-effects of blocking
-certain system calls could affect the function of desired system calls. 
+certain system calls could affect the function of desired system calls.
 It is difficult for developers to fully understand the side-effects of all the
 system calls in an interface as complex as the UNIX API. This makes
 it challenging to design and build a secure virtualization system using
-system call interposition alone. 
+system call interposition alone.
 %Eventually, developers turned to the idea of
 %reimplementation, which is more practical.
 
 \subsection{Functionality Reimplementation}
-Since using system call interposition alone is not sufficient, 
+Since using system call interposition alone is not sufficient,
 %to serve the purpose of
-%a modern system, where complex and risky system functionality is required, 
+%a modern system, where complex and risky system functionality is required,
 many virtualization systems have created their own system
 interface and library. Systems such as  Drawbridge \cite{Drawbridge-11},
  Bascule \cite{Bascule}, and Graphene \cite{Graphene-14} can
 provide richer functionality and run complex programs. Some virtualization
 systems, such as OS VM systems VirtualBox, and VMWare Workstation, even have the
-full functionality of an OS reimplemented in their codebase. We call such a design 
+full functionality of an OS reimplemented in their codebase. We call such a design
 ``Functionality reimplementation."
- 
- 
+
+
 \begin{figure}%[h]
 \centering
 \includegraphics[width=1.0\columnwidth]{diagram/Virtualization_Design_Model_02.png}
@@ -87,7 +88,7 @@ full functionality of an OS reimplemented in their codebase. We call such a desi
 \end{figure}
 
 The key idea of this design is to not fully rely on the underlying
-kernel for system functions. Instead, essential OS function are written with new
+kernel for system functions. Instead, essential OS functions are written with new
 code. As illustrated in Figure \ref{fig:design_functionality_reimplementation},
 in this design, the system will have its own system functionality reimplemented and
 provided to the user code. When it has to communicate with the kernel
@@ -102,8 +103,8 @@ and provides basic ABI functions to the OS library.
 
 Functionality reimplementation provides a
 realistic solution to building virtualization systems
-with rich functionality. However, it 
-%is not as secure as people have thought and 
+with rich functionality. However, it
+%is not as secure as people have thought and
 leaves plenty of opportunities for attackers.\lois{Proof of this? Citations?}
 First, to provide rich functions, systems using this design have
 introduced larger codebases and increased the size of their TCBs.
@@ -112,7 +113,7 @@ reimplementation. Some vulnerabilities
 will directly cause a privilege escalation, which allows attackers to escape the sandbox
 and execute arbitrary code on the host OS.
 %Besides these severe vulnerabilities that can lead to attackers taking direct control
-%of the machine, 
+%of the machine,
 Even operations that are considered
 legal and harmless in the guest OS may open up system call paths into the underlying
 host OS and cause a problem.
@@ -127,9 +128,9 @@ trigger vulnerabilities in the underlying OS kernel.
 \subsection{Functionality Safe Reimplementation}
 We propose a new design that adds additional security to
 functionality reimplementation, by leveraging our key observation
- that ``commonly used kernel paths contain fewer bugs"
+ that "commonly used kernel paths contain fewer bugs"
 (Section {\ref{sec.metric}).
-The key of this design is that all code \emph{including the complex part
+The key to this design is that all code \emph{including the complex part
 of the operating system interface} should have a very small TCB that accesses only
 commonly used kernel paths. Any complex or possibly risky system functions
 should be reimplemented using memory-safe code in a sandbox.
@@ -138,7 +139,7 @@ should be reimplemented using memory-safe code in a sandbox.
 %are contained by the sandbox.
 As a result, untrusted code would not be able to
 trigger sensitive and risky portions of the kernel.
-We call this design ``functionality safely reimplementation'',
+We call this design "functionality safely reimplementation,"
 which provides extra security by combining reimplementation of
 complex functionality with isolation and protection.
 
@@ -155,10 +156,10 @@ on the underlying system, as well as any applications running on top of it.
 As shown in Figure \ref{fig:design_safe_reimplementation}, our secure virtualization system
 has two components. First, as our secure system should support and run legacy applications,
 and execute binary code compiled from unmodified source code on popular hardware architecture
-like x86 architecture, it needs a computation module. 
-This module's main responsibility is providing an execution environment 
+like x86 architecture, it needs a computation module.
+This module's main responsibility is providing an execution environment
 that can run unmodified source code. It also performs functions like type checking,
-object creation, and garbage collection. 
+object creation, and garbage collection.
 The key security issue of executing system calls
 without triggering OS kernel bugs is left to the second module, a library OS
 that serves requests to access the OS kernel.
@@ -166,8 +167,7 @@ These two components can complete the requirements of running user code.
 The system invokes the computation module to perform its operations,
 and, if there are riskier calls, its computation module directs those requests to the
 library OS. In turn, the library OS responds to the system call requests and
-returns results to the user code, if the requests are granted. \lois{I would
-eliminate these short descriptions and go right to the longer ones.}
+returns results to the user code, if the requests are granted.
 
 \begin{figure}%[h]
 \centering
